@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Services.Produto
+﻿namespace Application.Services.Produto
 {
-    internal class ProdutoService
+    public class ProdutoService
     {
     }
 }
