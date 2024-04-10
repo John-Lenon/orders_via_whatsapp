@@ -2,13 +2,14 @@
 using Data.Repository.Base;
 using Domain.Entities.Usuario;
 using Domain.Enumeradores.Pemissoes;
-using Domain.Interfaces.Usuarios;
+using Domain.Interfaces.Usuario;
 using Microsoft.EntityFrameworkCore;
+using Entity = Domain.Entities.Usuario;
 
-namespace Data.Repository.Usuarios
+namespace Data.Repository.Usuario
 {
     public class UsuarioRepositorio(IServiceProvider service)
-        : RepositorioBase<Usuario, OrderViaWhatsAppContext>(service),
+        : RepositorioBase<Entity.Usuario, OrderViaWhatsAppContext>(service),
             IUsuarioRepositorio
     {
         public async Task AdicionarPermissaoAoUsuarioAsync(

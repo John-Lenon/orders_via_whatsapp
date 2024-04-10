@@ -1,12 +1,13 @@
 ﻿using Domain.Entities.Usuario;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Entity = Domain.Entities.Usuario;
 
-namespace Data.Mappings.Usuarios
+namespace Data.Mappings.Usuario
 {
-    public class UsuarioMap : IEntityTypeConfiguration<Usuario>
+    public class UsuarioMap : IEntityTypeConfiguration<Entity.Usuario>
     {
-        public void Configure(EntityTypeBuilder<Usuario> builder)
+        public void Configure(EntityTypeBuilder<Entity.Usuario> builder)
         {
             builder.ToTable("USUARIO");
 
@@ -66,7 +67,8 @@ namespace Data.Mappings.Usuarios
                 .UsingEntity<Dictionary<string, object>>(
                     "USUARIO_PERMISSAO",
                     column => column.HasOne<Permissao>().WithMany().HasForeignKey("PERMISSAO_ID"),
-                    column => column.HasOne<Usuario>().WithMany().HasForeignKey("USUARIO_ID"),
+                    column =>
+                        column.HasOne<Entity.Usuario>().WithMany().HasForeignKey("USUARIO_ID"),
                     table =>
                     {
                         table.ToTable("USUARIO_PERMISSAO");

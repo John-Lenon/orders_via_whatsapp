@@ -7,7 +7,7 @@ using Domain.DTOs.Usuario;
 using Domain.Entities.Usuario;
 using Domain.Enumeradores.Notificacao;
 using Domain.Enumeradores.Pemissoes;
-using Domain.Interfaces.Usuarios;
+using Domain.Interfaces.Usuario;
 using Domain.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
