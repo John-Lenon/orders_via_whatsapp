@@ -3,6 +3,7 @@ using Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(OrderViaWhatsAppContext))]
-    partial class OrderViaWhatsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240409221234_ADD_TB_PERMISSAO")]
+    partial class ADD_TB_PERMISSAO
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -125,36 +128,6 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("USUARIO", (string)null);
-                });
-
-            modelBuilder.Entity("USUARIO_PERMISSAO", b =>
-                {
-                    b.Property<int>("USUARIO_ID")
-                        .HasColumnType("INT");
-
-                    b.Property<int>("PERMISSAO_ID")
-                        .HasColumnType("INT");
-
-                    b.HasKey("USUARIO_ID", "PERMISSAO_ID");
-
-                    b.HasIndex("PERMISSAO_ID");
-
-                    b.ToTable("USUARIO_PERMISSAO", (string)null);
-                });
-
-            modelBuilder.Entity("USUARIO_PERMISSAO", b =>
-                {
-                    b.HasOne("Domain.Entities.Usuario.Permissao", null)
-                        .WithMany()
-                        .HasForeignKey("PERMISSAO_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Usuario.Usuario", null)
-                        .WithMany()
-                        .HasForeignKey("USUARIO_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
