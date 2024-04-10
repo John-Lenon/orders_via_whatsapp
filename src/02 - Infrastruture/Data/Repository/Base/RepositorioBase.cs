@@ -30,9 +30,6 @@ namespace Data.Repository.Base
 
         public virtual async Task InsertAsync(TEntity entity) => await DbSet.AddAsync(entity);
 
-        public async Task InsertRangeAsync(List<TEntity> entity) =>
-            await DbSet.AddRangeAsync(entity);
-
         public void Update(TEntity entity) => DbSet.Update(entity);
 
         public void Delete(TEntity entity) => DbSet.Remove(entity);
