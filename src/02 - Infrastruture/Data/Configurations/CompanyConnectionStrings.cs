@@ -1,4 +1,4 @@
-﻿namespace Application.Configurations
+﻿namespace Data.Configurations
 {
     public class CompanyConnectionStrings
     {
