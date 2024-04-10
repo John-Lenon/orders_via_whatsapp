@@ -1,4 +1,4 @@
-using Application.Configurations;
+using Application.Configurations.ManageDependencies;
 using Data.Configurations;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +11,15 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
+builder.Configuration.AddJsonFile(
+    $"appsettings.{builder.Environment.EnvironmentName}.json",
+    optional: false,
+    reloadOnChange: true
+);
+
 builder.Services.ConfigurarBancoDeDados();
 builder.Services.ConfigurarBancoDeDados();
-builder.Services.AddDependencyInjectionsApp();
+builder.Services.AddApiDependencyConfigurator(builder.Configuration);
 
 CarregarAppSettings(builder.Services, builder.Configuration);
 
