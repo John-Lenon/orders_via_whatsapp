@@ -5,9 +5,9 @@ namespace Domain.Enumeradores.Pemissoes
     public enum EnumPermissoes
     {
         /// <summary>
-        /// Permissao para teste.
+        /// Permissão para criar usuários.
         /// </summary>
-        [Description("Permissao para teste.")]
+        [Description("Permissao para criar usuarios.")]
         USU_000001 = 1,
     }
 }
