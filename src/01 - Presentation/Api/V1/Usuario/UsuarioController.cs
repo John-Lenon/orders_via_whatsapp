@@ -15,11 +15,21 @@ namespace Api.V1.Usuario
     {
         [HttpPost("registrar")]
         [PermissoesApi(EnumPermissoes.USU_000001)]
-        public async Task<UsuarioTokenDto> Registrar(UsuarioDto userDto) =>
-            await _authService.CadastrarUsuario(userDto);
+        public async Task<UsuarioTokenDto> RegistrarAsync(UsuarioDto userDto) =>
+            await _authService.CadastrarAsync(userDto);
+
+        [HttpPost("atualizar")]
+        [PermissoesApi(EnumPermissoes.USU_000001)]
+        public async Task<UsuarioDto> AtualizarAsync(int usuarioId, UsuarioDto userDto) =>
+            await _authService.AtualizarAsync(usuarioId, userDto);
+
+        [HttpDelete("deletar")]
+        [PermissoesApi(EnumPermissoes.USU_000001)]
+        public async Task<bool> DeletarAsync(int usuarioId) =>
+            await _authService.DeleteAsync(usuarioId);
 
         [HttpPost("login")]
-        public async Task<UsuarioTokenDto> Login(UsuarioDto userDto) =>
-            await _authService.AutenticarUsuario(userDto);
+        public async Task<UsuarioTokenDto> LoginAsync(UsuarioDto userDto) =>
+            await _authService.AutenticarAsync(userDto);
     }
 }

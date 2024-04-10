@@ -24,33 +24,7 @@ namespace Application.Services.Auth
     {
         protected readonly HttpContext _httpContext = _httpContext.HttpContext;
 
-        public async Task<UsuarioTokenDto> CadastrarUsuario(UsuarioDto usuarioDto)
-        {
-            if (Validator(usuarioDto))
-                return null;
-
-            if (await VerificarExistenciaDeUsuarioAsync(usuarioDto))
-                return null;
-
-            var (codigoUnicoSenha, SenhaHash) = PasswordHasher.GerarSenhaHash(usuarioDto.Senha);
-
-            var usuario = _mapper.Map<Usuario>(usuarioDto);
-
-            usuario.SenhaHash = SenhaHash;
-            usuario.CodigoUnicoSenha = codigoUnicoSenha;
-
-            await _repository.InsertAsync(usuario);
-
-            if (!await _repository.SaveChangesAsync())
-            {
-                Notificar(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao resgistrar.");
-                return null;
-            }
-
-            return GerarToken(usuario);
-        }
-
-        public async Task<UsuarioTokenDto> AutenticarUsuario(UsuarioDto userDto)
+        public async Task<UsuarioTokenDto> AutenticarAsync(UsuarioDto userDto)
         {
             var usuario = await _repository
                 .Get()
@@ -78,6 +52,95 @@ namespace Application.Services.Auth
             return GerarToken(usuario);
         }
 
+        public async Task<UsuarioTokenDto> CadastrarAsync(UsuarioDto usuarioDto)
+        {
+            if (Validator(usuarioDto))
+                return null;
+
+            if (await VerificarCredenciaisExistentesAsync(usuarioDto))
+                return null;
+
+            var (codigoUnicoSenha, SenhaHash) = PasswordHasher.GerarSenhaHash(usuarioDto.Senha);
+
+            var usuario = _mapper.Map<Usuario>(usuarioDto);
+
+            usuario.SenhaHash = SenhaHash;
+            usuario.CodigoUnicoSenha = codigoUnicoSenha;
+
+            await _repository.InsertAsync(usuario);
+
+            if (!await _repository.SaveChangesAsync())
+            {
+                Notificar(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao cadastrar.");
+                return null;
+            }
+
+            return GerarToken(usuario);
+        }
+
+        public async Task<UsuarioDto> AtualizarAsync(int usuarioId, UsuarioDto usuarioDto)
+        {
+            if (Validator(usuarioDto))
+                return null;
+
+            var usuario = await _repository.GetByIdAsync(usuarioId);
+
+            if (usuario is null)
+            {
+                Notificar(
+                    EnumTipoNotificacao.Erro,
+                    $"Não foi encontrado um registro com o Id " + usuarioId
+                );
+
+                return null;
+            }
+
+            if (await VerificarCredenciaisExistentesAsync(usuarioDto, usuarioId))
+                return null;
+
+            var (codigoUnicoSenha, SenhaHash) = PasswordHasher.GerarSenhaHash(usuarioDto.Senha);
+
+            _mapper.Map(usuarioDto, usuario);
+
+            usuario.SenhaHash = SenhaHash;
+            usuario.CodigoUnicoSenha = codigoUnicoSenha;
+
+            _repository.Update(usuario);
+
+            if (!await _repository.SaveChangesAsync())
+            {
+                Notificar(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao atualizar.");
+                return null;
+            }
+
+            return usuarioDto;
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var usuario = await _repository.GetByIdAsync(id);
+
+            if (usuario is null)
+            {
+                Notificar(
+                    EnumTipoNotificacao.Erro,
+                    "Não foi encontrado um registro com o Id " + id
+                );
+                return false;
+            }
+
+            _repository.Delete(usuario);
+
+            if (!await _repository.SaveChangesAsync())
+            {
+                Notificar(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao deletar");
+                return false;
+            }
+
+            Notificar(EnumTipoNotificacao.Informacao, "Usuário deletado com sucesso.");
+            return true;
+        }
+
         public bool PossuiPermissao(params EnumPermissoes[] permissoesParaValidar)
         {
             var permissoes = _httpContext?.User?.Claims?.Select(claim => claim.Value.ToString());
@@ -90,36 +153,6 @@ namespace Application.Services.Auth
         }
 
         #region Supports Methods
-        private bool VerificarSenhaHash(string senha, string senhaHash, string salt) =>
-            PasswordHasher.CompararSenhaHash(senha, salt) == senhaHash;
-
-        private async Task<bool> VerificarExistenciaDeUsuarioAsync(UsuarioDto usuarioDto)
-        {
-            var usuarioExistente = await _repository
-                .Get()
-                .FirstOrDefaultAsync(u =>
-                    u.Nome == usuarioDto.Nome
-                    || u.Email == usuarioDto.Email
-                    || u.Telefone == usuarioDto.Telefone
-                );
-
-            if (usuarioExistente != null)
-            {
-                var campoDuplicado =
-                    usuarioExistente.Nome == usuarioDto.Nome
-                        ? "nome"
-                        : usuarioExistente.Email == usuarioDto.Email
-                            ? "e-mail"
-                            : "telefone";
-
-                var mensagemErro = $"O {campoDuplicado} fornecido já está existe.";
-
-                Notificar(EnumTipoNotificacao.Erro, mensagemErro);
-                return true;
-            }
-
-            return false;
-        }
 
         private UsuarioTokenDto GerarToken(Usuario usuario)
         {
@@ -161,6 +194,43 @@ namespace Application.Services.Auth
                 Token = tokenHandler.WriteToken(token),
                 Expiration = tokenExpirationTime,
             };
+        }
+
+        private bool VerificarSenhaHash(string senha, string senhaHash, string salt) =>
+            PasswordHasher.CompararSenhaHash(senha, salt) == senhaHash;
+
+        private async Task<bool> VerificarCredenciaisExistentesAsync(
+            UsuarioDto usuarioDto,
+            int usuarioId = 0
+        )
+        {
+            var usuarioExistente = await _repository
+                .Get()
+                .FirstOrDefaultAsync(u =>
+                    u.Nome == usuarioDto.Nome
+                    || u.Email == usuarioDto.Email
+                    || u.Telefone == usuarioDto.Telefone
+                );
+
+            if (usuarioExistente != null)
+            {
+                if (usuarioExistente.Id == usuarioId)
+                    return false;
+
+                var campoDuplicado =
+                    usuarioExistente.Nome == usuarioDto.Nome
+                        ? "nome"
+                        : usuarioExistente.Email == usuarioDto.Email
+                            ? "e-mail"
+                            : "telefone";
+
+                var mensagemErro = $"O {campoDuplicado} fornecido já existe.";
+
+                Notificar(EnumTipoNotificacao.Erro, mensagemErro);
+                return true;
+            }
+
+            return false;
         }
         #endregion
     }

@@ -5,8 +5,10 @@ namespace Application.Interfaces.Auth
 {
     public interface IAuthService
     {
-        Task<UsuarioTokenDto> AutenticarUsuario(UsuarioDto userDto);
-        Task<UsuarioTokenDto> CadastrarUsuario(UsuarioDto userDto);
+        Task<UsuarioTokenDto> AutenticarAsync(UsuarioDto userDto);
+        Task<UsuarioTokenDto> CadastrarAsync(UsuarioDto userDto);
+        Task<UsuarioDto> AtualizarAsync(int usuarioId, UsuarioDto usuarioDto);
+        Task<bool> DeleteAsync(int id);
         bool PossuiPermissao(params EnumPermissoes[] permissoesParaValidar);
     }
 }
