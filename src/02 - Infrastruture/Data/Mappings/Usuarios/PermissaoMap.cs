@@ -9,7 +9,12 @@ namespace Data.Mappings.Usuarios
         public void Configure(EntityTypeBuilder<Permissao> builder)
         {
             builder.ToTable("PERMISSAO");
-            builder.Property(p => p.Id).IsRequired().HasColumnType("INT").ValueGeneratedOnAdd();
+            builder
+                .Property(p => p.Id)
+                .HasColumnName("ID")
+                .IsRequired()
+                .HasColumnType("INT")
+                .ValueGeneratedOnAdd();
 
             builder
                 .Property(p => p.Descricao)

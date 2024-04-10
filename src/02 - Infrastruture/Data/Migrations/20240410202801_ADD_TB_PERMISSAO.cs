@@ -14,7 +14,7 @@ namespace Data.Migrations
                 name: "PERMISSAO",
                 columns: table => new
                 {
-                    Id = table
+                    ID = table
                         .Column<int>(type: "INT", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DESCRICAO = table.Column<string>(
@@ -25,7 +25,7 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PERMISSAO", x => x.Id);
+                    table.PrimaryKey("PK_PERMISSAO", x => x.ID);
                 }
             );
         }

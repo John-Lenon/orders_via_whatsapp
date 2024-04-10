@@ -14,10 +14,14 @@ namespace Data.Migrations
                 name: "USUARIO",
                 columns: table => new
                 {
-                    Id = table
+                    ID = table
                         .Column<int>(type: "INT", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Codigo = table.Column<int>(type: "int", nullable: false),
+                    CODIGO = table.Column<Guid>(
+                        type: "uniqueidentifier",
+                        nullable: false,
+                        defaultValueSql: "NEWID()"
+                    ),
                     NOME = table.Column<string>(
                         type: "VARCHAR(80)",
                         maxLength: 80,
@@ -33,7 +37,7 @@ namespace Data.Migrations
                         maxLength: 20,
                         nullable: false
                     ),
-                    Ativo = table.Column<bool>(type: "BIT", nullable: false),
+                    ATIVO = table.Column<bool>(type: "BIT", nullable: false),
                     SENHA_HASH = table.Column<string>(
                         type: "VARCHAR(100)",
                         maxLength: 100,
@@ -47,7 +51,7 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_USUARIO", x => x.Id);
+                    table.PrimaryKey("PK_USUARIO", x => x.ID);
                 }
             );
         }

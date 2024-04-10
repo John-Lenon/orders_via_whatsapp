@@ -18,7 +18,7 @@ namespace Application.Validators.Usuarios
             RuleFor(x => x.Senha)
                 .NotEmpty()
                 .WithMessage("A senha é obrigatória.")
-                .Length(3, 25)
+                .Length(4, 25)
                 .WithMessage("O senha deve ter entre 4 a 25 caracteres.")
                 .Matches("[A-Z]")
                 .WithMessage("A senha deve conter ao menos uma letra maiúscula.")

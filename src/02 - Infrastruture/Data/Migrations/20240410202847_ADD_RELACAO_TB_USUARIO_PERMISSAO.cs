@@ -5,7 +5,7 @@
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ADD_RELACAO_USUARIO_PERMISSAO : Migration
+    public partial class ADD_RELACAO_TB_USUARIO_PERMISSAO : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,14 +27,14 @@ namespace Data.Migrations
                         name: "FK_USUARIO_PERMISSAO_PERMISSAO_PERMISSAO_ID",
                         column: x => x.PERMISSAO_ID,
                         principalTable: "PERMISSAO",
-                        principalColumn: "Id",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade
                     );
                     table.ForeignKey(
                         name: "FK_USUARIO_PERMISSAO_USUARIO_USUARIO_ID",
                         column: x => x.USUARIO_ID,
                         principalTable: "USUARIO",
-                        principalColumn: "Id",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade
                     );
                 }
