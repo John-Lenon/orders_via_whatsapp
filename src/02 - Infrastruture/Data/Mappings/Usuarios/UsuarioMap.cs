@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Data.Mappings.Usuario_
+namespace Data.Mappings.Usuarios
 {
     public class UsuarioMap : IEntityTypeConfiguration<Usuario>
     {

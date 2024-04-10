@@ -2,7 +2,7 @@
 using Domain.Enumeradores.Pemissoes;
 using Domain.Interfaces.Base;
 
-namespace Domain.Interfaces.Usuario_
+namespace Domain.Interfaces.Usuarios
 {
     public interface IUsuarioRepositorio : IRepositoryBase<Usuario>
     {

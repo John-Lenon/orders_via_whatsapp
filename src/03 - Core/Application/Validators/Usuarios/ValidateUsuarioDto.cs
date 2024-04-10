@@ -1,7 +1,7 @@
 ﻿using Domain.DTOs.Usuario;
 using FluentValidation;
 
-namespace Application.Validators.Usuario_
+namespace Application.Validators.Usuarios
 {
     public class ValidateUsuarioDto : AbstractValidator<UsuarioDto>
     {

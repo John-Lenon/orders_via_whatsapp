@@ -1,8 +1,8 @@
 ﻿using Application.Interfaces.Auth;
 using Application.Services.Auth;
 using Application.Utilities;
-using Data.Repository.Usuario_;
-using Domain.Interfaces.Usuario_;
+using Data.Repository.Usuarios;
+using Domain.Interfaces.Usuarios;
 using Domain.Interfaces.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -2,10 +2,10 @@
 using Data.Repository.Base;
 using Domain.Entities.Usuario;
 using Domain.Enumeradores.Pemissoes;
-using Domain.Interfaces.Usuario_;
+using Domain.Interfaces.Usuarios;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Repository.Usuario_
+namespace Data.Repository.Usuarios
 {
     public class UsuarioRepositorio(IServiceProvider service)
         : RepositorioBase<Usuario, OrderViaWhatsAppContext>(service),

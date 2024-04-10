@@ -1,7 +1,7 @@
 ﻿using Data.Context;
 using Domain.Entities.Usuario;
 using Domain.Enumeradores.Pemissoes;
-using Domain.Interfaces.Usuario_;
+using Domain.Interfaces.Usuarios;
 using Domain.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
