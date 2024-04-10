@@ -8,7 +8,7 @@ namespace Data.Mappings.Usuario_
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
         {
-            builder.ToTable("USUARIOS");
+            builder.ToTable("USUARIO");
             builder.Property(u => u.Id).IsRequired().HasColumnType("INT").ValueGeneratedOnAdd();
 
             builder
