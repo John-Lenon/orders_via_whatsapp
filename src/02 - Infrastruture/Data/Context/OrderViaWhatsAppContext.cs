@@ -1,15 +1,17 @@
 ﻿using Domain.Entities.Produto;
+using Domain.Entities.Usuario;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Context
 {
-    public class OrderViaWhatsAppContext : DbContext
+    public class OrderViaWhatsAppContext(DbContextOptions<OrderViaWhatsAppContext> options)
+        : DbContext(options)
     {
         public DbSet<Produto> Produto { get; set; }
 
-        public OrderViaWhatsAppContext(DbContextOptions<OrderViaWhatsAppContext> options) : base(options)
-        {
-        }
+        public DbSet<Usuario> Usuario { get; set; }
+
+        public DbSet<Permissao> Permissao { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,10 +21,11 @@ namespace Data.Context
 
         public void SetConnectionString(string newStringConnection)
         {
-            if(this.Database.CurrentTransaction is not null)
+            if (this.Database.CurrentTransaction is not null)
             {
                 this.Database.CurrentTransaction.Commit();
-            };
+            }
+            ;
             this.Database.SetConnectionString(newStringConnection);
         }
     }
