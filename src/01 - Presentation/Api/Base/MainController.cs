@@ -153,7 +153,8 @@ namespace Api.Base
                     result.ContentTypeInvalido();
                     context.Result = new BadRequestObjectResult(result);
                     return false;
-                } else if (model.Key == string.Empty)
+                }
+                else if (model.Key == string.Empty)
                 {
                     model.Value.ValidationState = ModelValidationState.Valid;
                     return true;

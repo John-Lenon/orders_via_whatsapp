@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Services.Base
 {
-    public abstract class BaseService<TEntity, TIRepository>(IServiceProvider service)
+    public abstract class BaseAppService<TEntity, TIRepository>(IServiceProvider service)
         where TEntity : class, new()
         where TIRepository : class, IRepositoryBase<TEntity>
     {

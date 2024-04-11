@@ -4,7 +4,6 @@ using System.Text;
 using Application.Interfaces.Auth;
 using Application.Services.Base;
 using Domain.DTOs.Usuario;
-using Domain.Entities.Usuario;
 using Domain.Enumeradores.Notificacao;
 using Domain.Enumeradores.Pemissoes;
 using Domain.Interfaces.Usuario;
@@ -13,14 +12,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Entity = Domain.Entities.Usuario;
 
-namespace Application.Services.Auth
+namespace Application.Services.Usuario
 {
-    public class AuthService(
+    public class UsuarioService(
         IServiceProvider service,
         IConfiguration _configuration,
         IHttpContextAccessor _httpContext
-    ) : BaseService<Usuario, IUsuarioRepositorio>(service), IAuthService
+    ) : BaseAppService<Entity.Usuario, IUsuarioRepositorio>(service), IUsuarioService
     {
         protected readonly HttpContext _httpContext = _httpContext.HttpContext;
 
@@ -62,7 +62,7 @@ namespace Application.Services.Auth
 
             var (codigoUnicoSenha, SenhaHash) = PasswordHasher.GerarSenhaHash(usuarioDto.Senha);
 
-            var usuario = _mapper.Map<Usuario>(usuarioDto);
+            var usuario = _mapper.Map<Entity.Usuario>(usuarioDto);
 
             usuario.SenhaHash = SenhaHash;
             usuario.CodigoUnicoSenha = codigoUnicoSenha;
@@ -154,7 +154,7 @@ namespace Application.Services.Auth
 
         #region Supports Methods
 
-        private UsuarioTokenDto GerarToken(Usuario usuario)
+        private UsuarioTokenDto GerarToken(Entity.Usuario usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
@@ -207,9 +207,7 @@ namespace Application.Services.Auth
             var usuarioExistente = await _repository
                 .Get()
                 .FirstOrDefaultAsync(u =>
-                    u.Nome == usuarioDto.Nome
-                    || u.Email == usuarioDto.Email
-                    || u.Telefone == usuarioDto.Telefone
+                    u.Email == usuarioDto.Email || u.Telefone == usuarioDto.Telefone
                 );
 
             if (usuarioExistente != null)
@@ -217,12 +215,8 @@ namespace Application.Services.Auth
                 if (usuarioExistente.Id == usuarioId)
                     return false;
 
-                var campoDuplicado =
-                    usuarioExistente.Nome == usuarioDto.Nome
-                        ? "nome"
-                        : usuarioExistente.Email == usuarioDto.Email
-                            ? "e-mail"
-                            : "telefone";
+                string campoDuplicado =
+                    usuarioExistente.Email == usuarioDto.Email ? "e-mail" : "telefone";
 
                 var mensagemErro = $"O {campoDuplicado} fornecido já existe.";
 

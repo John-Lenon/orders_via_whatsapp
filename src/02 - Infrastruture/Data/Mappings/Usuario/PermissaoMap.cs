@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Data.Mappings.Usuarios
+namespace Data.Mappings.Usuario
 {
     public class PermissaoMap : IEntityTypeConfiguration<Permissao>
     {

@@ -3,7 +3,7 @@ using Domain.Enumeradores.Pemissoes;
 
 namespace Application.Interfaces.Auth
 {
-    public interface IAuthService
+    public interface IUsuarioService
     {
         Task<UsuarioTokenDto> AutenticarAsync(UsuarioDto userDto);
         Task<UsuarioTokenDto> CadastrarAsync(UsuarioDto userDto);
