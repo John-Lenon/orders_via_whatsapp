@@ -1,6 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Application.Interfaces.Auth;
 using Application.Services.Base;
 using Domain.DTOs.Usuario;
@@ -12,15 +9,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Entity = Domain.Entities.Usuario;
 
 namespace Application.Services.Usuario
 {
-    public class UsuarioService(
+    public class UsuarioAppService(
         IServiceProvider service,
         IConfiguration _configuration,
         IHttpContextAccessor _httpContext
-    ) : BaseAppService<Entity.Usuario, IUsuarioRepositorio>(service), IUsuarioService
+    ) : BaseAppService<Entity.Usuario, IUsuarioRepositorio>(service), IUsuarioAppService
     {
         protected readonly HttpContext _httpContext = _httpContext.HttpContext;
 
@@ -57,7 +57,7 @@ namespace Application.Services.Usuario
             if (Validator(usuarioDto))
                 return null;
 
-            if (await VerificarCredenciaisExistentesAsync(usuarioDto))
+            if (await ValidarUsuarioParaCadastrarAsync(usuarioDto))
                 return null;
 
             var (codigoUnicoSenha, SenhaHash) = PasswordHasher.GerarSenhaHash(usuarioDto.Senha);
@@ -80,33 +80,32 @@ namespace Application.Services.Usuario
 
         public async Task<UsuarioDto> AtualizarAsync(int usuarioId, UsuarioDto usuarioDto)
         {
-            if (Validator(usuarioDto))
-                return null;
-
-            var usuario = await _repository.GetByIdAsync(usuarioId);
-
-            if (usuario is null)
+            if (usuarioDto == null)
             {
-                Notificar(
-                    EnumTipoNotificacao.Erro,
-                    $"Não foi encontrado um registro com o Id " + usuarioId
-                );
-
+                Notificar(EnumTipoNotificacao.Erro, "Modelo de dados inválido.");
                 return null;
             }
 
-            if (await VerificarCredenciaisExistentesAsync(usuarioDto, usuarioId))
+            var usuario = await _repository.GetByIdAsync(usuarioId);
+            if (usuario == null)
+            {
+                Notificar(
+                    EnumTipoNotificacao.Erro,
+                    $"Não foi encontrado um registro com o Id {usuarioId}"
+                );
+                return null;
+            }
+
+            if (!await ValidarUsuarioParaAtualizarAsync(usuario, usuarioDto, usuarioId))
                 return null;
 
             var (codigoUnicoSenha, SenhaHash) = PasswordHasher.GerarSenhaHash(usuarioDto.Senha);
 
             _mapper.Map(usuarioDto, usuario);
-
             usuario.SenhaHash = SenhaHash;
             usuario.CodigoUnicoSenha = codigoUnicoSenha;
 
             _repository.Update(usuario);
-
             if (!await _repository.SaveChangesAsync())
             {
                 Notificar(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao atualizar.");
@@ -128,6 +127,9 @@ namespace Application.Services.Usuario
                 );
                 return false;
             }
+
+            if (ChecarUsuarioOperante(usuario))
+                return false;
 
             _repository.Delete(usuario);
 
@@ -159,18 +161,22 @@ namespace Application.Services.Usuario
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var tokenExpirationTime = DateTime.UtcNow.AddDays(
-                int.Parse(_configuration["TokenConfiguration:ExpireDays"])
+                int.Parse(_configuration[ "TokenConfiguration:ExpireDays" ])
             );
 
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:key"]);
+            var key = Encoding.ASCII.GetBytes(_configuration[ "Jwt:key" ]);
 
-            var claims = new List<Claim> { new(ClaimTypes.Name, usuario.Email) };
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Name, usuario.Email),
+                new("codigo_usuario", usuario.Codigo.ToString())
+            };
 
             if (usuario.Permissoes.Count > 0)
             {
                 foreach (var permissao in usuario.Permissoes)
                 {
-                    claims.Add(new Claim("Permission", permissao.Descricao));
+                    claims.Add(new Claim("Permissao", permissao.Descricao));
                 }
             }
 
@@ -182,8 +188,8 @@ namespace Application.Services.Usuario
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature
                 ),
-                Audience = _configuration["TokenConfiguration:Audience"],
-                Issuer = _configuration["TokenConfiguration:Issuer"]
+                Audience = _configuration[ "TokenConfiguration:Audience" ],
+                Issuer = _configuration[ "TokenConfiguration:Issuer" ]
             };
 
             var token = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);
@@ -196,36 +202,78 @@ namespace Application.Services.Usuario
             };
         }
 
-        private bool VerificarSenhaHash(string senha, string senhaHash, string salt) =>
-            PasswordHasher.CompararSenhaHash(senha, salt) == senhaHash;
+        private bool VerificarSenhaHash(string senha, string senhaHash, string codigoUnicoSenha) =>
+            PasswordHasher.CompararSenhaHash(senha, codigoUnicoSenha) == senhaHash;
 
-        private async Task<bool> VerificarCredenciaisExistentesAsync(
-            UsuarioDto usuarioDto,
-            int usuarioId = 0
-        )
+        public async Task<bool> ValidarUsuarioParaCadastrarAsync(UsuarioDto usuarioDto)
         {
             var usuarioExistente = await _repository
-                .Get()
-                .FirstOrDefaultAsync(u =>
-                    u.Email == usuarioDto.Email || u.Telefone == usuarioDto.Telefone
-                );
+                .Get(user => user.Email == usuarioDto.Email || user.Telefone == usuarioDto.Telefone)
+                .FirstOrDefaultAsync();
 
             if (usuarioExistente != null)
             {
-                if (usuarioExistente.Id == usuarioId)
-                    return false;
-
-                string campoDuplicado =
-                    usuarioExistente.Email == usuarioDto.Email ? "e-mail" : "telefone";
-
-                var mensagemErro = $"O {campoDuplicado} fornecido já existe.";
-
-                Notificar(EnumTipoNotificacao.Erro, mensagemErro);
-                return true;
+                return IdentificarEmailOuTelefoneDuplicado(
+                    usuarioExistente.Email,
+                    usuarioDto.Email
+                );
             }
+
+            return true;
+        }
+
+        private async Task<bool> ValidarUsuarioParaAtualizarAsync(
+            Entity.Usuario usuario,
+            UsuarioDto usuarioDto,
+            int usuarioId
+        )
+        {
+            if (ChecarUsuarioOperante(usuario))
+            {
+                return false;
+            }
+
+            var usuarioExistente = await _repository
+                .Get(user =>
+                    ( user.Email == usuarioDto.Email || user.Telefone == usuarioDto.Telefone )
+                    && user.Id != usuarioId
+                )
+                .FirstOrDefaultAsync();
+
+            if (usuarioExistente != null)
+            {
+                return IdentificarEmailOuTelefoneDuplicado(
+                    usuarioExistente.Email,
+                    usuarioDto.Email
+                );
+            }
+
+            return true;
+        }
+
+        public bool IdentificarEmailOuTelefoneDuplicado(
+            string emailExistente,
+            string emailUsuarioDto
+        )
+        {
+            string campoDuplicado = emailExistente == emailUsuarioDto ? "e-mail" : "telefone";
+            Notificar(EnumTipoNotificacao.Erro, $"O {campoDuplicado} fornecido já está em uso.");
 
             return false;
         }
+
+        public bool ChecarUsuarioOperante(Entity.Usuario usuario)
+        {
+            var codigoUsuario = _httpContext.User.FindFirst("codigo_usuario")?.Value;
+            if (codigoUsuario != usuario.Codigo.ToString())
+            {
+                Notificar(EnumTipoNotificacao.Erro, "Operação não permitida.");
+                return false;
+            }
+
+            return true;
+        }
+
         #endregion
     }
 }

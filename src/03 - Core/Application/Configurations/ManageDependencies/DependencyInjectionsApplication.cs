@@ -24,7 +24,7 @@ namespace Application.Configurations.ManageDependencies
 
         public static void AddDependecyRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IUsuarioService, UsuarioService>();
+            services.AddScoped<IUsuarioAppService, UsuarioAppService>();
         }
 
         public static void AddDependecyServices(this IServiceCollection services)

@@ -1,4 +1,4 @@
 ﻿namespace Application.Services.Produto
 {
-    public class ProdutoService { }
+    public class ProdutoAppService { }
 }
