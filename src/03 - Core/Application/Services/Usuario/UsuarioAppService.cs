@@ -54,7 +54,7 @@ namespace Application.Services.Usuario
 
         public async Task<UsuarioTokenDto> CadastrarAsync(UsuarioDto usuarioDto)
         {
-            if (Validator(usuarioDto))
+            if (UsuarioDtoIsNull(usuarioDto) || Validator(usuarioDto))
                 return null;
 
             if (await ValidarUsuarioParaCadastrarAsync(usuarioDto))
@@ -80,11 +80,8 @@ namespace Application.Services.Usuario
 
         public async Task<UsuarioDto> AtualizarAsync(int usuarioId, UsuarioDto usuarioDto)
         {
-            if (usuarioDto == null)
-            {
-                Notificar(EnumTipoNotificacao.Erro, "Modelo de dados inválido.");
+            if (UsuarioDtoIsNull(usuarioDto) || Validator(usuarioDto))
                 return null;
-            }
 
             var usuario = await _repository.GetByIdAsync(usuarioId);
             if (usuario == null)
@@ -204,6 +201,18 @@ namespace Application.Services.Usuario
 
         private bool VerificarSenhaHash(string senha, string senhaHash, string codigoUnicoSenha) =>
             PasswordHasher.CompararSenhaHash(senha, codigoUnicoSenha) == senhaHash;
+
+
+        public bool UsuarioDtoIsNull(UsuarioDto usuarioDto)
+        {
+            if (usuarioDto == null)
+            {
+                Notificar(EnumTipoNotificacao.Erro, "Modelo de dados inválido.");
+                return true;
+            }
+
+            return false;
+        }
 
         public async Task<bool> ValidarUsuarioParaCadastrarAsync(UsuarioDto usuarioDto)
         {
