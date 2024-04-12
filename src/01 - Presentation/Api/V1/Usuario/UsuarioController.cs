@@ -1,7 +1,7 @@
 ﻿using Api.Attributes;
 using Api.Base;
 using Api.Extensions.Atributos;
-using Application.Interfaces.Auth;
+using Application.Interfaces.Usuario;
 using Domain.DTOs.Usuario;
 using Domain.Enumeradores.Pemissoes;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,8 @@ namespace Api.V1.Usuario
     [RouterController("usuario")]
     public class UsuarioController(
         IServiceProvider serviceProvider,
-        IUsuarioAppService _usuarioServiceApp
+        IUsuarioAppService _usuarioServiceApp,
+        IAuthAppService _authAppService
     ) : MainController(serviceProvider)
     {
         [HttpPost("registrar")]
@@ -32,6 +33,6 @@ namespace Api.V1.Usuario
 
         [HttpPost("login")]
         public async Task<UsuarioTokenDto> LoginAsync(UsuarioDto userDto) =>
-            await _usuarioServiceApp.AutenticarAsync(userDto);
+            await _authAppService.AutenticarAsync(userDto);
     }
 }

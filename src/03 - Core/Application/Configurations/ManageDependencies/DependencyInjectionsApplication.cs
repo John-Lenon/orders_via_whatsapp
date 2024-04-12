@@ -1,4 +1,4 @@
-﻿using Application.Interfaces.Auth;
+﻿using Application.Interfaces.Usuario;
 using Application.Services.Usuario;
 using Application.Utilities;
 using Data.Repository.Usuario;
@@ -24,6 +24,7 @@ namespace Application.Configurations.ManageDependencies
 
         public static void AddDependecyRepositories(this IServiceCollection services)
         {
+            services.AddScoped<IAuthAppService, AuthAppService>();
             services.AddScoped<IUsuarioAppService, UsuarioAppService>();
         }
 

@@ -5,6 +5,7 @@ using Domain.Interfaces.Utilities;
 using Domain.Utilities;
 using FluentValidation;
 using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Services.Base
@@ -16,7 +17,12 @@ namespace Application.Services.Base
         private readonly INotificador _notificador = service.GetService<INotificador>();
 
         protected readonly TIRepository _repository = service.GetService<TIRepository>();
-        protected readonly IMapper _mapper = service.GetRequiredService<IMapper>();
+
+        protected readonly IMapper _mapper = service.GetService<IMapper>();
+
+        protected readonly HttpContext _httpContext = service
+            .GetService<IHttpContextAccessor>()
+            .HttpContext;
 
         protected void Notificar(EnumTipoNotificacao tipo, string message) =>
             _notificador.Add(new Notificacao(tipo, message));
@@ -27,7 +33,7 @@ namespace Application.Services.Base
 
             ValidationResult results = validator.Validate(entityDto);
 
-            if (!results.IsValid)
+            if(!results.IsValid)
             {
                 var groupedFailures = results
                     .Errors.GroupBy(failure => failure.PropertyName)
@@ -36,7 +42,7 @@ namespace Application.Services.Base
                         Errors = string.Join(" ", group.Select(err => err.ErrorMessage))
                     });
 
-                foreach (var failure in groupedFailures)
+                foreach(var failure in groupedFailures)
                 {
                     Notificar(EnumTipoNotificacao.Informacao, $"{failure.Errors}");
                 }
