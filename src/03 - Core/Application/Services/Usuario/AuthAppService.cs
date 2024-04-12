@@ -109,6 +109,6 @@ namespace Application.Services.Usuario
         }
 
         private bool VerificarSenhaHash(string senha, string senhaHash, string codigoUnicoSenha) =>
-            PasswordHasher.CompararSenhaHash(senha, codigoUnicoSenha) == senhaHash;
+            new PasswordHasher().CompararSenhaHash(senha, codigoUnicoSenha) == senhaHash;
     }
 }

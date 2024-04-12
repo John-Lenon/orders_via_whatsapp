@@ -1,14 +1,14 @@
-﻿using System.Security.Cryptography;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Security.Cryptography;
 
 namespace Domain.Utilities
 {
     public class PasswordHasher
     {
-        public static (string Salt, string Hash) GerarSenhaHash(string senha)
+        public (string Salt, string Hash) GerarSenhaHash(string senha)
         {
             byte[] codigoUnicoSenha = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
+            using(var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(codigoUnicoSenha);
             }
@@ -26,7 +26,7 @@ namespace Domain.Utilities
             return (Convert.ToBase64String(codigoUnicoSenha), hash);
         }
 
-        public static string CompararSenhaHash(string senha, string codigoUnicoSenha)
+        public string CompararSenhaHash(string senha, string codigoUnicoSenha)
         {
             byte[] codigoUnicoSenhaBytes = Convert.FromBase64String(codigoUnicoSenha);
 

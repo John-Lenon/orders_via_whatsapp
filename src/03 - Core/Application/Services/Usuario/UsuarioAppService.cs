@@ -22,7 +22,7 @@ namespace Application.Services.Usuario
             if(await ValidarUsuarioParaCadastrarAsync(usuarioDto))
                 return null;
 
-            var (codigoUnicoSenha, SenhaHash) = PasswordHasher.GerarSenhaHash(usuarioDto.Senha);
+            var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(usuarioDto.Senha);
 
             var usuario = _mapper.Map<Entity.Usuario>(usuarioDto);
 
@@ -54,7 +54,7 @@ namespace Application.Services.Usuario
                 return null;
             }
 
-            var (codigoUnicoSenha, SenhaHash) = PasswordHasher.GerarSenhaHash(usuarioDto.Senha);
+            var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(usuarioDto.Senha);
 
             _mapper.Map(usuarioDto, usuario);
             usuario.SenhaHash = SenhaHash;
