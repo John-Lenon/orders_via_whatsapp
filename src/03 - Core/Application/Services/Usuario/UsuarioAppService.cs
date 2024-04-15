@@ -121,9 +121,9 @@ namespace Application.Services.Usuario
 
         private bool UsuarioPossuiAutorizacao(Entity.Usuario usuario)
         {
-            var codigoUsuario = _httpContext.User.FindFirst("codigo_usuario")?.Value;
+            var codeUserAuthenticated = _httpContext.User.FindFirst("codigo_usuario")?.Value;
 
-            if(codigoUsuario != usuario.Codigo.ToString())
+            if(codeUserAuthenticated != usuario.Codigo.ToString())
             {
                 if(
                     _authApp.PossuiPermissao(EnumPermissoes.USU_000004)
@@ -133,7 +133,7 @@ namespace Application.Services.Usuario
                     return true;
                 }
 
-                Notificar(EnumTipoNotificacao.Erro, "Operação não permitida verifique seus dados.");
+                Notificar(EnumTipoNotificacao.Erro, "Operação não permitida.");
                 return false;
             }
 

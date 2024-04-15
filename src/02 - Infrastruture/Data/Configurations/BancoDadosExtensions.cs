@@ -59,7 +59,14 @@ namespace Data.Configurations
                 Permissoes = []
             };
 
-            var permissoes = new EnumPermissoes[] { EnumPermissoes.USU_000001 };
+            var permissoes = new EnumPermissoes[]
+            {
+                EnumPermissoes.USU_000001,
+                EnumPermissoes.USU_000002,
+                EnumPermissoes.USU_000003,
+                EnumPermissoes.USU_000004,
+                EnumPermissoes.USU_000005
+            };
 
             usuarioRepository.InsertAsync(usuario).Wait();
             if(!usuarioRepository.SaveChangesAsync().Result)

@@ -20,7 +20,7 @@ namespace Application.Validators.Usuario
                 .WithMessage("O {PropertyName} é obrigatório.")
                 .EmailAddress()
                 .WithMessage("O {PropertyName} deve ser válido.")
-                .Length(3, 25)
+                .Length(3, 80)
                 .WithMessage(
                     "O {PropertyName} deve ter entre {MinLength} a {MaxLength} caracteres."
                 );

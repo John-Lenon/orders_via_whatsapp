@@ -21,6 +21,11 @@ namespace Application.Services.Usuario
     {
         public async Task<UsuarioTokenDto> AutenticarAsync(UsuarioDto userDto)
         {
+            if(userDto is null)
+            {
+                Notificar(EnumTipoNotificacao.Erro, "Modelo de dados inválido.");
+                return null;
+            }
             var usuario = await _repository
                 .Get()
                 .Include(c => c.Permissoes)
@@ -73,7 +78,9 @@ namespace Application.Services.Usuario
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, usuario.Email),
-                new("codigo_usuario", usuario.Codigo.ToString())
+                new("codigo_usuario", usuario.Codigo.ToString()),
+                new("Permissao", EnumPermissoes.USU_000002.ToString()),
+                new("Permissao", EnumPermissoes.USU_000003.ToString())
             };
 
             if(usuario.Permissoes.Count > 0)

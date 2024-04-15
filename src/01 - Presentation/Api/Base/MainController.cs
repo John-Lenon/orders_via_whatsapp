@@ -25,11 +25,11 @@ namespace Api.Base
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!ValidarModelState(context))
+            if(!ValidarModelState(context))
                 return;
 
             var connectionString = IdentificarStringConexao(context);
-            if (string.IsNullOrEmpty(connectionString))
+            if(string.IsNullOrEmpty(connectionString))
                 return;
 
             _context.SetConnectionString(connectionString);
@@ -38,7 +38,7 @@ namespace Api.Base
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             var result = context.Result as ObjectResult;
-            if (result is null)
+            if(result is null)
             {
                 context.Result = CustomResponse<object>(null);
                 return;
@@ -48,12 +48,12 @@ namespace Api.Base
 
         public IActionResult CustomResponse<TResponse>(TResponse contentResponse)
         {
-            if (Notificador.ListNotificacoes.Count() >= 1)
+            if(Notificador.ListNotificacoes.Count() >= 1)
             {
                 var errosInternos = Notificador.ListNotificacoes.Where(item =>
                     item.Tipo == EnumTipoNotificacao.ErroInterno
                 );
-                if (errosInternos.Any())
+                if(errosInternos.Any())
                 {
                     var result = new ResponseResultDTO<TResponse>(contentResponse)
                     {
@@ -65,7 +65,7 @@ namespace Api.Base
                 var erros = Notificador.ListNotificacoes.Where(item =>
                     item.Tipo == EnumTipoNotificacao.Erro
                 );
-                if (erros.Any())
+                if(erros.Any())
                 {
                     var result = new ResponseResultDTO<TResponse>(default)
                     {
@@ -77,7 +77,7 @@ namespace Api.Base
                 var informacoes = Notificador.ListNotificacoes.Where(item =>
                     item.Tipo == EnumTipoNotificacao.Informacao
                 );
-                if (informacoes.Any())
+                if(informacoes.Any())
                     return Ok(
                         new ResponseResultDTO<TResponse>(contentResponse)
                         {
@@ -95,15 +95,15 @@ namespace Api.Base
         private bool ValidarModelState(ActionExecutingContext context)
         {
             var modelState = context.ModelState;
-            if (!modelState.IsValid)
+            if(!modelState.IsValid)
             {
-                if (!ValidarContentTypeRequest(modelState, context))
+                if(!ValidarContentTypeRequest(modelState, context))
                     return false;
 
                 var valoresInvalidosModelState = modelState.Where(x =>
                     x.Value.ValidationState == ModelValidationState.Invalid
                 );
-                if (valoresInvalidosModelState.Count() == 0)
+                if(valoresInvalidosModelState.Count() == 0)
                     return true;
 
                 ExtrairMensagensDeErroDaModelState(valoresInvalidosModelState, context);
@@ -118,7 +118,7 @@ namespace Api.Base
         )
         {
             var listaErros = new List<Notificacao>();
-            foreach (var model in valoresInvalidosModelState)
+            foreach(var model in valoresInvalidosModelState)
             {
                 var nomeCampo = model.Key.StartsWith("$.") ? model.Key.Substring(2) : model.Key;
                 listaErros.Add(
@@ -142,19 +142,19 @@ namespace Api.Base
             var valoresInvalidosModelState = modelState.Where(x =>
                 x.Value.ValidationState == ModelValidationState.Invalid
             );
-            if (valoresInvalidosModelState.Count() == 1)
+            if(valoresInvalidosModelState.Count() == 1)
             {
                 var model = valoresInvalidosModelState.First();
                 var modelErro = model.Value.Errors.FirstOrDefault();
 
-                if (model.Key == string.Empty && modelErro.ErrorMessage == string.Empty)
+                if(model.Key == string.Empty && modelErro.ErrorMessage == string.Empty)
                 {
                     var result = new ResponseResultDTO<object>();
                     result.ContentTypeInvalido();
                     context.Result = new BadRequestObjectResult(result);
                     return false;
                 }
-                else if (model.Key == string.Empty)
+                else if(model.Key == string.Empty)
                 {
                     model.Value.ValidationState = ModelValidationState.Valid;
                     return true;
@@ -170,7 +170,7 @@ namespace Api.Base
                 empresa.NomeDominio == hostName
             );
 
-            if (empresaLocalizada == null)
+            if(empresaLocalizada == null)
             {
                 context.Result = new BadRequestObjectResult(
                     new ResponseResultDTO<string>(
