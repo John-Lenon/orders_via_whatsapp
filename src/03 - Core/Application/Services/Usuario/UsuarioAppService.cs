@@ -19,7 +19,7 @@ namespace Application.Services.Usuario
 
         public async Task<UsuarioTokenDto> CadastrarAsync(UsuarioDto usuarioDto)
         {
-            if(UsuarioDtoIsNull(usuarioDto) || Validator(usuarioDto))
+            if(!UsuarioDtoIsValid(usuarioDto) || !Validator(usuarioDto))
                 return null;
 
             if(!await ValidarUsuarioParaCadastrarAsync(usuarioDto))
@@ -47,7 +47,7 @@ namespace Application.Services.Usuario
 
         public async Task<UsuarioDto> AtualizarAsync(int idUsuarioLogado, UsuarioDto usuarioDto)
         {
-            if(UsuarioDtoIsNull(usuarioDto) || Validator(usuarioDto))
+            if(!UsuarioDtoIsValid(usuarioDto) || !Validator(usuarioDto))
                 return null;
 
             var usuario = await _repository.GetByIdAsync(idUsuarioLogado);
@@ -77,16 +77,10 @@ namespace Application.Services.Usuario
         {
             var usuario = await _repository.GetByIdAsync(id);
 
-            if(usuario is null)
-            {
-                Notificar(
-                    EnumTipoNotificacao.Erro,
-                    "Não foi encontrado um registro com o Id " + id
-                );
+            if(!UsuarioExiste(usuario))
                 return false;
-            }
 
-            if(UsuarioPossuiAutorizacao(usuario))
+            if(!UsuarioPossuiAutorizacao(usuario))
                 return false;
 
             _repository.Delete(usuario);
@@ -102,17 +96,6 @@ namespace Application.Services.Usuario
         }
 
         #region Supports Methods
-        public bool UsuarioDtoIsNull(UsuarioDto usuarioDto)
-        {
-            if(usuarioDto == null)
-            {
-                Notificar(EnumTipoNotificacao.Erro, "Modelo de dados inválido.");
-                return true;
-            }
-
-            return false;
-        }
-
         public async Task<bool> ValidarUsuarioParaCadastrarAsync(UsuarioDto usuarioDto)
         {
             var usuarioExistente = await GetUsuarioExistenteAsync(usuarioDto);
@@ -131,19 +114,11 @@ namespace Application.Services.Usuario
             int idUsuarioLogado
         )
         {
-            if(usuario == null)
-            {
-                Notificar(
-                    EnumTipoNotificacao.Erro,
-                    $"Não foi encontrado um registro com o Id {idUsuarioLogado}"
-                );
+            if(!UsuarioExiste(usuario))
                 return false;
-            }
 
             if(!UsuarioPossuiAutorizacao(usuario))
-            {
                 return false;
-            }
 
             var usuarioExistente = await GetUsuarioExistenteAsync(usuarioDto);
 
@@ -155,12 +130,55 @@ namespace Application.Services.Usuario
             return true;
         }
 
+        private bool UsuarioPossuiAutorizacao(Entity.Usuario usuario)
+        {
+            var codigoUsuario = _httpContext.User.FindFirst("codigo_usuario")?.Value;
+
+            if(codigoUsuario != usuario.Codigo.ToString())
+            {
+                if(
+                    _authApp.PossuiPermissao(EnumPermissoes.USU_000004)
+                    || _authApp.PossuiPermissao(EnumPermissoes.USU_000005)
+                )
+                {
+                    return true;
+                }
+
+                Notificar(EnumTipoNotificacao.Erro, "Operação não permitida verifique seus dados.");
+                return false;
+            }
+
+            return true;
+        }
+
         private async Task<Entity.Usuario> GetUsuarioExistenteAsync(UsuarioDto userDto)
         {
             return await _repository
                 .Get()
                 .Where(user => user.Email == userDto.Email || user.Telefone == userDto.Telefone)
                 .FirstOrDefaultAsync();
+        }
+
+        public bool UsuarioDtoIsValid(UsuarioDto usuarioDto)
+        {
+            if(usuarioDto is null)
+            {
+                Notificar(EnumTipoNotificacao.Erro, "Modelo de dados inválido.");
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool UsuarioExiste(Entity.Usuario usuario)
+        {
+            if(usuario is null)
+            {
+                Notificar(EnumTipoNotificacao.Erro, "Usuário não foi encontrado.");
+                return false;
+            }
+
+            return true;
         }
 
         private bool ReportarCamposJaEmUso(Entity.Usuario usuario, UsuarioDto usuarioDto)
@@ -181,25 +199,6 @@ namespace Application.Services.Usuario
             return camposEmUso.Count == 0;
         }
 
-        private bool UsuarioPossuiAutorizacao(Entity.Usuario usuario)
-        {
-            var codigoUsuario = _httpContext.User.FindFirst("codigo_usuario")?.Value;
-
-            if(codigoUsuario != usuario.Codigo.ToString())
-            {
-                if(_authApp.PossuiPermissao(EnumPermissoes.USU_000004) ||
-                    _authApp.PossuiPermissao(EnumPermissoes.USU_000005)
-                )
-                {
-                    return true;
-                }
-
-                Notificar(EnumTipoNotificacao.Erro, "Operação não permitida verifique seus dados.");
-                return false;
-            }
-
-            return true;
-        }
         #endregion
     }
 }

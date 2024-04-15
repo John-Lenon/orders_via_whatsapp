@@ -47,10 +47,10 @@ namespace Application.Services.Base
                     Notificar(EnumTipoNotificacao.Informacao, $"{failure.Errors}");
                 }
 
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
     }
 }
