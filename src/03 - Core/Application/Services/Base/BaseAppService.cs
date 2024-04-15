@@ -24,6 +24,16 @@ namespace Application.Services.Base
             .GetService<IHttpContextAccessor>()
             .HttpContext;
 
+        protected async Task<bool> CommitAsync()
+        {
+            if(!await _repository.SaveChangesAsync())
+            {
+                Notificar(EnumTipoNotificacao.ErroInterno, "Falha na Operação.");
+                return false;
+            }
+            return true;
+        }
+
         protected void Notificar(EnumTipoNotificacao tipo, string message) =>
             _notificador.Add(new Notificacao(tipo, message));
 

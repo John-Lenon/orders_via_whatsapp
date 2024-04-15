@@ -35,12 +35,8 @@ namespace Application.Services.Usuario
             usuario.CodigoUnicoSenha = codigoUnicoSenha;
 
             await _repository.InsertAsync(usuario);
-
-            if(!await _repository.SaveChangesAsync())
-            {
-                Notificar(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao cadastrar.");
+            if(!await CommitAsync())
                 return null;
-            }
 
             return _authApp.GerarToken(usuario);
         }
@@ -64,11 +60,8 @@ namespace Application.Services.Usuario
             usuario.CodigoUnicoSenha = codigoUnicoSenha;
 
             _repository.Update(usuario);
-            if(!await _repository.SaveChangesAsync())
-            {
-                Notificar(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao atualizar.");
+            if(!await CommitAsync())
                 return null;
-            }
 
             return usuarioDto;
         }
@@ -84,12 +77,8 @@ namespace Application.Services.Usuario
                 return false;
 
             _repository.Delete(usuario);
-
-            if(!await _repository.SaveChangesAsync())
-            {
-                Notificar(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao deletar");
+            if(!await CommitAsync())
                 return false;
-            }
 
             Notificar(EnumTipoNotificacao.Informacao, "Usuário deletado com sucesso.");
             return true;
