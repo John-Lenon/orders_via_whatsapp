@@ -1,17 +1,27 @@
 ﻿using Api.Base;
 using Domain.Enumeradores.Notificacao;
+using Domain.Enumeradores.Pemissoes;
 using Domain.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Api.Attributes
+namespace Api.Extensions.Atributos.Auth
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-    public class AutorizationApi : Attribute, IAuthorizationFilter
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
+    public class PermissoesApi(params EnumPermissoes[] enumPermissoes)
+        : Attribute,
+            IAuthorizationFilter
     {
+        private IEnumerable<string> EnumPermissoes { get; } =
+            enumPermissoes.Select(x => x.ToString());
+
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (!context.HttpContext.User.Identity.IsAuthenticated)
+            var possuiTodasPermissoes = EnumPermissoes.All(permissao =>
+                context.HttpContext.User.Claims.Any(claim => claim.Value == permissao)
+            );
+
+            if (!possuiTodasPermissoes)
             {
                 var response = new ResponseResultDTO<string>()
                 {
@@ -19,7 +29,7 @@ namespace Api.Attributes
                     [
                         new Notificacao(
                             EnumTipoNotificacao.Erro,
-                            "Acesso não autorizado. Você precisa estar autenticado."
+                            "Você não tem permissão para acessar esse recurso."
                         )
                     ]
                 };

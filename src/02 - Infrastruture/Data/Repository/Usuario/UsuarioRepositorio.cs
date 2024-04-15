@@ -21,13 +21,13 @@ namespace Data.Repository.Usuario
                 .Include(p => p.Permissoes)
                 .FirstOrDefaultAsync();
 
-            foreach (var permissao in permissoes)
+            foreach(var permissao in permissoes)
             {
                 var possuiPermissao = usuario
                     .Permissoes.Where(p => p.Descricao == permissao.ToString())
                     .FirstOrDefault();
 
-                if (possuiPermissao is null)
+                if(possuiPermissao is null)
                 {
                     usuario.Permissoes.Add(new Permissao { Descricao = permissao.ToString() });
                 }

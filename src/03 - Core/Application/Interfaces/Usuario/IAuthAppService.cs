@@ -7,7 +7,7 @@ namespace Application.Interfaces.Usuario
     public interface IAuthAppService
     {
         Task<UsuarioTokenDto> AutenticarAsync(UsuarioDto userDto);
-        bool VerificarPermissao(params EnumPermissoes[] permissoesParaValidar);
+        bool PossuiPermissao(params EnumPermissoes[] permissoesParaValidar);
         UsuarioTokenDto GerarToken(Entity.Usuario usuario);
     }
 }

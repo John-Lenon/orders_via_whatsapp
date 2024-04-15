@@ -24,13 +24,15 @@ namespace Application.Configurations.ManageDependencies
 
         public static void AddDependecyRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IAuthAppService, AuthAppService>();
-            services.AddScoped<IUsuarioAppService, UsuarioAppService>();
+            services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+
         }
 
         public static void AddDependecyServices(this IServiceCollection services)
         {
-            services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+
+            services.AddScoped<IAuthAppService, AuthAppService>();
+            services.AddScoped<IUsuarioAppService, UsuarioAppService>();
         }
     }
 }

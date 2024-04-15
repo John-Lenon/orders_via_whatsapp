@@ -10,19 +10,24 @@ using Entity = Domain.Entities.Usuario;
 
 namespace Application.Services.Usuario
 {
-    public class UsuarioAppService(IServiceProvider service, IAuthAppService _authAppService)
+    public class UsuarioAppService(IServiceProvider service, IAuthAppService _authApp)
         : BaseAppService<Entity.Usuario, IUsuarioRepositorio>(service),
             IUsuarioAppService
     {
+        public async Task<UsuarioTokenDto> LoginAsync(UsuarioDto userDto) =>
+            await _authApp.AutenticarAsync(userDto);
+
         public async Task<UsuarioTokenDto> CadastrarAsync(UsuarioDto usuarioDto)
         {
             if(UsuarioDtoIsNull(usuarioDto) || Validator(usuarioDto))
                 return null;
 
-            if(await ValidarUsuarioParaCadastrarAsync(usuarioDto))
+            if(!await ValidarUsuarioParaCadastrarAsync(usuarioDto))
                 return null;
 
-            var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(usuarioDto.Senha);
+            var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(
+                usuarioDto.Senha
+            );
 
             var usuario = _mapper.Map<Entity.Usuario>(usuarioDto);
 
@@ -37,24 +42,22 @@ namespace Application.Services.Usuario
                 return null;
             }
 
-            return _authAppService.GerarToken(usuario);
+            return _authApp.GerarToken(usuario);
         }
 
         public async Task<UsuarioDto> AtualizarAsync(int idUsuarioLogado, UsuarioDto usuarioDto)
         {
             if(UsuarioDtoIsNull(usuarioDto) || Validator(usuarioDto))
-            {
                 return null;
-            }
 
             var usuario = await _repository.GetByIdAsync(idUsuarioLogado);
 
             if(!await ValidarUsuarioParaAtualizarAsync(usuario, usuarioDto, idUsuarioLogado))
-            {
                 return null;
-            }
 
-            var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(usuarioDto.Senha);
+            var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(
+                usuarioDto.Senha
+            );
 
             _mapper.Map(usuarioDto, usuario);
             usuario.SenhaHash = SenhaHash;
@@ -83,7 +86,7 @@ namespace Application.Services.Usuario
                 return false;
             }
 
-            if(AutorizarAcaoDoUsuario(usuario))
+            if(UsuarioPossuiAutorizacao(usuario))
                 return false;
 
             _repository.Delete(usuario);
@@ -116,7 +119,7 @@ namespace Application.Services.Usuario
 
             if(usuarioExistente != null)
             {
-                return ReportarCamposJaEmUso(usuarioExistente.Email, usuarioDto.Email);
+                return ReportarCamposJaEmUso(usuarioExistente, usuarioDto);
             }
 
             return true;
@@ -137,7 +140,7 @@ namespace Application.Services.Usuario
                 return false;
             }
 
-            if(!AutorizarAcaoDoUsuario(usuario))
+            if(!UsuarioPossuiAutorizacao(usuario))
             {
                 return false;
             }
@@ -146,7 +149,7 @@ namespace Application.Services.Usuario
 
             if(usuarioExistente?.Id != idUsuarioLogado)
             {
-                return ReportarCamposJaEmUso(usuarioExistente.Email, usuarioDto.Email);
+                return ReportarCamposJaEmUso(usuarioExistente, usuarioDto);
             }
 
             return true;
@@ -160,28 +163,38 @@ namespace Application.Services.Usuario
                 .FirstOrDefaultAsync();
         }
 
-        private bool ReportarCamposJaEmUso(string emailExistente, string emailUsuarioDto)
+        private bool ReportarCamposJaEmUso(Entity.Usuario usuario, UsuarioDto usuarioDto)
         {
-            string campoDuplicado = emailExistente == emailUsuarioDto ? "e-mail" : "telefone";
-            Notificar(EnumTipoNotificacao.Erro, $"O {campoDuplicado} fornecido já está em uso.");
+            var campos = new List<(string propUsuario, string propDto, string descricao)>
+            {
+                (usuario.Email, usuarioDto.Email, "O e-mail"),
+                (usuario.Telefone, usuarioDto.Telefone, "O telefone")
+            };
 
-            return false;
+            var camposEmUso = campos.Where(campo => campo.propUsuario == campo.propDto).ToList();
+
+            foreach(var campo in camposEmUso)
+            {
+                Notificar(EnumTipoNotificacao.Erro, $"{campo.descricao} fornecido já está em uso.");
+            }
+
+            return camposEmUso.Count == 0;
         }
 
-        private bool AutorizarAcaoDoUsuario(Entity.Usuario usuario)
+        private bool UsuarioPossuiAutorizacao(Entity.Usuario usuario)
         {
             var codigoUsuario = _httpContext.User.FindFirst("codigo_usuario")?.Value;
 
             if(codigoUsuario != usuario.Codigo.ToString())
             {
-                if(_authAppService.VerificarPermissao(EnumPermissoes.USU_000004)
-                    || _authAppService.VerificarPermissao(EnumPermissoes.USU_000005)
+                if(_authApp.PossuiPermissao(EnumPermissoes.USU_000004) ||
+                    _authApp.PossuiPermissao(EnumPermissoes.USU_000005)
                 )
                 {
                     return true;
                 }
 
-                Notificar(EnumTipoNotificacao.Erro, "Operação não permitida.");
+                Notificar(EnumTipoNotificacao.Erro, "Operação não permitida verifique seus dados.");
                 return false;
             }
 

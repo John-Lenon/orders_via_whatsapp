@@ -1,6 +1,6 @@
-﻿using Api.Attributes;
-using Api.Base;
+﻿using Api.Base;
 using Api.Extensions.Atributos;
+using Api.Extensions.Atributos.Auth;
 using Application.Interfaces.Usuario;
 using Domain.DTOs.Usuario;
 using Domain.Enumeradores.Pemissoes;
@@ -12,13 +12,16 @@ namespace Api.V1.Usuario
     [RouterController("usuario")]
     public class UsuarioController(
         IServiceProvider serviceProvider,
-        IUsuarioAppService _usuarioServiceApp,
-        IAuthAppService _authAppService
+        IUsuarioAppService _usuarioServiceApp
     ) : MainController(serviceProvider)
     {
-        [HttpPost("registrar")]
+        [HttpPost("login")]
+        public async Task<UsuarioTokenDto> LoginAsync(UsuarioDto userDto) =>
+            await _usuarioServiceApp.LoginAsync(userDto);
+
+        [HttpPost("cadastrar")]
         [PermissoesApi(EnumPermissoes.USU_000001)]
-        public async Task<UsuarioTokenDto> RegistrarAsync(UsuarioDto userDto) =>
+        public async Task<UsuarioTokenDto> CadastrarAsync(UsuarioDto userDto) =>
             await _usuarioServiceApp.CadastrarAsync(userDto);
 
         [HttpPost("atualizar")]
@@ -30,9 +33,5 @@ namespace Api.V1.Usuario
         [PermissoesApi(EnumPermissoes.USU_000003)]
         public async Task<bool> DeletarAsync(int usuarioId) =>
             await _usuarioServiceApp.DeleteAsync(usuarioId);
-
-        [HttpPost("login")]
-        public async Task<UsuarioTokenDto> LoginAsync(UsuarioDto userDto) =>
-            await _authAppService.AutenticarAsync(userDto);
     }
 }

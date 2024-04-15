@@ -47,17 +47,15 @@ namespace Application.Services.Usuario
             return GerarToken(usuario);
         }
 
-        public bool VerificarPermissao(params EnumPermissoes[] permissoesParaValidar)
+        public bool PossuiPermissao(params EnumPermissoes[] permissoesNecessarias)
         {
             var permissoesUsuario = _httpContext?.User?.Claims?.Select(claim =>
                 claim.Value.ToString()
             );
 
-            var possuiPermissao = permissoesParaValidar
-                .Select(permissaoNecessaria => permissaoNecessaria.ToString())
-                .All(permissaoNecessaria =>
-                    permissoesUsuario.Any(permissao => permissao == permissaoNecessaria)
-                );
+            var possuiPermissao = permissoesNecessarias.All(permissaoNecessaria =>
+                permissoesUsuario.Any(permissao => permissao == permissaoNecessaria.ToString())
+            );
 
             return possuiPermissao;
         }

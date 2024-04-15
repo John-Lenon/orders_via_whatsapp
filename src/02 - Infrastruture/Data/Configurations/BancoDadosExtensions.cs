@@ -20,7 +20,7 @@ namespace Data.Configurations
 
             var dbContext = service.GetRequiredService<OrderViaWhatsAppContext>();
 
-            foreach (var company in companies.List)
+            foreach(var company in companies.List)
             {
                 dbContext.Database.SetConnectionString(company.ConnnectionString);
                 dbContext.Database.Migrate();
@@ -44,10 +44,10 @@ namespace Data.Configurations
             string email = "master@gmail.com";
             string senha = "Master@123456";
 
-            if (usuarioRepository.Get(u => u.Email == email).FirstOrDefault() != null)
+            if(usuarioRepository.Get(u => u.Email == email).FirstOrDefault() != null)
                 return;
 
-            var (codigoUnicoSenha, senhaHash) = PasswordHasher.GerarSenhaHash(senha);
+            var (codigoUnicoSenha, senhaHash) = new PasswordHasher().GerarSenhaHash(senha);
 
             var usuario = new Usuario
             {
@@ -62,7 +62,7 @@ namespace Data.Configurations
             var permissoes = new EnumPermissoes[] { EnumPermissoes.USU_000001 };
 
             usuarioRepository.InsertAsync(usuario).Wait();
-            if (!usuarioRepository.SaveChangesAsync().Result)
+            if(!usuarioRepository.SaveChangesAsync().Result)
                 return;
 
             usuarioRepository.AdicionarPermissaoAoUsuarioAsync(usuario.Id, permissoes).Wait();
