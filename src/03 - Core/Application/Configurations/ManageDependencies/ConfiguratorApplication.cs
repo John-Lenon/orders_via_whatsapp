@@ -52,8 +52,6 @@ namespace Application.Configurations.ManageDependencies
 
         public static void AddAssemblyConfigurations(this IServiceCollection services)
         {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

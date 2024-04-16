@@ -1,3 +1,4 @@
+using Application.Configurations.MappingsApp.Usuario;
 using Application.Interfaces.Usuario;
 using Application.Services.Base;
 using Domain.DTOs.Usuario;
@@ -29,8 +30,7 @@ namespace Application.Services.Usuario
                 usuarioDto.Senha
             );
 
-            var usuario = _mapper.Map<Entity.Usuario>(usuarioDto);
-
+            var usuario = usuarioDto.MapToNewUsuario();
             usuario.SenhaHash = SenhaHash;
             usuario.CodigoUnicoSenha = codigoUnicoSenha;
 
@@ -55,7 +55,8 @@ namespace Application.Services.Usuario
                 usuarioDto.Senha
             );
 
-            _mapper.Map(usuarioDto, usuario);
+            usuarioDto.MapToUsuario(usuario);
+
             usuario.SenhaHash = SenhaHash;
             usuario.CodigoUnicoSenha = codigoUnicoSenha;
 
@@ -111,7 +112,7 @@ namespace Application.Services.Usuario
 
             var usuarioExistente = await GetUsuarioExistenteAsync(usuarioDto);
 
-            if(usuarioExistente?.Id != idUsuarioLogado)
+            if(usuarioExistente != null && usuarioExistente?.Id != idUsuarioLogado)
             {
                 return ReportarCamposJaEmUso(usuarioExistente, usuarioDto);
             }

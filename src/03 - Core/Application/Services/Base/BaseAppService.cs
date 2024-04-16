@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Domain.Enumeradores.Notificacao;
+﻿using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Base;
 using Domain.Interfaces.Utilities;
 using Domain.Utilities;
@@ -17,8 +16,6 @@ namespace Application.Services.Base
         private readonly INotificador _notificador = service.GetService<INotificador>();
 
         protected readonly TIRepository _repository = service.GetService<TIRepository>();
-
-        protected readonly IMapper _mapper = service.GetService<IMapper>();
 
         protected readonly HttpContext _httpContext = service
             .GetService<IHttpContextAccessor>()
