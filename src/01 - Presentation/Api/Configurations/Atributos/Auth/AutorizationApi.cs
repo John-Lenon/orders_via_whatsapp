@@ -4,14 +4,14 @@ using Domain.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Api.Extensions.Atributos.Auth
+namespace Api.Configurations.Atributos.Auth
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class AutorizationApi : Attribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (!context.HttpContext.User.Identity.IsAuthenticated)
+            if(!context.HttpContext.User.Identity.IsAuthenticated)
             {
                 var response = new ResponseResultDTO<string>()
                 {

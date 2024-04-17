@@ -1,5 +1,5 @@
 ﻿using Api.Base;
-using Api.Extensions.Atributos;
+using Api.Configurations.Atributos;
 using Microsoft.AspNetCore.Mvc;
 using Entity = Domain.Entities.Produto;
 

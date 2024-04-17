@@ -1,12 +1,12 @@
-﻿using Data.Context;
+﻿using Application.Utilities;
+using Data.Configurations;
+using Data.Context;
 using Domain.Entities.Usuario;
 using Domain.Enumeradores.Pemissoes;
 using Domain.Interfaces.Usuario;
-using Domain.Utilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Data.Configurations
+namespace Api.Configurations.Extensions.DBSetup
 {
     public static class BancoDadosExtensions
     {

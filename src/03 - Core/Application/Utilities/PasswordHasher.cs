@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 
-namespace Domain.Utilities
+namespace Application.Utilities
 {
     public class PasswordHasher
     {

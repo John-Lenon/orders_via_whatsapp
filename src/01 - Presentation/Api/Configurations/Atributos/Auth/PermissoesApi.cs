@@ -5,7 +5,7 @@ using Domain.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Api.Extensions.Atributos.Auth
+namespace Api.Configurations.Atributos.Auth
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class PermissoesApi(params EnumPermissoes[] enumPermissoes)
@@ -21,7 +21,7 @@ namespace Api.Extensions.Atributos.Auth
                 context.HttpContext.User.Claims.Any(claim => claim.Value == permissao)
             );
 
-            if (!possuiTodasPermissoes)
+            if(!possuiTodasPermissoes)
             {
                 var response = new ResponseResultDTO<string>()
                 {

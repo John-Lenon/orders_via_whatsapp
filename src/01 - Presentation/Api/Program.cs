@@ -1,4 +1,5 @@
-using Application.Configurations.ManageDependencies;
+using Api.Configurations.Extensions.DBSetup;
+using Api.Configurations.Extensions.ManageDependencies;
 using Data.Configurations;
 using Microsoft.AspNetCore.Mvc;
 

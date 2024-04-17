@@ -1,6 +1,6 @@
 ﻿using Api.Base;
-using Api.Extensions.Atributos;
-using Api.Extensions.Atributos.Auth;
+using Api.Configurations.Atributos;
+using Api.Configurations.Atributos.Auth;
 using Application.Interfaces.Usuario;
 using Domain.DTOs.Usuario;
 using Domain.Enumeradores.Pemissoes;

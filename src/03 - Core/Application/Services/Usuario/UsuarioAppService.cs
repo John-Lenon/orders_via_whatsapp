@@ -1,11 +1,11 @@
 using Application.Configurations.MappingsApp.Usuario;
 using Application.Interfaces.Usuario;
 using Application.Services.Base;
+using Application.Utilities;
 using Domain.DTOs.Usuario;
 using Domain.Enumeradores.Notificacao;
 using Domain.Enumeradores.Pemissoes;
 using Domain.Interfaces.Usuario;
-using Domain.Utilities;
 using Microsoft.EntityFrameworkCore;
 using Entity = Domain.Entities.Usuario;
 

@@ -4,9 +4,8 @@ using Application.Utilities;
 using Data.Repository.Usuario;
 using Domain.Interfaces.Usuario;
 using Domain.Interfaces.Utilities;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Application.Configurations.ManageDependencies
+namespace Api.Configurations.Extensions.ManageDependencies
 {
     public static class DependencyInjectionsApplication
     {
