@@ -2,6 +2,7 @@
 using Application.Services.Base;
 using Application.Utilities;
 using Domain.DTOs.Usuario;
+using Domain.Entities.Usuario;
 using Domain.Enumeradores.Notificacao;
 using Domain.Enumeradores.Pemissoes;
 using Domain.Interfaces.Usuario;
@@ -63,6 +64,32 @@ namespace Application.Services.Usuario
             );
 
             return possuiPermissao;
+        }
+
+        public async Task AdicionarPermissaoAoUsuarioAsync(
+            int usuarioId,
+            params EnumPermissoes[] permissoes
+        )
+        {
+            var usuario = await _repository
+                .Get(user => user.Id == usuarioId)
+                .Include(p => p.Permissoes)
+                .FirstOrDefaultAsync();
+
+            foreach(var permissao in permissoes)
+            {
+                var possuiPermissao = usuario
+                    .Permissoes.Where(p => p.Descricao == permissao.ToString())
+                    .FirstOrDefault();
+
+                if(possuiPermissao is null)
+                {
+                    usuario.Permissoes.Add(new Permissao { Descricao = permissao.ToString() });
+                }
+            }
+
+            _repository.Update(usuario);
+            await CommitAsync();
         }
 
         public UsuarioTokenDto GerarToken(Entity.Usuario usuario)

@@ -8,6 +8,7 @@ namespace Application.Interfaces.Usuario
     {
         Task<UsuarioTokenDto> AutenticarAsync(UsuarioDto userDto);
         bool PossuiPermissao(params EnumPermissoes[] permissoesParaValidar);
+        Task AdicionarPermissaoAoUsuarioAsync(int usuarioId, params EnumPermissoes[] permissoes);
         UsuarioTokenDto GerarToken(Entity.Usuario usuario);
     }
 }
