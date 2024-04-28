@@ -1,4 +1,5 @@
-﻿using Application.Utilities;
+﻿using Application.Interfaces.Usuario;
+using Application.Utilities;
 using Data.Configurations;
 using Data.Context;
 using Domain.Entities.Usuario;
@@ -40,6 +41,7 @@ namespace Api.Configurations.Extensions.DBSetup
         public static void PrepareUserAdmin(IServiceProvider service)
         {
             var usuarioRepository = service.GetRequiredService<IUsuarioRepositorio>();
+            var authAppService = service.GetRequiredService<IAuthAppService>();
 
             string email = "master@gmail.com";
             string senha = "Master@123456";
@@ -72,7 +74,7 @@ namespace Api.Configurations.Extensions.DBSetup
             if(!usuarioRepository.SaveChangesAsync().Result)
                 return;
 
-            usuarioRepository.AdicionarPermissaoAoUsuarioAsync(usuario.Id, permissoes).Wait();
+            authAppService.AdicionarPermissaoAoUsuarioAsync(usuario.Id, permissoes).Wait();
         }
     }
 }
