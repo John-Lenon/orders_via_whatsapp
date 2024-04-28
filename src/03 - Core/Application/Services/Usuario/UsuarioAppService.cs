@@ -1,5 +1,6 @@
 using Application.Configurations.MappingsApp.Usuario;
 using Application.Interfaces.Usuario;
+using Application.Resources.Messages;
 using Application.Services.Base;
 using Application.Utilities;
 using Domain.DTOs.Usuario;
@@ -81,7 +82,6 @@ namespace Application.Services.Usuario
             if(!await CommitAsync())
                 return false;
 
-            Notificar(EnumTipoNotificacao.Informacao, "Usuário deletado com sucesso.");
             return true;
         }
 
@@ -134,7 +134,7 @@ namespace Application.Services.Usuario
                     return true;
                 }
 
-                Notificar(EnumTipoNotificacao.Erro, "Operação não permitida.");
+                Notificar(EnumTipoNotificacao.Erro, Message.OperacaoNaoPermitida);
                 return false;
             }
 
@@ -153,7 +153,7 @@ namespace Application.Services.Usuario
         {
             if(usuarioDto is null)
             {
-                Notificar(EnumTipoNotificacao.Erro, "Modelo de dados inválido.");
+                Notificar(EnumTipoNotificacao.Erro, Message.ModeloInvalido);
                 return false;
             }
 
@@ -164,7 +164,7 @@ namespace Application.Services.Usuario
         {
             if(usuario is null)
             {
-                Notificar(EnumTipoNotificacao.Erro, "Usuário não foi encontrado.");
+                Notificar(EnumTipoNotificacao.Erro, string.Format(Message.RegistroNaoEncontrado, "Usuário"));
                 return false;
             }
 
@@ -183,7 +183,7 @@ namespace Application.Services.Usuario
 
             foreach(var campo in camposEmUso)
             {
-                Notificar(EnumTipoNotificacao.Erro, $"{campo.descricao} fornecido já está em uso.");
+                Notificar(EnumTipoNotificacao.Erro, string.Format(Message.CampoExistente, campo.descricao));
             }
 
             return camposEmUso.Count == 0;

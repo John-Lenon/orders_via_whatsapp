@@ -19,7 +19,6 @@ builder.Configuration.AddJsonFile(
 );
 
 builder.Services.ConfigurarBancoDeDados();
-builder.Services.ConfigurarBancoDeDados();
 builder.Services.AddApiDependencyConfigurator(builder.Configuration);
 
 CarregarAppSettings(builder.Services, builder.Configuration);

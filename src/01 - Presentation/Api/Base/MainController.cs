@@ -1,4 +1,5 @@
-﻿using Data.Configurations;
+﻿using Application.Resources.Messages;
+using Data.Configurations;
 using Data.Context;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Utilities;
@@ -124,7 +125,7 @@ namespace Api.Base
                 listaErros.Add(
                     new Notificacao(
                         EnumTipoNotificacao.Erro,
-                        $"Campo {nomeCampo} não está num formato válido."
+                       string.Format(Message.CampoFormatoInvalido, nomeCampo)
                     )
                 );
             }

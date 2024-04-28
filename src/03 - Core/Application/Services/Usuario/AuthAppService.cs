@@ -1,4 +1,5 @@
 ﻿using Application.Interfaces.Usuario;
+using Application.Resources.Messages;
 using Application.Services.Base;
 using Application.Utilities;
 using Domain.DTOs.Usuario;
@@ -23,7 +24,7 @@ namespace Application.Services.Usuario
         {
             if(userDto is null)
             {
-                Notificar(EnumTipoNotificacao.Erro, "Modelo de dados inválido.");
+                Notificar(EnumTipoNotificacao.Erro, Message.ModeloInvalido);
                 return null;
             }
             var usuario = await _repository
@@ -33,7 +34,7 @@ namespace Application.Services.Usuario
 
             if(usuario == null)
             {
-                Notificar(EnumTipoNotificacao.Erro, "Email não encontrado.");
+                Notificar(EnumTipoNotificacao.Erro, Message.EmailNaoEncontrado);
                 return null;
             }
 
@@ -45,7 +46,7 @@ namespace Application.Services.Usuario
 
             if(!senhaValida)
             {
-                Notificar(EnumTipoNotificacao.Erro, "Senha inválida.");
+                Notificar(EnumTipoNotificacao.Erro, Message.SenhaInvalida);
                 return null;
             }
 
