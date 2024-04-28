@@ -15,18 +15,18 @@ namespace Api.Configurations.Extensions.DBSetup
             CompanyConnectionStrings companies
         )
         {
-            using var serviceScope = serviceProvider.CreateScope();
-            var service = serviceScope.ServiceProvider;
-
-            var dbContext = service.GetRequiredService<OrderViaWhatsAppContext>();
-
             foreach(var company in companies.List)
             {
+                using var serviceScope = serviceProvider.CreateScope();
+                var service = serviceScope.ServiceProvider;
+                var dbContext = service.GetRequiredService<OrderViaWhatsAppContext>();
+
                 dbContext.Database.SetConnectionString(company.ConnnectionString);
                 dbContext.Database.Migrate();
-            }
 
-            PrepareUserAdmin(service);
+                PrepareUserAdmin(service);
+
+            }
         }
 
         public static void ConfigurarBancoDeDados(this IServiceCollection serviceCollection)
