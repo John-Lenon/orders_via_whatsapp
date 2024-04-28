@@ -13,8 +13,6 @@ namespace Domain.Utilities
             Descricao = mensagem;
         }
 
-        public Notificacao()
-        {
-        }
+        public Notificacao() { }
     }
 }
