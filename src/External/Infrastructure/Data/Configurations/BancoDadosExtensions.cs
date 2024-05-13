@@ -1,0 +1,87 @@
+﻿using Application.Interfaces.Usuario;
+using Application.Utilities;
+using Domain.Entities.Usuario;
+using Domain.Enumeradores.Pemissoes;
+using Domain.Interfaces.Usuario;
+using Infrastructure.Data.Context;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Infrastructure.Data.Configurations
+{
+    public static class BancoDadosExtensions
+    {
+        public static void ConfigurarBancoDeDados(this WebApplication webApplication)
+        {
+            var serviceProvider = webApplication.Services;
+            var companies = serviceProvider.GetRequiredService<CompanyConnectionStrings>();
+            foreach (var company in companies.List)
+            {
+                using var serviceScope = serviceProvider.CreateScope();
+                var service = serviceScope.ServiceProvider;
+                var dbContext = service.GetRequiredService<OrderViaWhatsAppContext>();
+
+                dbContext.Database.SetConnectionString(company.ConnnectionString);
+                dbContext.Database.Migrate();
+                PrepareUserAdmin(service);
+            }
+        }
+
+        #region Private Methods
+
+        public static void SetDatabaseProvider(this WebApplicationBuilder webAppBuilder)
+        {
+            var appSettingsSection = webAppBuilder.Configuration.GetSection(nameof(CompanyConnectionStrings));
+            var companyConnectionStrings = appSettingsSection.Get<CompanyConnectionStrings>();
+            var connectionStringBancoBase = companyConnectionStrings.List.First(x => x.NomeDominio == "default").ConnnectionString;
+
+            webAppBuilder.Services.AddDbContext<OrderViaWhatsAppContext>(options =>
+            {
+                options.UseSqlServer(connectionStringBancoBase);
+            });
+        }
+
+        private static void PrepareUserAdmin(IServiceProvider service)
+        {
+            var usuarioRepository = service.GetRequiredService<IUsuarioRepositorio>();
+            var authAppService = service.GetRequiredService<IAuthAppService>();
+
+            string email = "master@gmail.com";
+            string senha = "Master@123456";
+
+            if (usuarioRepository.Get(u => u.Email == email).FirstOrDefault() != null)
+                return;
+
+            var (codigoUnicoSenha, senhaHash) = new PasswordHasher().GerarSenhaHash(senha);
+
+            var usuario = new Usuario
+            {
+                Nome = "Master",
+                Email = email,
+                Telefone = "(31) 99999-9999",
+                SenhaHash = senhaHash,
+                CodigoUnicoSenha = codigoUnicoSenha,
+                Permissoes = []
+            };
+
+            var permissoes = new EnumPermissoes[]
+            {
+            EnumPermissoes.USU_000001,
+            EnumPermissoes.USU_000002,
+            EnumPermissoes.USU_000003,
+            EnumPermissoes.USU_000004,
+            EnumPermissoes.USU_000005
+            };
+
+            usuarioRepository.InsertAsync(usuario).Wait();
+            if (!usuarioRepository.SaveChangesAsync().Result)
+                return;
+
+            authAppService.AdicionarPermissaoAoUsuarioAsync(usuario.Id, permissoes).Wait();
+        }
+        #endregion
+    }
+}
+
