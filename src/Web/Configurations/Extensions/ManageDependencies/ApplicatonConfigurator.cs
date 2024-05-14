@@ -1,16 +1,15 @@
 ﻿using FluentValidation;
 using Infrastructure.Data.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Presentation.Base;
+using Presentation.Configurations.Extensions;
 using System.Reflection;
 using System.Text;
 using Web.Middlewares;
 
 namespace Api.Configurations.Extensions.ManageDependencies
 {
-    public static class ApplicationConfigurator
+    public static class ApplicatonConfigurator
     {
         public static void AddServicesDependencyInjectionSystem(this WebApplicationBuilder webAppBuilder)
         {
@@ -54,24 +53,16 @@ namespace Api.Configurations.Extensions.ManageDependencies
 
         public static WebApplicationBuilder ConfigureApplication(this WebApplicationBuilder webAppBuilder)
         {
-            var services = webAppBuilder.Services;
-            var presentationAssembly = typeof(MainController).Assembly;
-            webAppBuilder.Services.AddControllers().AddApplicationPart(presentationAssembly);
-
-            webAppBuilder.Services.Configure<ApiBehaviorOptions>(options =>
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
-
             webAppBuilder.Configuration.AddJsonFile(
-                $"appsettings.{webAppBuilder.Environment.EnvironmentName}.json",
+                path: $"appsettings.{webAppBuilder.Environment.EnvironmentName}.json",
                 optional: false,
                 reloadOnChange: true
             );
 
-            services.AddHttpContextAccessor();
-            services.AddAuthenticationJwt(webAppBuilder.Configuration);
-            services.AddAssemblyConfigurations();
+            webAppBuilder.ConfigureWebApi();
+            webAppBuilder.Services.AddHttpContextAccessor();
+            webAppBuilder.Services.AddAuthenticationJwt(webAppBuilder.Configuration);
+            webAppBuilder.Services.AddAssemblyConfigurations();
 
             return webAppBuilder;
         }

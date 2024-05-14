@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
 using Presentation.Base;
+using Presentation.Configurations.Extensions;
 using Entity = Domain.Entities.Produto;
 
 namespace Presentation.V1
 {
     [ApiController]
     [RouterController("produto")]
+    [ApiVersion(ApiConfig.V1)]
     public class ProdutoController : MainController
     {
         public ProdutoController(IServiceProvider serviceProvider) : base(serviceProvider) 

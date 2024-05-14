@@ -13,7 +13,7 @@ namespace Infrastructure.Data.Configurations
 {
     public static class BancoDadosExtensions
     {
-        public static void ConfigurarBancoDeDados(this WebApplication webApplication)
+        public async static Task ConfigurarBancoDeDadosAsync(this WebApplication webApplication)
         {
             var serviceProvider = webApplication.Services;
             var companies = serviceProvider.GetRequiredService<CompanyConnectionStrings>();
@@ -25,7 +25,7 @@ namespace Infrastructure.Data.Configurations
 
                 dbContext.Database.SetConnectionString(company.ConnnectionString);
                 dbContext.Database.Migrate();
-                PrepareUserAdmin(service);
+                await PrepareUserAdminAsync(service);
             }
         }
 
@@ -43,7 +43,7 @@ namespace Infrastructure.Data.Configurations
             });
         }
 
-        private static void PrepareUserAdmin(IServiceProvider service)
+        private async static Task PrepareUserAdminAsync(IServiceProvider service)
         {
             var usuarioRepository = service.GetRequiredService<IUsuarioRepositorio>();
             var authAppService = service.GetRequiredService<IAuthAppService>();
@@ -68,14 +68,14 @@ namespace Infrastructure.Data.Configurations
 
             var permissoes = new EnumPermissoes[]
             {
-            EnumPermissoes.USU_000001,
-            EnumPermissoes.USU_000002,
-            EnumPermissoes.USU_000003,
-            EnumPermissoes.USU_000004,
-            EnumPermissoes.USU_000005
+                EnumPermissoes.USU_000001,
+                EnumPermissoes.USU_000002,
+                EnumPermissoes.USU_000003,
+                EnumPermissoes.USU_000004,
+                EnumPermissoes.USU_000005
             };
 
-            usuarioRepository.InsertAsync(usuario).Wait();
+            await usuarioRepository.InsertAsync(usuario);
             if (!usuarioRepository.SaveChangesAsync().Result)
                 return;
 

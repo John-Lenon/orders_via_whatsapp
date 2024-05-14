@@ -2,7 +2,7 @@
 
 namespace Presentation.Atributos
 {
-    public class RouterControllerAttribute(string template) : RouteAttribute("api/v1/" + template)
+    public class RouterControllerAttribute(string template) : RouteAttribute("api/v{version:ApiVersion}/" + template)
     {
     }
 }

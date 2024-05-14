@@ -10,7 +10,7 @@ builder.AddServicesDependencyInjectionSystem();
 var app = builder.Build();
 
 app.AddCorsPolicy(builder);
-app.ConfigurarBancoDeDados();
+await app.ConfigurarBancoDeDadosAsync();
 app.MapControllers();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<IdentificadorDataBaseMiddleware>();
