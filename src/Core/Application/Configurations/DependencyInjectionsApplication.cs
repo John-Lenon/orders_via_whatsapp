@@ -4,7 +4,7 @@ using Application.Utilities;
 using Domain.Interfaces.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Api.Configurations.Extensions.ManageDependencies
+namespace Application.Configurations
 {
     public static class DependencyInjectionsApplication
     {
