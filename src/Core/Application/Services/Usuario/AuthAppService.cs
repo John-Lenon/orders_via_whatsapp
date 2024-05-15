@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Usuario;
+﻿using Application.Configurations;
+using Application.Interfaces.Usuario;
 using Application.Resources.Messages;
 using Application.Services.Base;
 using Application.Utilities;
@@ -97,11 +98,9 @@ namespace Application.Services.Usuario
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var tokenExpirationTime = DateTime.UtcNow.AddDays(
-                int.Parse(_configuration["TokenConfiguration:ExpireDays"])
-            );
+            var tokenExpirationTime = DateTime.UtcNow.AddDays(AppSettings.JwtConfigs.ExpireDays);
 
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:key"]);
+            var key = Encoding.ASCII.GetBytes(AppSettings.JwtConfigs.Key);
 
             var claims = new List<Claim>
             {
@@ -127,8 +126,8 @@ namespace Application.Services.Usuario
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature
                 ),
-                Audience = _configuration["TokenConfiguration:Audience"],
-                Issuer = _configuration["TokenConfiguration:Issuer"]
+                Audience = AppSettings.JwtConfigs.Audience,
+                Issuer = AppSettings.JwtConfigs.Issuer
             };
 
             var token = new JwtSecurityTokenHandler().CreateToken(tokenDescriptor);

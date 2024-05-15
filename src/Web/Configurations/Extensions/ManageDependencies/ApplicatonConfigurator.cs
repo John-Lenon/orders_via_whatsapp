@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Application.Configurations;
+using FluentValidation;
 using Infrastructure.Data.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +24,7 @@ namespace Api.Configurations.Extensions.ManageDependencies
 
         public static void AddAuthenticationJwt(this IServiceCollection services, IConfiguration config)
         {
-            var key = Encoding.ASCII.GetBytes(config["Jwt:key"]);
+            var key = Encoding.ASCII.GetBytes(AppSettings.JwtConfigs.Key);
             services
                 .AddAuthentication(x =>
                 {
@@ -40,8 +41,8 @@ namespace Api.Configurations.Extensions.ManageDependencies
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateIssuer = true,
                         ValidateAudience = true,
-                        ValidIssuer = config["TokenConfiguration:Issuer"],
-                        ValidAudience = config["TokenConfiguration:Audience"]
+                        ValidIssuer = AppSettings.JwtConfigs.Issuer,
+                        ValidAudience = AppSettings.JwtConfigs.Audience
                     };
                 });
         }
@@ -53,6 +54,7 @@ namespace Api.Configurations.Extensions.ManageDependencies
 
         public static WebApplicationBuilder ConfigureApplication(this WebApplicationBuilder webAppBuilder)
         {
+            AppSettings.CarregarDados(webAppBuilder.Configuration);
             webAppBuilder.Configuration.AddJsonFile(
                 path: $"appsettings.{webAppBuilder.Environment.EnvironmentName}.json",
                 optional: false,
@@ -69,10 +71,9 @@ namespace Api.Configurations.Extensions.ManageDependencies
 
         public static WebApplication AddCorsPolicy(this WebApplication app, WebApplicationBuilder webAppBuilder)
         {
-            var allowedOrigins = webAppBuilder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
             app.UseCors(configurePolicy =>
             {
-                configurePolicy.WithOrigins(allowedOrigins);
+                configurePolicy.WithOrigins(AppSettings.AllowedOrigins);
                 configurePolicy.AllowAnyMethod();
                 configurePolicy.AllowAnyHeader();
             });

@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.Usuario;
+﻿using Application.Configurations;
+using Application.Interfaces.Usuario;
 using Application.Utilities;
 using Domain.Entities.Usuario;
 using Domain.Enumeradores.Pemissoes;
@@ -34,8 +35,7 @@ namespace Infrastructure.Data.Configurations
         public static void SetDatabaseProvider(this WebApplicationBuilder webAppBuilder)
         {
             var appSettingsSection = webAppBuilder.Configuration.GetSection(nameof(CompanyConnectionStrings));
-            var companyConnectionStrings = appSettingsSection.Get<CompanyConnectionStrings>();
-            var connectionStringBancoBase = companyConnectionStrings.List.First(x => x.NomeDominio == "default").ConnnectionString;
+            var connectionStringBancoBase = AppSettings.CompanyConnectionStrings.GetDefaultString();
 
             webAppBuilder.Services.AddDbContext<OrderViaWhatsAppContext>(options =>
             {

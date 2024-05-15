@@ -1,4 +1,4 @@
-﻿using Infrastructure.Data.Configurations;
+﻿using Application.Configurations;
 using Infrastructure.Data.Context;
 
 namespace Web.Middlewares
@@ -22,12 +22,12 @@ namespace Web.Middlewares
         }
 
         private string IdentificarStringConexao(HttpContext context)
-        {           
+        {
             var origin = context.Request.Headers["Origin"].ToString();
-            var hostName = string.IsNullOrEmpty(origin) ? 
+            var hostName = string.IsNullOrEmpty(origin) ?
                 context.Request.Host.Host :
                 origin.Split("//")[1].Split('/')[0];
-            
+
             var empresaLocalizada = _companyConnections.List.FirstOrDefault(empresa =>
                 empresa.NomeDominio == hostName
             );
