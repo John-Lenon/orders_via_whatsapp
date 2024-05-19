@@ -28,7 +28,7 @@ namespace Presentation.Atributos.Auth
                     Mensagens =
                     [
                         new Notificacao(
-                            EnumTipoNotificacao.Erro,
+                            EnumTipoNotificacao.ErroCliente,
                             "Você não tem permissão para acessar esse recurso."
                         )
                     ]

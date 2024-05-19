@@ -18,7 +18,7 @@ namespace Presentation.Atributos.Auth
                     Mensagens =
                     [
                         new Notificacao(
-                            EnumTipoNotificacao.Erro,
+                            EnumTipoNotificacao.ErroCliente,
                             "Acesso não autorizado. Você precisa estar autenticado."
                         )
                     ]

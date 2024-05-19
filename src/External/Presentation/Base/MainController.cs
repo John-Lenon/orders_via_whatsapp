@@ -53,7 +53,7 @@ namespace Presentation.Base
                 }
 
                 var erros = Notificador.ListNotificacoes.Where(item =>
-                    item.Tipo == EnumTipoNotificacao.Erro
+                    item.Tipo == EnumTipoNotificacao.ErroCliente
                 );
                 if (erros.Any())
                 {
@@ -80,7 +80,7 @@ namespace Presentation.Base
         }
 
         protected void NotificarErro(string mensagem) =>
-            Notificador.Add(new Notificacao(EnumTipoNotificacao.Erro, mensagem));
+            Notificador.Add(new Notificacao(EnumTipoNotificacao.ErroCliente, mensagem));
 
         private bool ValidarModelState(ActionExecutingContext context)
         {
@@ -113,7 +113,7 @@ namespace Presentation.Base
                 var nomeCampo = model.Key.StartsWith("$.") ? model.Key.Substring(2) : model.Key;
                 listaErros.Add(
                     new Notificacao(
-                        EnumTipoNotificacao.Erro,
+                        EnumTipoNotificacao.ErroCliente,
                        string.Format(Message.CampoFormatoInvalido, nomeCampo)
                     )
                 );
@@ -167,10 +167,10 @@ namespace Presentation.Base
 
         public void ContentTypeInvalido()
         {
-            Mensagens = new Notificacao[]
-            {
-                new(EnumTipoNotificacao.Erro, "Content-Type inválido.")
-            };
+            Mensagens =
+            [
+                new(EnumTipoNotificacao.ErroCliente, "Content-Type inválido.")
+            ];
         }
 
         public ResponseResultDTO()

@@ -26,7 +26,7 @@ namespace Application.Services.Usuario
         {
             if(userDto is null)
             {
-                Notificar(EnumTipoNotificacao.Erro, Message.ModeloInvalido);
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.ModeloInvalido);
                 return null;
             }
             var usuario = await _repository
@@ -36,7 +36,7 @@ namespace Application.Services.Usuario
 
             if(usuario == null)
             {
-                Notificar(EnumTipoNotificacao.Erro, Message.EmailNaoEncontrado);
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.EmailNaoEncontrado);
                 return null;
             }
 
@@ -48,7 +48,7 @@ namespace Application.Services.Usuario
 
             if(!senhaValida)
             {
-                Notificar(EnumTipoNotificacao.Erro, Message.SenhaInvalida);
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.SenhaInvalida);
                 return null;
             }
 

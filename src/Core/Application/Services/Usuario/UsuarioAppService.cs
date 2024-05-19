@@ -134,7 +134,7 @@ namespace Application.Services.Usuario
                     return true;
                 }
 
-                Notificar(EnumTipoNotificacao.Erro, Message.OperacaoNaoPermitida);
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.OperacaoNaoPermitida);
                 return false;
             }
 
@@ -153,7 +153,7 @@ namespace Application.Services.Usuario
         {
             if(usuarioDto is null)
             {
-                Notificar(EnumTipoNotificacao.Erro, Message.ModeloInvalido);
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.ModeloInvalido);
                 return false;
             }
 
@@ -164,7 +164,7 @@ namespace Application.Services.Usuario
         {
             if(usuario is null)
             {
-                Notificar(EnumTipoNotificacao.Erro, string.Format(Message.RegistroNaoEncontrado, "Usuário"));
+                Notificar(EnumTipoNotificacao.ErroCliente, string.Format(Message.RegistroNaoEncontrado, "Usuário"));
                 return false;
             }
 
@@ -183,7 +183,7 @@ namespace Application.Services.Usuario
 
             foreach(var campo in camposEmUso)
             {
-                Notificar(EnumTipoNotificacao.Erro, string.Format(Message.CampoExistente, campo.descricao));
+                Notificar(EnumTipoNotificacao.ErroCliente, string.Format(Message.CampoExistente, campo.descricao));
             }
 
             return camposEmUso.Count == 0;

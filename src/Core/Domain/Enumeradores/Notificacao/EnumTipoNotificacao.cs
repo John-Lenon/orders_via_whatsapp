@@ -3,7 +3,7 @@
     public enum EnumTipoNotificacao
     {
         Informacao = 200,
-        Erro = 400,
+        ErroCliente = 400,
         ErroInterno = 500,
     }
 }

@@ -73,7 +73,11 @@ namespace Api.Configurations.Extensions.ManageDependencies
         {
             app.UseCors(configurePolicy =>
             {
-                configurePolicy.WithOrigins(AppSettings.AllowedOrigins);
+                if (webAppBuilder.Environment.IsDevelopment())
+                    configurePolicy.AllowAnyOrigin();
+                else
+                    configurePolicy.WithOrigins(AppSettings.AllowedOrigins);
+                                
                 configurePolicy.AllowAnyMethod();
                 configurePolicy.AllowAnyHeader();
             });

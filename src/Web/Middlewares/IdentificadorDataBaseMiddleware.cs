@@ -1,5 +1,12 @@
 ﻿using Application.Configurations;
+using Domain.Enumeradores.Notificacao;
+using Domain.Utilities;
 using Infrastructure.Data.Context;
+using Microsoft.AspNetCore.Http;
+using Presentation.Base;
+using System.IO;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace Web.Middlewares
 {
@@ -16,16 +23,19 @@ namespace Web.Middlewares
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var connectionString = IdentificarStringConexao(context);
+            var connectionString = await IdentificarStringConexaoAsync(context);
+            if (string.IsNullOrEmpty(connectionString)) return;
+
             _context.SetConnectionString(connectionString);
             await next(context);
+           
         }
 
-        private string IdentificarStringConexao(HttpContext context)
+        private async Task<string> IdentificarStringConexaoAsync(HttpContext httpContext)
         {
-            var origin = context.Request.Headers["Origin"].ToString();
+            var origin = httpContext.Request.Headers["Origin"].ToString();
             var hostName = string.IsNullOrEmpty(origin) ?
-                context.Request.Host.Host :
+                httpContext.Request.Host.Host :
                 origin.Split("//")[1].Split('/')[0];
 
             var empresaLocalizada = _companyConnections.List.FirstOrDefault(empresa =>
@@ -34,7 +44,18 @@ namespace Web.Middlewares
 
             if (empresaLocalizada == null)
             {
-                throw new Exception($"A empresa com nome de domínio '{hostName}' não existe");
+                var response = new ResponseResultDTO<string>();
+                response.Mensagens =
+                [
+                    new Notificacao(
+                        EnumTipoNotificacao.ErroCliente,
+                        $"A empresa com nome de domínio '{hostName}' não foi encontrada")
+                ];
+
+                httpContext.Response.Headers.TryAdd("content-type", "application/json; charset=utf-8");
+                httpContext.Response.StatusCode = 404;
+                await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
+                return null;
             }
             return empresaLocalizada.ConnnectionString;
         }
