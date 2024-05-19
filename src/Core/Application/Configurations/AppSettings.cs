@@ -29,7 +29,12 @@ namespace Application.Configurations
         public CompanyInfo[] List { get; set; }
         public string GetDefaultString()
         {
-            return List.First(x => x.NomeDominio == "default").ConnnectionString;
+            var defaultConnectionString = List.FirstOrDefault(x => x.NomeDominio == "default")?.ConnnectionString;
+
+            if (string.IsNullOrEmpty(defaultConnectionString))
+                throw new Exception("Não foi definido uma string de conexão padrão no arquivo appsettings");
+            
+            return defaultConnectionString;               
         }
     }
 
