@@ -1,5 +1,7 @@
 ﻿using Application.Commands.Interfaces;
 using Application.Commands.Services;
+using Application.Queries.Interfaces.Produto;
+using Application.Queries.Services;
 using Application.Utilities;
 using Domain.Interfaces.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +26,8 @@ namespace Application.Configurations
 
             services.AddScoped<IAuthCommandService, AuthCommandService>();
             services.AddScoped<IUsuarioCommandService, UsuarioCommandService>();
+            services.AddScoped<IProdutoQueryService, ProdutoQueryService>();
+            services.AddScoped<IProdutoCommandService, ProdutoCommandService>();
         }
     }
 }

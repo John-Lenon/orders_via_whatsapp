@@ -3,7 +3,7 @@
 namespace Domain.Interfaces.Repositories.Base
 {
     public interface IRepositoryBase<TEntity>
-        where TEntity : class, new()
+        where TEntity : class
     {
         IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> expression = null);
         Task<TEntity> GetByIdAsync(int id);

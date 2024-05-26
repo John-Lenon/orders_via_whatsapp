@@ -1,15 +1,20 @@
-﻿using Domain.Entities.Base;
+﻿using Application.Queries.DTO.Base;
+using Application.Queries.Interfaces.Base;
+using Domain.Entities.Base;
 using Domain.Interfaces.Repositories.Base;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Linq.Expressions;
 
 namespace Application.Queries.Services.Base
 {
 
-    public abstract class QueryServiceBase<TRepository, TQueryDTO, TEntity>
-        where TEntity : EntityBase, new()
+    public abstract class QueryServiceBase<TRepository, TFilterDTO, TQueryDTO, TEntity> :
+        IQueryServiceBase<TFilterDTO, TQueryDTO>
+        where TEntity : EntityBase
+        where TFilterDTO : FilterBaseDTO
         where TRepository : IRepositoryBase<TEntity>
-        where TQueryDTO : class, new()
+        where TQueryDTO : QueryBaseDTO
     {
         protected readonly TRepository _repository;
 
@@ -18,16 +23,25 @@ namespace Application.Queries.Services.Base
             _repository = serviceProvider.GetRequiredService<TRepository>();
         }
 
-        public virtual TEntity GetByCodigo(Guid codigo)
+        public virtual async Task<TQueryDTO> GetByCodigoAsync(Guid codigo)
         {
-            return _repository.Get(entity => entity.Codigo == codigo).FirstOrDefault();
+            var result = await _repository.Get(entity => entity.Codigo == codigo).FirstOrDefaultAsync();
+            return MapToDTO(result);
         }
 
-        public IEnumerable<TEntity> GetAsync(TQueryDTO filter)
+        public virtual async Task<IEnumerable<TQueryDTO>> GetAsync(TFilterDTO filter)
         {
-            return _repository.Get(GetFilterExpression(filter));
+            var listResult = await _repository.Get(GetFilterExpression(filter)).ToListAsync();
+            return listResult.Select(MapToDTO);
         }
 
-        protected abstract Expression<Func<TEntity, bool>> GetFilterExpression(TQueryDTO filter);
+        protected abstract Expression<Func<TEntity, bool>> GetFilterExpression(TFilterDTO filter);
+
+        protected abstract TQueryDTO MapToDTO(TEntity entity);
+
+        public Task<IEnumerable<QueryBaseDTO>> GetAsync(FilterBaseDTO filter)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

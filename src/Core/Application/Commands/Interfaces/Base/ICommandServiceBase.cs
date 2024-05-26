@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Commands.Interfaces.Base
+﻿namespace Application.Commands.Interfaces.Base
 {
-    public interface ICommandServiceBase
+    public interface ICommandServiceBase<TEntityDTO>
     {
+        Task DeleteAsync(Guid codigo, bool saveChanges = true);
+
+        Task InsertAsync(TEntityDTO entity, bool saveChanges = true);
+
+        Task UpdateAsync(TEntityDTO entity, bool saveChanges = true);
+
+        Task PatchAsync(TEntityDTO entity, bool saveChanges = true);
     }
 }

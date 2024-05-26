@@ -17,7 +17,7 @@ using System.Text;
 namespace Application.Commands.Services
 {
     public class AuthCommandService(IServiceProvider service)
-        : CommandServiceBase<Usuario, IUsuarioRepository>(service),
+        : CommandServiceBase<Usuario, UsuarioCommandDTO, IUsuarioRepository>(service),
             IAuthCommandService
     {
         public async Task<UsuarioTokenCommandDTO> AutenticarAsync(UsuarioCommandDTO userDto)
@@ -136,5 +136,10 @@ namespace Application.Commands.Services
 
         private bool VerificarSenhaHash(string senha, string senhaHash, string codigoUnicoSenha) =>
             new PasswordHasher().CompararSenhaHash(senha, codigoUnicoSenha) == senhaHash;
+
+        protected override Usuario MapToEntity(UsuarioCommandDTO entityDTO)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

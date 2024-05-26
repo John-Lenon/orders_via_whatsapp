@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Queries.DTO.Produto;
+using Application.Queries.Interfaces.Base;
 
 namespace Application.Queries.Interfaces.Produto
 {
-    public interface IProdutoQueryService
+    public interface IProdutoQueryService : IQueryServiceBase<ProdutoFilterDTO, ProdutoQueryDTO>
     {
     }
 }

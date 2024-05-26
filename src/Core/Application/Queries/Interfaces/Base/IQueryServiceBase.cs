@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Queries.Interfaces.Base
+﻿namespace Application.Queries.Interfaces.Base
 {
-    public interface IQueryServiceBase
+    public interface IQueryServiceBase<TFilterDTO, TQueryDTO>
     {
+        Task<IEnumerable<TQueryDTO>> GetAsync(TFilterDTO filter);
+        Task<TQueryDTO> GetByCodigoAsync(Guid codigo);
     }
 }

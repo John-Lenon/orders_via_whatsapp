@@ -9,6 +9,13 @@ namespace Infrastructure.Data.Mappings
         public void Configure(EntityTypeBuilder<Permissao> builder)
         {
             builder.ToTable("PERMISSAO");
+
+            builder
+               .Property(u => u.Codigo)
+               .HasColumnName("CODIGO")
+               .IsRequired()
+               .HasDefaultValueSql("NEWID()");
+
             builder
                 .Property(p => p.Id)
                 .HasColumnName("ID")

@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Application.Commands.Services
 {
     public class UsuarioCommandService(IServiceProvider service, IAuthCommandService _authApp)
-        : CommandServiceBase<Usuario, IUsuarioRepository>(service),
+        : CommandServiceBase<Usuario, UsuarioCommandDTO, IUsuarioRepository>(service),
             IUsuarioCommandService
     {
         public async Task<UsuarioTokenCommandDTO> LoginAsync(UsuarioCommandDTO userDto) =>
@@ -28,9 +28,7 @@ namespace Application.Commands.Services
                 return null;
 
 
-            var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(
-                usuarioDto.Senha
-            );
+            var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(usuarioDto.Senha);
 
             var usuario = usuarioDto.MapToNewUsuario();
 
@@ -100,11 +98,9 @@ namespace Application.Commands.Services
             return true;
         }
 
-        private async Task<bool> ValidarUsuarioParaAtualizarAsync(
-            Usuario usuario,
+        private async Task<bool> ValidarUsuarioParaAtualizarAsync(Usuario usuario,
             UsuarioCommandDTO usuarioDto,
-            int idUsuarioLogado
-        )
+            int idUsuarioLogado)
         {
             if (!UsuarioExiste(usuario))
                 return false;
@@ -187,6 +183,11 @@ namespace Application.Commands.Services
             }
 
             return camposEmUso.Count == 0;
+        }
+
+        protected override Usuario MapToEntity(UsuarioCommandDTO entityDTO)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

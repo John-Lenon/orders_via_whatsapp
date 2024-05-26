@@ -1,33 +1,62 @@
-﻿using Domain.Enumeradores.Notificacao;
+﻿using Application.Commands.Interfaces.Base;
+using Domain.Entities.Base;
+using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories.Base;
 using Domain.Interfaces.Utilities;
 using Domain.Utilities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Commands.Services.Base
 {
-    public abstract class CommandServiceBase<TEntity, TIRepository>(IServiceProvider service)
-        where TEntity : class, new()
+    public abstract class CommandServiceBase<TEntity, TEntityDTO, TIRepository>(IServiceProvider service) :
+        ICommandServiceBase<TEntityDTO>
+        where TEntity : EntityBase
         where TIRepository : class, IRepositoryBase<TEntity>
     {
         private readonly INotificador _notificador = service.GetService<INotificador>();
         protected readonly TIRepository _repository = service.GetService<TIRepository>();
-        protected readonly HttpContext _httpContext = service
-            .GetService<IHttpContextAccessor>()?
-            .HttpContext;
+        protected readonly HttpContext _httpContext = service.GetService<IHttpContextAccessor>()?.HttpContext;
 
-        protected async Task<bool> CommitAsync()
+        public async Task DeleteAsync(Guid codigo, bool saveChanges = true)
         {
-            if (!await _repository.SaveChangesAsync())
+            var entityLocated = await _repository.Get(item => item.Codigo == codigo).FirstOrDefaultAsync();
+
+            if (entityLocated == null)
             {
-                Notificar(EnumTipoNotificacao.ErroInterno, "Falha na Operação.");
-                return false;
+                Notificar(EnumTipoNotificacao.ErroCliente, "Entidade não encontrada para deleção");
+                return;
             }
-            return true;
+
+            _repository.Delete(entityLocated);
+            if (saveChanges) await CommitAsync();
         }
+
+        public virtual async Task InsertAsync(TEntityDTO entityDTO, bool saveChanges = true)
+        {
+            var entity = MapToEntity(entityDTO);
+            await _repository.InsertAsync(entity);
+            if (saveChanges) await CommitAsync();
+        }
+
+        public virtual async Task UpdateAsync(TEntityDTO entityDTO, bool saveChanges = true)
+        {
+            var entity = MapToEntity(entityDTO);
+            _repository.Update(entity);
+            if (saveChanges) await CommitAsync();
+        }
+
+        public virtual Task PatchAsync(TEntityDTO entity, bool saveChanges = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected abstract TEntity MapToEntity(TEntityDTO entityDTO);
+
+        #region Protected Methods 
 
         protected void Notificar(EnumTipoNotificacao tipo, string message) =>
             _notificador.Add(new Notificacao(tipo, message));
@@ -57,5 +86,16 @@ namespace Application.Commands.Services.Base
 
             return true;
         }
+
+        protected async Task<bool> CommitAsync()
+        {
+            if (!await _repository.SaveChangesAsync())
+            {
+                Notificar(EnumTipoNotificacao.ErroInterno, "Falha na Operação.");
+                return false;
+            }
+            return true;
+        }
+        #endregion
     }
 }

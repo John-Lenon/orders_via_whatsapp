@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Commands.DTO
+﻿namespace Application.Commands.DTO
 {
-    internal class ProdutoCommandDTO
+    public class ProdutoCommandDTO
     {
+        public decimal Preco { get; set; }
+        public string Nome { get; set; }
+        public string CaminhoImagem { get; set; }
+        public bool Ativo { get; set; }
     }
 }

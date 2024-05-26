@@ -1,9 +1,12 @@
-﻿using Asp.Versioning;
+﻿using Application.Commands.DTO;
+using Application.Commands.Interfaces;
+using Application.Queries.DTO.Produto;
+using Application.Queries.Interfaces.Produto;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
 using Presentation.Base;
 using Presentation.Configurations.Extensions;
-using Domain.Entities;
 
 namespace Presentation.V1
 {
@@ -12,32 +15,27 @@ namespace Presentation.V1
     [ApiVersion(ApiConfig.V1)]
     public class ProdutoController : MainController
     {
-        public ProdutoController(IServiceProvider serviceProvider) : base(serviceProvider) 
-        { 
+        private readonly IProdutoQueryService _produtoQueryService;
+        private readonly IProdutoCommandService _produtoCommandService;
+
+        public ProdutoController(IServiceProvider serviceProvider,
+            IProdutoQueryService produtoQueryService,
+            IProdutoCommandService produtoCommandService) : base(serviceProvider)
+        {
+            _produtoQueryService = produtoQueryService;
+            _produtoCommandService = produtoCommandService;
         }
 
         [HttpGet]
-        public IEnumerable<Produto> GetAsync()
+        public async Task<IEnumerable<ProdutoQueryDTO>> GetAsync([FromQuery] ProdutoFilterDTO filter)
         {
-            return new Produto[]
-            {
-                new()
-                {
-                    Id = 1,
-                    Preco = 24.90M,
-                    Nome = "Sanduiche",
-                    Ativo = true,
-                    CaminhoImagem = "C:\\teste\\teste01"
-                },
-                new()
-                {
-                    Id = 1,
-                    Preco = 34.98M,
-                    Nome = "Temaki",
-                    Ativo = true,
-                    CaminhoImagem = "C:\\teste\\teste01"
-                }
-            };
+            return await _produtoQueryService.GetAsync(filter);
+        }
+
+        [HttpPost]
+        public async Task AddAsync([FromBody] ProdutoCommandDTO produto)
+        {
+            await _produtoCommandService.InsertAsync(produto);
         }
     }
 }

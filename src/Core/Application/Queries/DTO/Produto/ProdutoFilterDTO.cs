@@ -1,8 +1,9 @@
-﻿using Application.Queries.DTO.Base;
+﻿
+using Application.Queries.DTO.Base;
 
 namespace Application.Queries.DTO.Produto
 {
-    public class ProdutoQueryDTO : QueryBaseDTO
+    public class ProdutoFilterDTO : FilterBaseDTO
     {
         public decimal? Preco { get; set; }
         public string Nome { get; set; }
