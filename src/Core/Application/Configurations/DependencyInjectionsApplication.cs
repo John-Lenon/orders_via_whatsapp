@@ -1,5 +1,5 @@
-﻿using Application.Interfaces.Usuario;
-using Application.Services.Usuario;
+﻿using Application.Commands.Interfaces;
+using Application.Commands.Services;
 using Application.Utilities;
 using Domain.Interfaces.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,8 +22,8 @@ namespace Application.Configurations
         public static void AddDependecyServices(this IServiceCollection services)
         {
 
-            services.AddScoped<IAuthAppService, AuthAppService>();
-            services.AddScoped<IUsuarioAppService, UsuarioAppService>();
+            services.AddScoped<IAuthCommandService, AuthCommandService>();
+            services.AddScoped<IUsuarioCommandService, UsuarioCommandService>();
         }
     }
 }

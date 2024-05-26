@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
 using Presentation.Base;
 using Presentation.Configurations.Extensions;
-using Entity = Domain.Entities.Produto;
+using Domain.Entities;
 
 namespace Presentation.V1
 {
@@ -17,9 +17,9 @@ namespace Presentation.V1
         }
 
         [HttpGet]
-        public IEnumerable<Entity.Produto> GetAsync()
+        public IEnumerable<Produto> GetAsync()
         {
-            return new Entity.Produto[]
+            return new Produto[]
             {
                 new()
                 {

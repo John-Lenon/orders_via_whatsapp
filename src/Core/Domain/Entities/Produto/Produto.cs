@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities.Produto
+﻿using Domain.Entities.Base;
+
+namespace Domain.Entities
 {
-    public class Produto
+    public class Produto : EntityBase
     {
         public int Id { get; set; }
         public decimal Preco { get; set; }

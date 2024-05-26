@@ -1,5 +1,5 @@
-﻿using Domain.Interfaces.Usuario;
-using Infrastructure.Data.Repository.Usuario;
+﻿using Domain.Interfaces.Repositories;
+using Infrastructure.Data.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Data.Configurations
@@ -13,7 +13,7 @@ namespace Infrastructure.Data.Configurations
 
         public static void AddDependecyRepositories(this IServiceCollection services)
         {
-            services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
         }
     }
 }

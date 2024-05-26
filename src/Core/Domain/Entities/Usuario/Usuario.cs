@@ -1,9 +1,10 @@
-﻿namespace Domain.Entities.Usuario
+﻿using Domain.Entities.Base;
+
+namespace Domain.Entities
 {
-    public class Usuario
+    public class Usuario : EntityBase
     {
         public int Id { get; set; }
-        public Guid Codigo { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }

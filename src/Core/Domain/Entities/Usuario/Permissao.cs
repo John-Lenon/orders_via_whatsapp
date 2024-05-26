@@ -1,6 +1,8 @@
-﻿namespace Domain.Entities.Usuario
+﻿using Domain.Entities.Base;
+
+namespace Domain.Entities
 {
-    public class Permissao
+    public class Permissao : EntityBase
     {
         public int Id { get; set; }
         public string Descricao { get; set; }

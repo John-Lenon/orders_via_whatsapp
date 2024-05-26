@@ -1,8 +1,8 @@
-﻿using Domain.Entities.Usuario;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Data.Mappings.Usuario
+namespace Infrastructure.Data.Mappings
 {
     public class PermissaoMap : IEntityTypeConfiguration<Permissao>
     {

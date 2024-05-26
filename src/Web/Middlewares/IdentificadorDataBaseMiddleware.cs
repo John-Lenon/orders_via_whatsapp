@@ -2,10 +2,7 @@
 using Domain.Enumeradores.Notificacao;
 using Domain.Utilities;
 using Infrastructure.Data.Context;
-using Microsoft.AspNetCore.Http;
 using Presentation.Base;
-using System.IO;
-using System.Net.Http;
 using System.Text.Json;
 
 namespace Web.Middlewares
@@ -28,7 +25,7 @@ namespace Web.Middlewares
 
             _context.SetConnectionString(connectionString);
             await next(context);
-           
+
         }
 
         private async Task<string> IdentificarStringConexaoAsync(HttpContext httpContext)

@@ -1,14 +1,13 @@
-﻿using Domain.DTOs.Usuario;
-using Entity = Domain.Entities.Usuario;
+﻿using Domain.DTOs;
+using Domain.Entities;
 
-
-namespace Application.Configurations.MappingsApp.Usuario
+namespace Application.Configurations.MappingsApp
 {
     public static class UsuarioMap
     {
-        public static Entity.Usuario MapToNewUsuario(this UsuarioDto usuarioDto)
+        public static Usuario MapToNewUsuario(this UsuarioCommandDTO usuarioDto)
         {
-            return new Entity.Usuario
+            return new Usuario
             {
                 Nome = usuarioDto.Nome,
                 Email = usuarioDto.Email,
@@ -17,7 +16,7 @@ namespace Application.Configurations.MappingsApp.Usuario
             };
         }
 
-        public static void MapToUsuario(this UsuarioDto usuarioDto, Entity.Usuario usuario)
+        public static void MapToUsuario(this UsuarioCommandDTO usuarioDto, Usuario usuario)
         {
             usuario.Nome = usuarioDto.Nome;
             usuario.Email = usuarioDto.Email;

@@ -1,13 +1,12 @@
-﻿using Application.Configurations;
-using Application.Interfaces.Usuario;
+﻿using Application.Commands.Interfaces;
+using Application.Configurations;
 using Application.Utilities;
-using Domain.Entities.Usuario;
+using Domain.Entities;
 using Domain.Enumeradores.Pemissoes;
-using Domain.Interfaces.Usuario;
+using Domain.Interfaces.Repositories;
 using Infrastructure.Data.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure.Data.Configurations
@@ -45,8 +44,8 @@ namespace Infrastructure.Data.Configurations
 
         private async static Task PrepareUserAdminAsync(IServiceProvider service)
         {
-            var usuarioRepository = service.GetRequiredService<IUsuarioRepositorio>();
-            var authAppService = service.GetRequiredService<IAuthAppService>();
+            var usuarioRepository = service.GetRequiredService<IUsuarioRepository>();
+            var authAppService = service.GetRequiredService<IAuthCommandService>();
 
             string email = "master@gmail.com";
             string senha = "Master@123456";

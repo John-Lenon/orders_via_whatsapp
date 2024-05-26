@@ -1,5 +1,4 @@
-﻿using Domain.Entities.Produto;
-using Domain.Entities.Usuario;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Context

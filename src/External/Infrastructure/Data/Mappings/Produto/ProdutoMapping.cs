@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Entity = Domain.Entities.Produto;
 
-namespace Infrastructure.Data.Mappings.Produto
+namespace Infrastructure.Data.Mappings
 {
-    public class ProdutoMapping : IEntityTypeConfiguration<Entity.Produto>
+    public class ProdutoMapping : IEntityTypeConfiguration<Produto>
     {
-        public void Configure(EntityTypeBuilder<Entity.Produto> builder)
+        public void Configure(EntityTypeBuilder<Produto> builder)
         {
             builder.ToTable("PRODUTO").HasKey(e => e.Id).HasName("PK_ID");
 
