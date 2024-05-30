@@ -5,7 +5,6 @@ using Domain.Interfaces.Repositories.Base;
 using Domain.Interfaces.Utilities;
 using Domain.Utilities;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +19,7 @@ namespace Application.Commands.Services.Base
         private readonly INotificador _notificador = service.GetService<INotificador>();
         protected readonly TIRepository _repository = service.GetService<TIRepository>();
         protected readonly HttpContext _httpContext = service.GetService<IHttpContextAccessor>()?.HttpContext;
+        protected readonly IValidator<TEntityDTO> validator = service.GetService<IValidator<TEntityDTO>>();
 
         public async Task DeleteAsync(Guid codigo, bool saveChanges = true)
         {
@@ -65,11 +65,9 @@ namespace Application.Commands.Services.Base
         protected void Notificar(EnumTipoNotificacao tipo, string message) =>
             _notificador.Add(new Notificacao(tipo, message));
 
-        protected bool Validator<TEntityDto>(TEntityDto entityDto)
+        protected bool Validator(TEntityDTO entityDto)
         {
-            var validator = service.GetService<IValidator<TEntityDto>>();
-
-            ValidationResult results = validator.Validate(entityDto);
+            var results = validator.Validate(entityDto);
 
             if (!results.IsValid)
             {

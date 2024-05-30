@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Application.Commands.Validators
 {
-    public class ValidateUsuario : AbstractValidator<UsuarioCommandDTO>
+    public class UsuarioValidator : AbstractValidator<UsuarioCommandDTO>
     {
-        public ValidateUsuario()
+        public UsuarioValidator()
         {
             RuleFor(x => x.Nome)
                 .NotEmpty()

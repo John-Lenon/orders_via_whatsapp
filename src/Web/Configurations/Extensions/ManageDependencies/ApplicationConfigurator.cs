@@ -17,7 +17,6 @@ namespace Api.Configurations.Extensions.ManageDependencies
             CarregarStringConexaoBancoDados(webAppBuilder);
             webAppBuilder.Services.AddAplicationLayerDependencies();
             webAppBuilder.Services.AddDataLayerDependencies();
-
             webAppBuilder.Services.AddTransient<ExceptionMiddleware>();
             webAppBuilder.Services.AddTransient<IdentificadorDataBaseMiddleware>();
         }
@@ -77,7 +76,7 @@ namespace Api.Configurations.Extensions.ManageDependencies
                     configurePolicy.AllowAnyOrigin();
                 else
                     configurePolicy.WithOrigins(AppSettings.AllowedOrigins);
-                                
+
                 configurePolicy.AllowAnyMethod();
                 configurePolicy.AllowAnyHeader();
             });
