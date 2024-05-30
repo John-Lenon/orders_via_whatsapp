@@ -1,6 +1,7 @@
-﻿using Application.Extensions.Mappers;
+﻿using Application.Configurations.MappingsApp;
+using Application.Queries.DTO;
 using Application.Queries.DTO.Produto;
-using Application.Queries.Interfaces.Produto;
+using Application.Queries.Interfaces;
 using Application.Queries.Services.Base;
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
@@ -17,10 +18,9 @@ namespace Application.Queries.Services
         protected override Expression<Func<Produto, bool>> GetFilterExpression(ProdutoFilterDTO filter)
         {
             return produto =>
-                   ((filter.Codigo == null) || produto.Codigo == filter.Codigo)
-                && ((filter.Ativo == null) || produto.Ativo == filter.Ativo)
-                && ((filter.Preco == null) || produto.Preco == filter.Preco)
-                && ((filter.Nome == null) || produto.Nome == filter.Nome);
+                   (filter.Codigo == null || produto.Codigo == filter.Codigo)
+                && (filter.Preco == null || produto.Preco == filter.Preco)
+                && (filter.Nome == null || produto.Nome == filter.Nome);
         }
 
     }

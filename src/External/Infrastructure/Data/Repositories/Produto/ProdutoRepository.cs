@@ -5,7 +5,7 @@ using Infrastructure.Data.Repository.Base;
 
 namespace Infrastructure.Data.Repositories
 {
-    internal class ProdutoRepository(IServiceProvider serviceProvider) :
+    public class ProdutoRepository(IServiceProvider serviceProvider) :
         RepositorioBase<Produto, OrderViaWhatsAppContext>(serviceProvider),
             IProdutoRepository
     {

@@ -1,7 +1,8 @@
 ﻿using Application.Commands.DTO;
 using Application.Commands.Interfaces;
+using Application.Queries.DTO;
 using Application.Queries.DTO.Produto;
-using Application.Queries.Interfaces.Produto;
+using Application.Queries.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;

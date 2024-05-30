@@ -37,6 +37,8 @@ namespace Application.Commands.Services.Base
 
         public virtual async Task InsertAsync(TEntityDTO entityDTO, bool saveChanges = true)
         {
+            if (!Validator(entityDTO)) return;
+
             var entity = MapToEntity(entityDTO);
             await _repository.InsertAsync(entity);
             if (saveChanges) await CommitAsync();
@@ -44,6 +46,8 @@ namespace Application.Commands.Services.Base
 
         public virtual async Task UpdateAsync(TEntityDTO entityDTO, bool saveChanges = true)
         {
+            if (!Validator(entityDTO)) return;
+
             var entity = MapToEntity(entityDTO);
             _repository.Update(entity);
             if (saveChanges) await CommitAsync();

@@ -1,7 +1,7 @@
 ﻿using Application.Commands.DTO;
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
-using Application.Extensions.Mappers;
+using Application.Configurations.MappingsApp;
 using Domain.Entities;
 using Domain.Interfaces.Repositories;
 

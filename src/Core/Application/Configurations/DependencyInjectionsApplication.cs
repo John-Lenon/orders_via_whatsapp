@@ -1,6 +1,6 @@
 ﻿using Application.Commands.Interfaces;
 using Application.Commands.Services;
-using Application.Queries.Interfaces.Produto;
+using Application.Queries.Interfaces;
 using Application.Queries.Services;
 using Application.Utilities;
 using Domain.Interfaces.Utilities;
