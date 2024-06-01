@@ -2,6 +2,7 @@
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Utilities;
 using Domain.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -10,90 +11,61 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Presentation.Base
 {
     [ApiController]
-    public abstract class MainController : Controller
+    public abstract class MainController(IServiceProvider service) : Controller
     {
-        protected INotificador Notificador { get; private set; }
-
-        public MainController(IServiceProvider serviceProvider)
-        {
-            Notificador = serviceProvider.GetRequiredService<INotificador>();
-        }
+        private readonly INotificador _notifier = service.GetRequiredService<INotificador>();
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!ValidarModelState(context))
+            if(!ValidarModelState(context))
                 return;
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
-            var result = context.Result as ObjectResult;
-            if (result is null)
+            context.Result = context.Result switch
             {
-                context.Result = CustomResponse<object>(null);
-                return;
-            }
-            context.Result = CustomResponse(result.Value);
+                ObjectResult objectResult => CustomResponse(objectResult.Value),
+
+                FileContentResult fileResult => File(fileResult.FileContents, fileResult.ContentType),
+
+                _ => CustomResponse<object>(null),
+            };
         }
 
-        public IActionResult CustomResponse<TResponse>(TResponse contentResponse)
+        private IActionResult CustomResponse<TResponse>(TResponse content)
         {
-            if (Notificador.ListNotificacoes.Count() >= 1)
+            if(_notifier.HasNotifications(EnumTipoNotificacao.ErroCliente, out var clientErrors))
             {
-                var errosInternos = Notificador.ListNotificacoes.Where(item =>
-                    item.Tipo == EnumTipoNotificacao.ErroInterno
-                );
-                if (errosInternos.Any())
-                {
-                    var result = new ResponseResultDTO<TResponse>(contentResponse)
-                    {
-                        Mensagens = errosInternos.ToArray()
-                    };
-                    return new ObjectResult(result) { StatusCode = 500 };
-                }
-
-                var erros = Notificador.ListNotificacoes.Where(item =>
-                    item.Tipo == EnumTipoNotificacao.ErroCliente
-                );
-                if (erros.Any())
-                {
-                    var result = new ResponseResultDTO<TResponse>(default)
-                    {
-                        Mensagens = erros.ToArray()
-                    };
-                    return BadRequest(result);
-                }
-
-                var informacoes = Notificador.ListNotificacoes.Where(item =>
-                    item.Tipo == EnumTipoNotificacao.Informacao
-                );
-                if (informacoes.Any())
-                    return Ok(
-                        new ResponseResultDTO<TResponse>(contentResponse)
-                        {
-                            Mensagens = informacoes.ToArray()
-                        }
-                    );
+                return BadRequest(new ResponseResultDTO<TResponse>(content) { Mensagens = clientErrors });
             }
 
-            return Ok(new ResponseResultDTO<TResponse>(contentResponse));
+            if(_notifier.HasNotifications(EnumTipoNotificacao.ErroInterno, out var serverErrors))
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new ResponseResultDTO<TResponse>(content) { Mensagens = serverErrors });
+            }
+
+            _notifier.HasNotifications(EnumTipoNotificacao.Informacao, out var infoMessages);
+
+            return Ok(new ResponseResultDTO<TResponse>(content) { Mensagens = infoMessages });
         }
 
         protected void NotificarErro(string mensagem) =>
-            Notificador.Add(new Notificacao(EnumTipoNotificacao.ErroCliente, mensagem));
+            _notifier.Notify(EnumTipoNotificacao.ErroCliente, mensagem);
 
         private bool ValidarModelState(ActionExecutingContext context)
         {
             var modelState = context.ModelState;
-            if (!modelState.IsValid)
+            if(!modelState.IsValid)
             {
-                if (!ValidarContentTypeRequest(modelState, context))
+                if(!ValidarContentTypeRequest(modelState, context))
                     return false;
 
                 var valoresInvalidosModelState = modelState.Where(x =>
                     x.Value.ValidationState == ModelValidationState.Invalid
                 );
-                if (valoresInvalidosModelState.Count() == 0)
+                if(valoresInvalidosModelState.Count() == 0)
                     return true;
 
                 ExtrairMensagensDeErroDaModelState(valoresInvalidosModelState, context);
@@ -108,13 +80,13 @@ namespace Presentation.Base
         )
         {
             var listaErros = new List<Notificacao>();
-            foreach (var model in valoresInvalidosModelState)
+            foreach(var model in valoresInvalidosModelState)
             {
                 var nomeCampo = model.Key.StartsWith("$.") ? model.Key.Substring(2) : model.Key;
                 listaErros.Add(
                     new Notificacao(
                         EnumTipoNotificacao.ErroCliente,
-                       string.Format(Message.CampoFormatoInvalido, nomeCampo)
+                        string.Format(Message.CampoFormatoInvalido, nomeCampo)
                     )
                 );
             }
@@ -132,19 +104,19 @@ namespace Presentation.Base
             var valoresInvalidosModelState = modelState.Where(x =>
                 x.Value.ValidationState == ModelValidationState.Invalid
             );
-            if (valoresInvalidosModelState.Count() == 1)
+            if(valoresInvalidosModelState.Count() == 1)
             {
                 var model = valoresInvalidosModelState.First();
                 var modelErro = model.Value.Errors.FirstOrDefault();
 
-                if (model.Key == string.Empty && modelErro.ErrorMessage == string.Empty)
+                if(model.Key == string.Empty && modelErro.ErrorMessage == string.Empty)
                 {
                     var result = new ResponseResultDTO<object>();
                     result.ContentTypeInvalido();
                     context.Result = new BadRequestObjectResult(result);
                     return false;
                 }
-                else if (model.Key == string.Empty)
+                else if(model.Key == string.Empty)
                 {
                     model.Value.ValidationState = ModelValidationState.Valid;
                     return true;
@@ -167,14 +139,9 @@ namespace Presentation.Base
 
         public void ContentTypeInvalido()
         {
-            Mensagens =
-            [
-                new(EnumTipoNotificacao.ErroCliente, "Content-Type inválido.")
-            ];
+            Mensagens = [new(EnumTipoNotificacao.ErroCliente, "Content-Type inválido.")];
         }
 
-        public ResponseResultDTO()
-        {
-        }
+        public ResponseResultDTO() { }
     }
 }
