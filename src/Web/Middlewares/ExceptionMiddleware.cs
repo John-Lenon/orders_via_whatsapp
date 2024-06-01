@@ -20,7 +20,7 @@ namespace Web.Middlewares
             {
                 await next(httpContext);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 var response = new ResponseResultDTO<string>();
                 response.Mensagens =

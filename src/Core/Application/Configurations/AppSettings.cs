@@ -7,12 +7,19 @@ namespace Application.Configurations
         public static string[] AllowedOrigins { get; private set; }
         public static CompanyConnectionStrings CompanyConnectionStrings { get; private set; }
         public static AuthenticationTokenConfig JwtConfigs { get; private set; }
+        public static string CompanyFilePaths { get; private set; }
 
         public static void CarregarDados(IConfiguration config)
         {
             AllowedOrigins = config.GetSection("AllowedOrigins")?.Get<string[]>();
-            CompanyConnectionStrings = config.GetSection("CompanyConnectionStrings")?.Get<CompanyConnectionStrings>();
+
             JwtConfigs = config.GetSection("JwtConfigs")?.Get<AuthenticationTokenConfig>();
+
+            CompanyFilePaths = config["CompanyFilePaths"];
+
+            CompanyConnectionStrings = config
+                .GetSection("CompanyConnectionStrings")
+                ?.Get<CompanyConnectionStrings>();
         }
     }
 
@@ -27,14 +34,19 @@ namespace Application.Configurations
     public class CompanyConnectionStrings
     {
         public CompanyInfo[] List { get; set; }
+
         public string GetDefaultString()
         {
-            var defaultConnectionString = List.FirstOrDefault(x => x.NomeDominio == "default")?.ConnnectionString;
+            var defaultConnectionString = List.FirstOrDefault(x =>
+                x.NomeDominio == "default"
+            )?.ConnnectionString;
 
-            if (string.IsNullOrEmpty(defaultConnectionString))
-                throw new Exception("Não foi definido uma string de conexão padrão no arquivo appsettings");
-            
-            return defaultConnectionString;               
+            if(string.IsNullOrEmpty(defaultConnectionString))
+                throw new Exception(
+                    "Não foi definido uma string de conexão padrão no arquivo appsettings"
+                );
+
+            return defaultConnectionString;
         }
     }
 

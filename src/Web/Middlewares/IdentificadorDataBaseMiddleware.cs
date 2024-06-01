@@ -21,7 +21,7 @@ namespace Web.Middlewares
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var connectionString = await IdentificarStringConexaoAsync(context);
-            if (string.IsNullOrEmpty(connectionString)) return;
+            if(string.IsNullOrEmpty(connectionString)) return;
 
             _context.SetConnectionString(connectionString);
             await next(context);
@@ -39,7 +39,7 @@ namespace Web.Middlewares
                 empresa.NomeDominio == hostName
             );
 
-            if (empresaLocalizada == null)
+            if(empresaLocalizada == null)
             {
                 var response = new ResponseResultDTO<string>();
                 response.Mensagens =

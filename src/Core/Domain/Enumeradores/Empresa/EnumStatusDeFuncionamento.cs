@@ -1,6 +1,6 @@
 ﻿namespace Domain.Enumeradores.Empresa
 {
-    public enum StatusDeFuncionamento
+    public enum EnumStatusDeFuncionamento
     {
         AbertoAgora,
         Pausado,

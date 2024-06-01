@@ -3,7 +3,6 @@ using Domain.Entities.Base;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories.Base;
 using Domain.Interfaces.Utilities;
-using Domain.Utilities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http;
@@ -25,28 +24,28 @@ namespace Application.Commands.Services.Base
         {
             var entityLocated = await _repository.Get(item => item.Codigo == codigo).FirstOrDefaultAsync();
 
-            if (entityLocated == null)
+            if(entityLocated == null)
             {
                 Notificar(EnumTipoNotificacao.ErroCliente, "Entidade não encontrada para deleção");
                 return;
             }
 
             _repository.Delete(entityLocated);
-            if (saveChanges) await CommitAsync();
+            if(saveChanges) await CommitAsync();
         }
 
         public virtual async Task InsertAsync(TEntityDTO entityDTO, bool saveChanges = true)
         {
             var entity = MapToEntity(entityDTO);
             await _repository.InsertAsync(entity);
-            if (saveChanges) await CommitAsync();
+            if(saveChanges) await CommitAsync();
         }
 
         public virtual async Task UpdateAsync(TEntityDTO entityDTO, bool saveChanges = true)
         {
             var entity = MapToEntity(entityDTO);
             _repository.Update(entity);
-            if (saveChanges) await CommitAsync();
+            if(saveChanges) await CommitAsync();
         }
 
         public virtual Task PatchAsync(TEntityDTO entity, bool saveChanges = true)
@@ -59,7 +58,7 @@ namespace Application.Commands.Services.Base
         #region Protected Methods 
 
         protected void Notificar(EnumTipoNotificacao tipo, string message) =>
-            _notificador.Add(new Notificacao(tipo, message));
+            _notificador.Notify(tipo, message);
 
         protected bool Validator<TEntityDto>(TEntityDto entityDto)
         {
@@ -67,7 +66,7 @@ namespace Application.Commands.Services.Base
 
             ValidationResult results = validator.Validate(entityDto);
 
-            if (!results.IsValid)
+            if(!results.IsValid)
             {
                 var groupedFailures = results
                     .Errors.GroupBy(failure => failure.PropertyName)
@@ -76,7 +75,7 @@ namespace Application.Commands.Services.Base
                         Errors = string.Join(" ", group.Select(err => err.ErrorMessage))
                     });
 
-                foreach (var failure in groupedFailures)
+                foreach(var failure in groupedFailures)
                 {
                     Notificar(EnumTipoNotificacao.Informacao, $"{failure.Errors}");
                 }
@@ -89,7 +88,7 @@ namespace Application.Commands.Services.Base
 
         protected async Task<bool> CommitAsync()
         {
-            if (!await _repository.SaveChangesAsync())
+            if(!await _repository.SaveChangesAsync())
             {
                 Notificar(EnumTipoNotificacao.ErroInterno, "Falha na Operação.");
                 return false;

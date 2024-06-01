@@ -1,4 +1,4 @@
-﻿/*using Domain.Entities.Empresa;
+﻿using Domain.Entities.Empresa;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -36,4 +36,3 @@ namespace Infrastructure.Data.Mappings
         }
     }
 }
-*/
