@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Data.Mappings
 {
-    public class PermissaoMap : IEntityTypeConfiguration<Permissao>
+    public class PermissaoMapping : IEntityTypeConfiguration<Permissao>
     {
         public void Configure(EntityTypeBuilder<Permissao> builder)
         {

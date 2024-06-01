@@ -4,6 +4,7 @@ using Infrastructure.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(OrderViaWhatsAppContext))]
-    partial class OrderViaWhatsAppContextModelSnapshot : ModelSnapshot
+    [Migration("20240529121538_ADD_TB_HORARIO_FUNCIONAMENTO")]
+    partial class ADD_TB_HORARIO_FUNCIONAMENTO
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,10 +109,6 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("DIA_DA_SEMANA");
 
-                    b.Property<int>("EmpresaId")
-                        .HasColumnType("int")
-                        .HasColumnName("EMPRESA_ID");
-
                     b.Property<int>("Hora")
                         .HasColumnType("int")
                         .HasColumnName("HORA");
@@ -119,8 +118,6 @@ namespace Data.Migrations
                         .HasColumnName("MINUTOS");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmpresaId");
 
                     b.ToTable("HORARIO_FUNCIONAMENTO", (string)null);
                 });
@@ -264,17 +261,6 @@ namespace Data.Migrations
                     b.ToTable("USUARIO_PERMISSAO", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Empresa.HorarioFuncionamento", b =>
-                {
-                    b.HasOne("Domain.Entities.Empresa.Empresa", "Empresa")
-                        .WithMany("HorariosDeFuncionamento")
-                        .HasForeignKey("EmpresaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Empresa");
-                });
-
             modelBuilder.Entity("USUARIO_PERMISSAO", b =>
                 {
                     b.HasOne("Domain.Entities.Permissao", null)
@@ -288,11 +274,6 @@ namespace Data.Migrations
                         .HasForeignKey("USUARIO_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Entities.Empresa.Empresa", b =>
-                {
-                    b.Navigation("HorariosDeFuncionamento");
                 });
 #pragma warning restore 612, 618
         }
