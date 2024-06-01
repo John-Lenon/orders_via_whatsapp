@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="Client HTTP\" />
+    <Folder Include="Data\Sql\" />
   </ItemGroup>
 
   <ItemGroup>

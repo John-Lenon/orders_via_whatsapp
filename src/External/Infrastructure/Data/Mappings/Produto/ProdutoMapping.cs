@@ -37,10 +37,19 @@ namespace Infrastructure.Data.Mappings
                    .HasMaxLength(100)
                    .IsRequired();
 
-            builder.Property(e => e.Ativo)
-                   .HasColumnName("ATIVO")
-                   .HasColumnType("INT")
-                   .HasDefaultValue(true)
+            builder.Property(e => e.CategoriaId)
+                   .HasColumnName("CATEGORIA_ID")
+                   .HasColumnType("int")
+                   .IsRequired();
+
+            builder.Property(e => e.Prioridade)
+                    .HasColumnName("PRIORIDADE")
+                    .HasColumnType("int")
+                    .IsRequired();
+
+            builder.Property(e => e.Status)
+                   .HasColumnName("STATUS")
+                   .HasColumnType("int")
                    .IsRequired();
         }
     }

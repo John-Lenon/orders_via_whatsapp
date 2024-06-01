@@ -38,10 +38,5 @@ namespace Application.Queries.Services.Base
         protected abstract Expression<Func<TEntity, bool>> GetFilterExpression(TFilterDTO filter);
 
         protected abstract TQueryDTO MapToDTO(TEntity entity);
-
-        public Task<IEnumerable<QueryBaseDTO>> GetAsync(FilterBaseDTO filter)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
