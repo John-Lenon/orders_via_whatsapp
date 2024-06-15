@@ -8,7 +8,7 @@ namespace Domain.Entities.Empresa
         public int Id { get; set; }
         public string NomeFantasia { get; set; }
         public string RazaoSocial { get; set; }
-        public string CNPJ { get; set; }
+        public string Cnpj { get; set; }
         public string NumeroDoWhatsapp { get; set; }
         public string Email { get; set; }
         public string Dominio { get; set; }
