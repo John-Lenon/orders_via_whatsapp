@@ -33,7 +33,7 @@ namespace Web.Middlewares
             var origin = httpContext.Request.Headers["Origin"].ToString();
             var hostName = string.IsNullOrEmpty(origin) ?
                 httpContext.Request.Host.Host :
-                origin.Split("//")[1].Split('/')[0];
+                origin.Split("//")[1].Split('/')[0].Split(':')[0];
 
             var empresaLocalizada = _companyConnections.List.FirstOrDefault(empresa =>
                 empresa.NomeDominio == hostName
