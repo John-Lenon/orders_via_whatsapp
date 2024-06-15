@@ -1,6 +1,8 @@
 ﻿using Domain.Entities.Empresa;
+using Domain.Enumeradores.Empresa;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Data.Mappings
 {
@@ -13,10 +15,10 @@ namespace Infrastructure.Data.Mappings
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Id).HasColumnName("ID").IsRequired();
-            builder.Property(e => e.Codigo).HasColumnName("CODIGO").IsRequired();
+            builder.Property(e => e.Codigo).HasColumnName("CODIGO").IsRequired().HasDefaultValueSql("NEWID()"); ;
             builder.Property(e => e.Email).HasColumnName("EMAIL").HasMaxLength(100);
             builder.Property(e => e.Dominio).HasColumnName("DOMINIO").HasMaxLength(50);
-            builder.Property(e => e.CNPJ).HasColumnName("CNPJ").IsRequired().HasMaxLength(14);
+            builder.Property(e => e.Cnpj).HasColumnName("CNPJ").IsRequired().HasMaxLength(14);
 
             builder
                 .Property(e => e.NomeFantasia)
@@ -35,11 +37,11 @@ namespace Infrastructure.Data.Mappings
                 .HasColumnName("NUMERO_DO_WHATSAPP")
                 .HasMaxLength(15);
 
-            builder
-                .Property(e => e.StatusDeFuncionamento)
-                .HasColumnName("STATUS_DE_FUNCIONAMENTO")
-                .IsRequired()
-                .HasConversion<int>();
+            builder.Property(e => e.StatusDeFuncionamento)
+              .HasColumnName("STATUS_DE_FUNCIONAMENTO")
+              .IsRequired()
+              .HasConversion(new EnumToStringConverter<EnumStatusDeFuncionamento>())
+              .HasMaxLength(50);
 
             builder
                 .Property(e => e.EnderecoDoLogotipo)

@@ -1,6 +1,8 @@
 ﻿using Domain.Entities.Empresa;
+using Domain.Enumeradores.Empresa;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Data.Mappings
 {
@@ -27,7 +29,7 @@ namespace Infrastructure.Data.Mappings
                 .Property(h => h.DiaDaSemana)
                 .HasColumnName("DIA_DA_SEMANA")
                 .IsRequired()
-                .HasConversion<int>();
+                .HasConversion(new EnumToStringConverter<EnumDiaDaSemana>());
 
             builder
                 .HasOne(h => h.Empresa)

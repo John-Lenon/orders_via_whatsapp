@@ -31,15 +31,17 @@ namespace Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CNPJ")
+                    b.Property<string>("Cnpj")
                         .IsRequired()
                         .HasMaxLength(14)
                         .HasColumnType("nvarchar(14)")
                         .HasColumnName("CNPJ");
 
                     b.Property<Guid>("Codigo")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
-                        .HasColumnName("CODIGO");
+                        .HasColumnName("CODIGO")
+                        .HasDefaultValueSql("NEWID()");
 
                     b.Property<string>("Dominio")
                         .HasMaxLength(50)
@@ -78,8 +80,10 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(150)")
                         .HasColumnName("RAZAO_SOCIAL");
 
-                    b.Property<int>("StatusDeFuncionamento")
-                        .HasColumnType("int")
+                    b.Property<string>("StatusDeFuncionamento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
                         .HasColumnName("STATUS_DE_FUNCIONAMENTO");
 
                     b.HasKey("Id");
@@ -102,8 +106,9 @@ namespace Data.Migrations
                         .HasColumnName("CODIGO")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<int>("DiaDaSemana")
-                        .HasColumnType("int")
+                    b.Property<string>("DiaDaSemana")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("DIA_DA_SEMANA");
 
                     b.Property<int>("EmpresaId")
