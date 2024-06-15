@@ -6,6 +6,9 @@
     <InvariantGlobalization>false</InvariantGlobalization>
     <UserSecretsId>8ed82b02-d085-4949-bb20-f3ab9bcd342f</UserSecretsId>
   </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+    </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\External\Infrastructure\Infrastructure.csproj" />

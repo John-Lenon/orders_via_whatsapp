@@ -1,4 +1,5 @@
-﻿using Application.Configurations;
+﻿using Api.Configurations.Extensions.Swagger;
+using Application.Configurations;
 using Infrastructure.Data.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -58,6 +59,7 @@ namespace Api.Configurations.Extensions.ManageDependencies
             webAppBuilder.Services.AddHttpContextAccessor();
             webAppBuilder.Services.AddAuthenticationJwt(webAppBuilder.Configuration);
             webAppBuilder.Services.AddAssemblyConfigurations();
+            webAppBuilder.Services.AddSwaggerConfiguration();
 
             return webAppBuilder;
         }
