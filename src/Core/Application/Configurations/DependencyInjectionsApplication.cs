@@ -1,7 +1,7 @@
 ﻿using Application.Commands.Interfaces;
 using Application.Commands.Services;
 using Application.Interfaces.Utilities;
-using Application.Queries.Interfaces.Produto;
+using Application.Queries.Interfaces;
 using Application.Queries.Services;
 using Application.Utilities;
 using Domain.Interfaces.Utilities;
@@ -16,7 +16,8 @@ namespace Application.Configurations
         public static void AddAplicationLayerDependencies(this IServiceCollection services)
         {
             services.AddDependecyUtilities();
-            services.AddDependecyServices();
+            services.AddDependecyCommandServices();
+            services.AddDependecyQueryServices();
         }
 
         public static void AddDependecyUtilities(this IServiceCollection services)
@@ -25,12 +26,20 @@ namespace Application.Configurations
             services.AddScoped<IFileService, FileService>();
         }
 
-        public static void AddDependecyServices(this IServiceCollection services)
+        public static void AddDependecyCommandServices(this IServiceCollection services)
         {
             services.AddScoped<IAuthCommandService, AuthCommandService>();
             services.AddScoped<IUsuarioCommandService, UsuarioCommandService>();
-            services.AddScoped<IProdutoQueryService, ProdutoQueryService>();
+            services.AddScoped<IHorarioFuncionamentoCommandService, HorarioFuncionamentoCommandService>();
+            services.AddScoped<IEmpresaCommandService, EmpresaCommandService>();
             services.AddScoped<IProdutoCommandService, ProdutoCommandService>();
+        }
+
+        public static void AddDependecyQueryServices(this IServiceCollection services)
+        {
+            services.AddScoped<IProdutoQueryService, ProdutoQueryService>();
+            services.AddScoped<IEmpresaQueryService, EmpresaQueryService>();
+            services.AddScoped<IHorarioFuncionamentoQueryService, HorarioFuncionamentoQueryService>();
         }
 
         public static void AddAssemblyConfigurations(this IServiceCollection services)
