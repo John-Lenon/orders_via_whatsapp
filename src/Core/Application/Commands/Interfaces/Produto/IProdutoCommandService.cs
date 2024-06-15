@@ -1,12 +1,13 @@
 ﻿using Application.Commands.DTO;
+using Application.Commands.DTO.File;
 using Application.Commands.Interfaces.Base;
-using Application.Commands.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Commands.Interfaces
 {
     public interface IProdutoCommandService : ICommandServiceBase<ProdutoCommandDTO>
     {
-        Task<byte[]> GetImageAsync(ImageSearchRequestDto imageSearchRequestDto);
-        Task<bool> UploadImageAsync(ImageUploadRequestDto imageUploadRequestDto);
+        Task<FileContentResult> GetProdutoImageAsync(ImageSearchRequestDto imageSearch);
+        Task<bool> UploadProdutoImageAsync(ImageUploadRequestDto imageUpload);
     }
 }
