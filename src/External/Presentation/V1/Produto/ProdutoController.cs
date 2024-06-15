@@ -1,10 +1,10 @@
 ﻿using Application.Commands.DTO;
+using Application.Commands.DTO.File;
 using Application.Commands.Interfaces;
-using Application.Commands.Services;
+using Application.Queries.DTO;
 using Application.Queries.DTO.Produto;
-using Application.Queries.Interfaces.Produto;
+using Application.Queries.Interfaces;
 using Asp.Versioning;
-using Domain.Enumeradores.Empresa;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
 using Presentation.Base;
@@ -35,23 +35,18 @@ namespace Presentation.V1
             await _produtoCommandService.InsertAsync(produto);
         }
 
-        [HttpPost("upload-logo")]
-        public async Task<bool> UploadLogo([FromForm] ImageUploadRequestDto imageUploadRequestDto)
+        #region Image
+        [HttpGet("get-image-produto")]
+        public async Task<FileContentResult> GetProdutoImageAsync([FromQuery] ImageSearchRequestDto imageSearch)
         {
-            imageUploadRequestDto.TipoImagem = EnumTipoImagem.Logo;
-            return await _produtoCommandService.UploadImageAsync(imageUploadRequestDto);
+            return await _produtoCommandService.GetProdutoImageAsync(imageSearch);
         }
 
-        [HttpGet("get-logo")]
-        public async Task<FileContentResult> GetLogo([FromQuery] ImageSearchRequestDto imageSearchRequestDto)
+        [HttpPost("upload-image-produto")]
+        public async Task<bool> UploadProdutoImageAsync([FromForm] ImageUploadRequestDto imageUpload)
         {
-            imageSearchRequestDto.TipoImagem = EnumTipoImagem.Produto;
-
-            byte[] imageData = await _produtoCommandService.GetImageAsync(imageSearchRequestDto);
-
-            if(imageData == null) return null;
-
-            return File(imageData, "image/jpeg");
+            return await _produtoCommandService.UploadProdutoImageAsync(imageUpload);
         }
+        #endregion
     }
 }

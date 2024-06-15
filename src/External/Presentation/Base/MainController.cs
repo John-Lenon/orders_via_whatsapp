@@ -27,7 +27,7 @@ namespace Presentation.Base
             {
                 ObjectResult objectResult => CustomResponse(objectResult.Value),
 
-                FileContentResult fileResult => File(fileResult.FileContents, fileResult.ContentType),
+                FileContentResult fileResult when fileResult.FileContents.Length > 0 => File(fileResult.FileContents, fileResult.ContentType),
 
                 _ => CustomResponse<object>(null),
             };
