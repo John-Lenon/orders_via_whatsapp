@@ -23,6 +23,7 @@ namespace Application.Configurations.MappingsApp
                 StatusDeFuncionamento = empresa.StatusDeFuncionamento,
                 HorariosDeFuncionamento = empresa.HorariosDeFuncionamento.Select(h => new HorarioFuncionamentoQueryDTO
                 {
+                    Codigo = h.Codigo,
                     Hora = h.Hora,
                     Minutos = h.Minutos,
                     DiaDaSemana = h.DiaDaSemana

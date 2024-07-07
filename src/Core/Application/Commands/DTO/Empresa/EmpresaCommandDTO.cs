@@ -1,5 +1,4 @@
 ﻿using Domain.Enumeradores.Empresa;
-using System.Text.Json.Serialization;
 
 namespace Application.Commands.DTO
 {
@@ -14,7 +13,6 @@ namespace Application.Commands.DTO
         public string EnderecoDoLogotipo { get; set; }
         public string EnderecoDaCapaDeFundo { get; set; }
 
-        [JsonConverter(typeof(JsonStringEnumConverter))]
         public EnumStatusDeFuncionamento StatusDeFuncionamento { get; set; }
 
         public List<HorarioFuncionamentoCommandDTO> HorariosDeFuncionamento { get; set; } = [];
