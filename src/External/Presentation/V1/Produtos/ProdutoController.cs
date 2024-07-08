@@ -6,6 +6,7 @@ using Application.Queries.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
+using Presentation.Atributos.Auth;
 using Presentation.Base;
 using Presentation.Configurations.Extensions;
 
@@ -14,6 +15,7 @@ namespace Presentation.V1
     [ApiController]
     [RouterController("produto")]
     [ApiVersion(ApiConfig.V1)]
+    [AutorizationApi]
     public class ProdutoController : MainController
     {
         private readonly IProdutoQueryService _produtoQueryService;

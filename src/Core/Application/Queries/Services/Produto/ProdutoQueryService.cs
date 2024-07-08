@@ -3,7 +3,7 @@ using Application.Queries.DTO;
 using Application.Queries.DTO.Produto;
 using Application.Queries.Interfaces;
 using Application.Queries.Services.Base;
-using Domain.Entities;
+using Domain.Entities.Produtos;
 using Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
 

@@ -2,7 +2,7 @@
 {
     public enum EnumStatusProduto
     {
-        Pausado = 0,
-        Ativo = 1
+        ATIVO = 1,
+        PAUSADO = 2
     }
 }

@@ -2,7 +2,7 @@
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
 using Application.Configurations.MappingsApp;
-using Domain.Entities;
+using Domain.Entities.Produtos;
 using Domain.Interfaces.Repositories;
 
 namespace Application.Commands.Services

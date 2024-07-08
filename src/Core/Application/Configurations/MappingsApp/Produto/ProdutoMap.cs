@@ -1,6 +1,6 @@
 ﻿using Application.Commands.DTO;
 using Application.Queries.DTO;
-using Domain.Entities;
+using Domain.Entities.Produtos;
 
 namespace Application.Configurations.MappingsApp
 {

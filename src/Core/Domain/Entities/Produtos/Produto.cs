@@ -1,7 +1,7 @@
 ﻿using Domain.Entities.Base;
 using Domain.Enumeradores;
 
-namespace Domain.Entities
+namespace Domain.Entities.Produtos
 {
     public class Produto : EntityBase
     {
@@ -13,5 +13,7 @@ namespace Domain.Entities
         public string Descricao { get; set; }
         public string Nome { get; set; }
         public string CaminhoImagem { get; set; }
+
+        public CategoriaProduto CategoriaProduto { get; set; }
     }
 }
