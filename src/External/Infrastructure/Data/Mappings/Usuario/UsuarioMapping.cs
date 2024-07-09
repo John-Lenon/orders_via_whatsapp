@@ -4,7 +4,7 @@ using Domain.Entities;
 
 namespace Infrastructure.Data.Mappings
 {
-    public class UsuarioMap : IEntityTypeConfiguration<Usuario>
+    public class UsuarioMapping : IEntityTypeConfiguration<Usuario>
     {
         public void Configure(EntityTypeBuilder<Usuario> builder)
         {

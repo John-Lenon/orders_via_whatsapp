@@ -1,4 +1,5 @@
 ﻿using Application.Commands.DTO;
+using Application.Commands.DTO.File;
 using Application.Commands.Interfaces;
 using Application.Queries.DTO;
 using Application.Queries.DTO.Produto;
@@ -16,21 +17,16 @@ namespace Presentation.V1
     [RouterController("produto")]
     [ApiVersion(ApiConfig.V1)]
     [AutorizationApi]
-    public class ProdutoController : MainController
+    public class ProdutoController(
+        IServiceProvider serviceProvider,
+        IProdutoQueryService _produtoQueryService,
+        IProdutoCommandService _produtoCommandService
+    ) : MainController(serviceProvider)
     {
-        private readonly IProdutoQueryService _produtoQueryService;
-        private readonly IProdutoCommandService _produtoCommandService;
-
-        public ProdutoController(IServiceProvider serviceProvider,
-            IProdutoQueryService produtoQueryService,
-            IProdutoCommandService produtoCommandService) : base(serviceProvider)
-        {
-            _produtoQueryService = produtoQueryService;
-            _produtoCommandService = produtoCommandService;
-        }
-
         [HttpGet]
-        public async Task<IEnumerable<ProdutoQueryDTO>> GetAsync([FromQuery] ProdutoFilterDTO filter)
+        public async Task<IEnumerable<ProdutoQueryDTO>> GetAsync(
+            [FromQuery] ProdutoFilterDTO filter
+        )
         {
             return await _produtoQueryService.GetAsync(filter);
         }
@@ -40,5 +36,19 @@ namespace Presentation.V1
         {
             await _produtoCommandService.InsertAsync(produto);
         }
+
+        #region Image
+        [HttpGet("get-image-produto")]
+        public async Task<FileContentResult> GetProdutoImageAsync([FromQuery] ImageSearchRequestDto imageSearch)
+        {
+            return await _produtoCommandService.GetProdutoImageAsync(imageSearch);
+        }
+
+        [HttpPost("upload-image-produto")]
+        public async Task<bool> UploadProdutoImageAsync([FromForm] ImageUploadRequestDto imageUpload)
+        {
+            return await _produtoCommandService.UploadProdutoImageAsync(imageUpload);
+        }
+        #endregion
     }
 }

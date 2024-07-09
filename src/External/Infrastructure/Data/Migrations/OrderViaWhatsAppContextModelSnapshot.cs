@@ -22,6 +22,114 @@ namespace Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Entities.Empresa.Empresa", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Cnpj")
+                        .IsRequired()
+                        .HasMaxLength(14)
+                        .HasColumnType("nvarchar(14)")
+                        .HasColumnName("CNPJ");
+
+                    b.Property<Guid>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CODIGO")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Dominio")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("DOMINIO");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("EMAIL");
+
+                    b.Property<string>("EnderecoDaCapaDeFundo")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("ENDERECO_DA_CAPA_DE_FUNDO");
+
+                    b.Property<string>("EnderecoDoLogotipo")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)")
+                        .HasColumnName("ENDERECO_DO_LOGOTIPO");
+
+                    b.Property<string>("NomeFantasia")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("NOME_FANTASIA");
+
+                    b.Property<string>("NumeroDoWhatsapp")
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)")
+                        .HasColumnName("NUMERO_DO_WHATSAPP");
+
+                    b.Property<string>("RazaoSocial")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("RAZAO_SOCIAL");
+
+                    b.Property<string>("StatusDeFuncionamento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("STATUS_DE_FUNCIONAMENTO");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EMPRESA", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Empresa.HorarioFuncionamento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CODIGO")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("DiaDaSemana")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("DIA_DA_SEMANA");
+
+                    b.Property<int>("EmpresaId")
+                        .HasColumnType("int")
+                        .HasColumnName("EMPRESA_ID");
+
+                    b.Property<int>("Hora")
+                        .HasColumnType("int")
+                        .HasColumnName("HORA");
+
+                    b.Property<int>("Minutos")
+                        .HasColumnType("int")
+                        .HasColumnName("MINUTOS");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmpresaId");
+
+                    b.ToTable("HORARIO_FUNCIONAMENTO", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Entities.Permissao", b =>
                 {
                     b.Property<int>("Id")
@@ -170,6 +278,17 @@ namespace Data.Migrations
                     b.ToTable("USUARIO_PERMISSAO", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Empresa.HorarioFuncionamento", b =>
+                {
+                    b.HasOne("Domain.Entities.Empresa.Empresa", "Empresa")
+                        .WithMany("HorariosDeFuncionamento")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empresa");
+                });
+
             modelBuilder.Entity("USUARIO_PERMISSAO", b =>
                 {
                     b.HasOne("Domain.Entities.Permissao", null)
@@ -183,6 +302,11 @@ namespace Data.Migrations
                         .HasForeignKey("USUARIO_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Entities.Empresa.Empresa", b =>
+                {
+                    b.Navigation("HorariosDeFuncionamento");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Produtos;
+using Domain.Entities.Empresa;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Context
@@ -8,10 +9,10 @@ namespace Infrastructure.Data.Context
         : DbContext(options)
     {
         public DbSet<Produto> Produto { get; set; }
-
         public DbSet<Usuario> Usuario { get; set; }
-
         public DbSet<Permissao> Permissao { get; set; }
+        public DbSet<Empresa> Empresa { get; set; }
+        public DbSet<HorarioFuncionamento> HorarioFuncionamento { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,11 +22,8 @@ namespace Infrastructure.Data.Context
 
         public void SetConnectionString(string newStringConnection)
         {
-            if (Database.CurrentTransaction is not null)
-            {
-                Database.CurrentTransaction.Commit();
-            }
-            ;
+            Database.CurrentTransaction?.Commit();
+
             Database.SetConnectionString(newStringConnection);
         }
     }

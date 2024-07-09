@@ -1,10 +1,9 @@
-﻿using Application.Configurations;
-using FluentValidation;
+﻿using Api.Configurations.Extensions.Swagger;
+using Application.Configurations;
 using Infrastructure.Data.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Presentation.Configurations.Extensions;
-using System.Reflection;
 using System.Text;
 using Web.Middlewares;
 
@@ -46,10 +45,6 @@ namespace Api.Configurations.Extensions.ManageDependencies
                 });
         }
 
-        public static void AddAssemblyConfigurations(this IServiceCollection services)
-        {
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-        }
 
         public static WebApplicationBuilder ConfigureApplication(this WebApplicationBuilder webAppBuilder)
         {
@@ -64,6 +59,7 @@ namespace Api.Configurations.Extensions.ManageDependencies
             webAppBuilder.Services.AddHttpContextAccessor();
             webAppBuilder.Services.AddAuthenticationJwt(webAppBuilder.Configuration);
             webAppBuilder.Services.AddAssemblyConfigurations();
+            webAppBuilder.Services.AddSwaggerConfiguration();
 
             return webAppBuilder;
         }
@@ -72,7 +68,7 @@ namespace Api.Configurations.Extensions.ManageDependencies
         {
             app.UseCors(configurePolicy =>
             {
-                if (webAppBuilder.Environment.IsDevelopment())
+                if(webAppBuilder.Environment.IsDevelopment())
                     configurePolicy.AllowAnyOrigin();
                 else
                     configurePolicy.WithOrigins(AppSettings.AllowedOrigins);

@@ -21,7 +21,7 @@ namespace Web.Middlewares
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var connectionString = await IdentificarStringConexaoAsync(context);
-            if (string.IsNullOrEmpty(connectionString)) return;
+            if(string.IsNullOrEmpty(connectionString)) return;
 
             _context.SetConnectionString(connectionString);
             await next(context);
@@ -33,13 +33,13 @@ namespace Web.Middlewares
             var origin = httpContext.Request.Headers["Origin"].ToString();
             var hostName = string.IsNullOrEmpty(origin) ?
                 httpContext.Request.Host.Host :
-                origin.Split("//")[1].Split('/')[0];
+                origin.Split("//")[1].Split('/')[0].Split(':')[0];
 
             var empresaLocalizada = _companyConnections.List.FirstOrDefault(empresa =>
                 empresa.NomeDominio == hostName
             );
 
-            if (empresaLocalizada == null)
+            if(empresaLocalizada == null)
             {
                 var response = new ResponseResultDTO<string>();
                 response.Mensagens =

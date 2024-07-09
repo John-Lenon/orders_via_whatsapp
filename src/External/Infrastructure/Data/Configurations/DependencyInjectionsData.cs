@@ -16,6 +16,8 @@ namespace Infrastructure.Data.Configurations
         {
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IProdutoRepository, ProdutoRepository>();
+            services.AddScoped<IEmpresaRepository, EmpresaRepository>();
+            services.AddScoped<IHorarioFuncionamentoRepository, HorarioFuncionamentoRepository>();
         }
     }
 }

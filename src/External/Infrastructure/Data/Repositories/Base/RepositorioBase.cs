@@ -22,7 +22,7 @@ namespace Infrastructure.Data.Repository.Base
 
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> expression = null)
         {
-            if (expression != null)
+            if(expression != null)
                 return DbSet.Where(expression);
 
             return DbSet.AsQueryable();
@@ -58,13 +58,13 @@ namespace Infrastructure.Data.Repository.Base
         {
             var sqlString = new StringBuilder($"SELECT * FROM {tableName} PRODUTO");
 
-            if (listParameters.Count > 0)
+            if(listParameters.Count > 0)
             {
                 var parameter = listParameters.First();
                 sqlString.Append($" WHERE {parameter.ParameterName.Substring(1)} = {parameter.ParameterName}");
             }
 
-            foreach (var parameter in listParameters)
+            foreach(var parameter in listParameters)
                 sqlString.Append($" AND {parameter.ParameterName[1..]} = {parameter.ParameterName}");
 
             return sqlString.ToString();
