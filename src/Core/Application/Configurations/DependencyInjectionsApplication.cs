@@ -1,9 +1,10 @@
 ﻿using Application.Commands.Interfaces;
 using Application.Commands.Services;
-using Application.Interfaces.Utilities;
 using Application.Queries.Interfaces;
+using Application.Queries.Interfaces.Usuario;
 using Application.Queries.Services;
 using Application.Utilities;
+using Application.Utilities.Utilities;
 using Domain.Interfaces.Utilities;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,7 @@ namespace Application.Configurations
             services.AddScoped<IProdutoQueryService, ProdutoQueryService>();
             services.AddScoped<IEmpresaQueryService, EmpresaQueryService>();
             services.AddScoped<IHorarioFuncionamentoQueryService, HorarioFuncionamentoQueryService>();
+            services.AddScoped<IUsuarioQueryService, UsuarioQueryService>();
         }
 
         public static void AddAssemblyConfigurations(this IServiceCollection services)

@@ -1,5 +1,5 @@
 ﻿using Application.Configurations;
-using Application.Interfaces.Utilities;
+using Application.Utilities.Utilities;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Utilities;
 

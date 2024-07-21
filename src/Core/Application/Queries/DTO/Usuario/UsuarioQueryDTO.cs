@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Queries.DTO.Base;
 
 namespace Application.Queries.DTO
 {
-    internal class UsuarioQueryDTO
+    public class UsuarioQueryDTO : QueryBaseDTO
     {
     }
 }

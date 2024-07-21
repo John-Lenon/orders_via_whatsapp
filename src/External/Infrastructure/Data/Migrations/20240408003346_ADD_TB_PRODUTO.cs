@@ -36,7 +36,7 @@ namespace Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ID", x => x.ID);
+                    table.PrimaryKey("PK_PRODUTO", x => x.ID);
                 }
             );
         }

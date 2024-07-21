@@ -2,13 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Data.Mappings
+namespace Infrastructure.Data.Mappings.Produtos
 {
     public class ProdutoMapping : IEntityTypeConfiguration<Produto>
     {
         public void Configure(EntityTypeBuilder<Produto> builder)
         {
-            builder.ToTable("PRODUTO").HasKey(e => e.Id).HasName("PK_ID");
+            builder.ToTable("PRODUTO").HasKey(e => e.Id);
 
             builder.Property(e => e.Id)
                    .HasColumnName("ID")

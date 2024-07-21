@@ -1,6 +1,7 @@
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
 using Application.Configurations.MappingsApp;
+using Application.Queries.Interfaces.Usuario;
 using Application.Resources.Messages;
 using Application.Utilities;
 using Domain.DTOs;
@@ -9,6 +10,7 @@ using Domain.Enumeradores.Notificacao;
 using Domain.Enumeradores.Pemissoes;
 using Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Commands.Services
 {
@@ -16,6 +18,8 @@ namespace Application.Commands.Services
         : CommandServiceBase<Usuario, UsuarioCommandDTO, IUsuarioRepository>(service),
             IUsuarioCommandService
     {
+        private IUsuarioQueryService _usuarioQueryService = service.GetService<IUsuarioQueryService>();
+
         public async Task<UsuarioTokenCommandDTO> LoginAsync(UsuarioCommandDTO userDto) =>
             await _authApp.AutenticarAsync(userDto);
 
@@ -124,8 +128,8 @@ namespace Application.Commands.Services
 
             if (codeUserAuthenticated != usuario.Codigo.ToString())
             {
-                if (_authApp.PossuiPermissao(EnumPermissoes.USU_000004)
-                    || _authApp.PossuiPermissao(EnumPermissoes.USU_000005))
+                if (_usuarioQueryService.PossuiPermissao(EnumPermissoes.USU_000004)
+                    || _usuarioQueryService.PossuiPermissao(EnumPermissoes.USU_000005))
                 {
                     return true;
                 }

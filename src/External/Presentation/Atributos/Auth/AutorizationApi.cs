@@ -1,4 +1,5 @@
-﻿using Domain.Enumeradores.Notificacao;
+﻿using Application.Utilities;
+using Domain.Enumeradores.Notificacao;
 using Domain.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -24,6 +25,25 @@ namespace Presentation.Atributos.Auth
                     ]
                 };
 
+                context.Result = new ObjectResult(response) { StatusCode = 401 };
+                return;
+            }
+
+            var dominioAuthenticado = context.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "dominio")?.Value;
+            var dominioAtual = context.HttpContext.ObterNomeDominioAcessado();
+
+            if (dominioAuthenticado == null || dominioAuthenticado != dominioAtual)
+            {
+                var response = new ResponseResultDTO<string>()
+                {
+                    Mensagens =
+                    [
+                        new Notificacao(
+                            EnumTipoNotificacao.ErroCliente,
+                            $"Você não está autenticado neste domínio '{dominioAtual}'. Você foi autenticado no domínio '{dominioAuthenticado}'."
+                        )
+                    ]
+                };
                 context.Result = new ObjectResult(response) { StatusCode = 401 };
                 return;
             }

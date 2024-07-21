@@ -156,7 +156,114 @@ namespace Data.Migrations
                     b.ToTable("PERMISSAO", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Produto", b =>
+            modelBuilder.Entity("Domain.Entities.Produtos.AdicionalProduto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoriaAdicionalProdutoId")
+                        .HasColumnType("int")
+                        .HasColumnName("ID_CATEGORIA_ADC_PRODUTO");
+
+                    b.Property<Guid>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CODIGO")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<decimal>("Preco")
+                        .HasColumnType("decimal")
+                        .HasColumnName("PRECO");
+
+                    b.Property<int>("Prioridade")
+                        .HasColumnType("int")
+                        .HasColumnName("PRIORIDADE");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("STATUS");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoriaAdicionalProdutoId");
+
+                    b.ToTable("ADICIONAL_PRODUTO", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Produtos.CategoriaAdicionalProduto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CODIGO")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(80)")
+                        .HasColumnName("NOME");
+
+                    b.Property<int>("Prioridade")
+                        .HasColumnType("int")
+                        .HasColumnName("PRIORIDADE");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("STATUS");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CATEGORIA_ADICIONAL_PRODUTO", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Produtos.CategoriaProduto", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CODIGO")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(80)")
+                        .HasColumnName("NOME");
+
+                    b.Property<int>("Prioridade")
+                        .HasColumnType("int")
+                        .HasColumnName("PRIORIDADE");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("STATUS");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CATEGORIA_PRODUTO", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Produtos.Produto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -203,8 +310,9 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasColumnName("STATUS");
 
-                    b.HasKey("Id")
-                        .HasName("PK_ID");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoriaId");
 
                     b.ToTable("PRODUTO", (string)null);
                 });
@@ -263,6 +371,21 @@ namespace Data.Migrations
                     b.ToTable("USUARIO", (string)null);
                 });
 
+            modelBuilder.Entity("PRODUTO_E_ADICIONAL_PRODUTO", b =>
+                {
+                    b.Property<int>("PRODUTO_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ADICIONAL_PRODUTO_ID")
+                        .HasColumnType("int");
+
+                    b.HasKey("PRODUTO_ID", "ADICIONAL_PRODUTO_ID");
+
+                    b.HasIndex("ADICIONAL_PRODUTO_ID");
+
+                    b.ToTable("PRODUTO_E_ADICIONAL_PRODUTO", (string)null);
+                });
+
             modelBuilder.Entity("USUARIO_PERMISSAO", b =>
                 {
                     b.Property<int>("USUARIO_ID")
@@ -289,6 +412,43 @@ namespace Data.Migrations
                     b.Navigation("Empresa");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Produtos.AdicionalProduto", b =>
+                {
+                    b.HasOne("Domain.Entities.Produtos.CategoriaAdicionalProduto", "CategoriaAdicionalProduto")
+                        .WithMany("AdicionaisProdutos")
+                        .HasForeignKey("CategoriaAdicionalProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CategoriaAdicionalProduto");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Produtos.Produto", b =>
+                {
+                    b.HasOne("Domain.Entities.Produtos.CategoriaProduto", "CategoriaProduto")
+                        .WithMany("Produtos")
+                        .HasForeignKey("CategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CategoriaProduto");
+                });
+
+            modelBuilder.Entity("PRODUTO_E_ADICIONAL_PRODUTO", b =>
+                {
+                    b.HasOne("Domain.Entities.Produtos.AdicionalProduto", null)
+                        .WithMany()
+                        .HasForeignKey("ADICIONAL_PRODUTO_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Produtos.Produto", null)
+                        .WithMany()
+                        .HasForeignKey("PRODUTO_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("USUARIO_PERMISSAO", b =>
                 {
                     b.HasOne("Domain.Entities.Permissao", null)
@@ -307,6 +467,16 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.Entities.Empresa.Empresa", b =>
                 {
                     b.Navigation("HorariosDeFuncionamento");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Produtos.CategoriaAdicionalProduto", b =>
+                {
+                    b.Navigation("AdicionaisProdutos");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Produtos.CategoriaProduto", b =>
+                {
+                    b.Navigation("Produtos");
                 });
 #pragma warning restore 612, 618
         }

@@ -8,20 +8,14 @@ using System.Linq.Expressions;
 
 namespace Application.Queries.Services.Base
 {
-
-    public abstract class QueryServiceBase<TRepository, TFilterDTO, TQueryDTO, TEntity> :
+    public abstract class QueryServiceBase<TRepository, TFilterDTO, TQueryDTO, TEntity>(IServiceProvider serviceProvider) :
         IQueryServiceBase<TFilterDTO, TQueryDTO>
         where TEntity : EntityBase
         where TFilterDTO : FilterBaseDTO
         where TRepository : IRepositoryBase<TEntity>
         where TQueryDTO : QueryBaseDTO
     {
-        protected readonly TRepository _repository;
-
-        public QueryServiceBase(IServiceProvider serviceProvider)
-        {
-            _repository = serviceProvider.GetRequiredService<TRepository>();
-        }
+        protected readonly TRepository _repository = serviceProvider.GetRequiredService<TRepository>();
 
         public virtual async Task<TQueryDTO> GetByCodigoAsync(Guid codigo)
         {
@@ -29,7 +23,7 @@ namespace Application.Queries.Services.Base
             return MapToDTO(result);
         }
 
-        public virtual async Task<IEnumerable<TQueryDTO>> GetAsync(TFilterDTO filter)
+        public virtual async Task<IEnumerable<TQueryDTO>> GetAsync(TFilterDTO filter = null)
         {
             var listResult = await _repository.Get(GetFilterExpression(filter)).ToListAsync();
             return listResult.Select(MapToDTO);

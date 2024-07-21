@@ -1,6 +1,6 @@
 ﻿using Application.Commands.DTO.File;
 using Application.Commands.Interfaces.Base;
-using Application.Interfaces.Utilities;
+using Application.Utilities.Utilities;
 using Domain.Entities.Base;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories.Base;
@@ -29,32 +29,32 @@ namespace Application.Commands.Services.Base
         {
             var entityLocated = await _repository.Get(item => item.Codigo == codigo).FirstOrDefaultAsync();
 
-            if(entityLocated == null)
+            if (entityLocated == null)
             {
                 Notificar(EnumTipoNotificacao.ErroCliente, "Entidade não encontrada para deleção");
                 return;
             }
 
             _repository.Delete(entityLocated);
-            if(saveChanges) await CommitAsync();
+            if (saveChanges) await CommitAsync();
         }
 
         public virtual async Task InsertAsync(TEntityDTO entityDTO, bool saveChanges = true)
         {
-            if(!Validator(entityDTO)) return;
+            if (!Validator(entityDTO)) return;
 
             var entity = MapToEntity(entityDTO);
             await _repository.InsertAsync(entity);
-            if(saveChanges) await CommitAsync();
+            if (saveChanges) await CommitAsync();
         }
 
         public virtual async Task UpdateAsync(TEntityDTO entityDTO, bool saveChanges = true)
         {
-            if(!Validator(entityDTO)) return;
+            if (!Validator(entityDTO)) return;
 
             var entity = MapToEntity(entityDTO);
             _repository.Update(entity);
-            if(saveChanges) await CommitAsync();
+            if (saveChanges) await CommitAsync();
         }
 
         public virtual Task PatchAsync(TEntityDTO entity, bool saveChanges = true)
@@ -67,7 +67,7 @@ namespace Application.Commands.Services.Base
         #region Protected Methods 
         protected async Task<bool> UploadImageAsync(ImageUploadRequestDto imageUpload)
         {
-            if(!ValidateImageToUpoload(imageUpload)) return false;
+            if (!ValidateImageToUpoload(imageUpload)) return false;
 
             using var memoryStream = new MemoryStream();
             await imageUpload.File.CopyToAsync(memoryStream);
@@ -77,14 +77,14 @@ namespace Application.Commands.Services.Base
             var success = await _fileService.SaveFileAsync(caminhoPasta,
                 imageUpload.File.FileName, memoryStream.ToArray());
 
-            if(!success) return false;
+            if (!success) return false;
 
             return true;
         }
 
         protected async Task<byte[]> GetImageAsync(ImageSearchRequestDto imageSearchRequest)
         {
-            if(imageSearchRequest.Cnpj.IsNullOrEmpty() ||
+            if (imageSearchRequest.Cnpj.IsNullOrEmpty() ||
                 imageSearchRequest.FileName.IsNullOrEmpty())
             {
                 Notificar(EnumTipoNotificacao.ErroCliente,
@@ -98,7 +98,7 @@ namespace Application.Commands.Services.Base
 
             var file = await _fileService.GetFileAsync(caminhoPasta, imageSearchRequest.FileName);
 
-            if(file is null) return [];
+            if (file is null) return [];
 
             return file;
         }
@@ -112,7 +112,7 @@ namespace Application.Commands.Services.Base
         {
             var results = validator.Validate(entityDto);
 
-            if(!results.IsValid)
+            if (!results.IsValid)
             {
                 var groupedFailures = results
                     .Errors.GroupBy(failure => failure.PropertyName)
@@ -121,7 +121,7 @@ namespace Application.Commands.Services.Base
                         Errors = string.Join(" ", group.Select(err => err.ErrorMessage))
                     });
 
-                foreach(var failure in groupedFailures)
+                foreach (var failure in groupedFailures)
                 {
                     Notificar(EnumTipoNotificacao.Informacao, $"{failure.Errors}");
                 }
@@ -134,7 +134,7 @@ namespace Application.Commands.Services.Base
 
         protected async Task<bool> CommitAsync()
         {
-            if(!await _repository.SaveChangesAsync())
+            if (!await _repository.SaveChangesAsync())
             {
                 Notificar(EnumTipoNotificacao.ErroInterno, "Falha na Operação.");
                 return false;
@@ -148,7 +148,7 @@ namespace Application.Commands.Services.Base
         {
             bool isValid = true;
 
-            if(imageUpload.Cnpj.IsNullOrEmpty())
+            if (imageUpload.Cnpj.IsNullOrEmpty())
             {
                 Notificar(EnumTipoNotificacao.ErroCliente,
                     "Cnpj não pode ser nulo ou vazio.");
@@ -156,7 +156,7 @@ namespace Application.Commands.Services.Base
                 isValid = false;
             }
 
-            if(imageUpload.File == null || imageUpload.File.Length == 0)
+            if (imageUpload.File == null || imageUpload.File.Length == 0)
             {
                 Notificar(EnumTipoNotificacao.ErroCliente,
                     "O arquivo não pode ser nulo ou vazio.");
@@ -164,7 +164,7 @@ namespace Application.Commands.Services.Base
                 isValid = false;
             }
 
-            if(imageUpload.File.ContentType != "image/png" &&
+            if (imageUpload.File.ContentType != "image/png" &&
                imageUpload.File.ContentType != "image/jpeg")
             {
                 Notificar(EnumTipoNotificacao.ErroCliente,

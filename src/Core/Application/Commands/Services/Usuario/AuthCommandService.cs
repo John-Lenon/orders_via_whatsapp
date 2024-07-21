@@ -16,8 +16,8 @@ using System.Text;
 
 namespace Application.Commands.Services
 {
-    public class AuthCommandService(IServiceProvider service)
-        : CommandServiceBase<Usuario, UsuarioCommandDTO, IUsuarioRepository>(service),
+    public class AuthCommandService(IServiceProvider serviceProvider)
+        : CommandServiceBase<Usuario, UsuarioCommandDTO, IUsuarioRepository>(serviceProvider),
             IAuthCommandService
     {
         public async Task<UsuarioTokenCommandDTO> AutenticarAsync(UsuarioCommandDTO userDto)
@@ -52,19 +52,6 @@ namespace Application.Commands.Services
             return GerarToken(usuario);
         }
 
-        public bool PossuiPermissao(params EnumPermissoes[] permissoesNecessarias)
-        {
-            var permissoesUsuario = _httpContext?.User?.Claims?.Select(claim =>
-                claim.Value.ToString()
-            );
-
-            var possuiPermissao = permissoesNecessarias.All(permissaoNecessaria =>
-                permissoesUsuario.Any(permissao => permissao == permissaoNecessaria.ToString())
-            );
-
-            return possuiPermissao;
-        }
-
         public async Task AdicionarPermissaoAoUsuarioAsync(int usuarioId, params EnumPermissoes[] permissoes)
         {
             var usuario = await _repository
@@ -91,14 +78,14 @@ namespace Application.Commands.Services
         public UsuarioTokenCommandDTO GerarToken(Usuario usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-
             var tokenExpirationTime = DateTime.UtcNow.AddDays(AppSettings.JwtConfigs.ExpireDays);
-
             var key = Encoding.ASCII.GetBytes(AppSettings.JwtConfigs.Key);
+            var nomeDominio = _httpContext.ObterNomeDominioAcessado();
 
             var claims = new List<Claim>
             {
                 new(ClaimTypes.Name, usuario.Email),
+                new("dominio", nomeDominio),
                 new("codigo_usuario", usuario.Codigo.ToString()),
                 new("Permissao", EnumPermissoes.USU_000002.ToString()),
                 new("Permissao", EnumPermissoes.USU_000003.ToString())

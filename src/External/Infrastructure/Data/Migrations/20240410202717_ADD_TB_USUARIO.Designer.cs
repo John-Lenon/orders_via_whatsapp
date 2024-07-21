@@ -58,7 +58,7 @@ namespace Data.Migrations
                         .HasColumnName("PRECO");
 
                     b.HasKey("Id")
-                        .HasName("PK_ID");
+                        .HasName("PK_PRODUTO");
 
                     b.ToTable("PRODUTO", (string)null);
                 });

@@ -5,7 +5,6 @@ namespace Domain.Entities.Empresa
 {
     public class HorarioFuncionamento : EntityBase
     {
-        public int Id { get; set; }
         public int Hora { get; set; }
         public int Minutos { get; set; }
         public EnumDiaDaSemana DiaDaSemana { get; set; }

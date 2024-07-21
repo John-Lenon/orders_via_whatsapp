@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infrastructure.Data.Sql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,7 +9,7 @@ namespace Infrastructure.Data.Mappings
     {
         public void Configure(EntityTypeBuilder<Permissao> builder)
         {
-            builder.ToTable("PERMISSAO");
+            builder.ToTable(TableNames.PERMISSAO);
 
             builder
                .Property(u => u.Codigo)

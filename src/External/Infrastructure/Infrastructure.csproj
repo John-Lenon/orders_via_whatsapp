@@ -23,12 +23,12 @@
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
     <Folder Include="Client HTTP\" />
-    <Folder Include="Data\Sql\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\Application.csproj" />
     <ProjectReference Include="..\..\Core\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Presentation\Presentation.csproj" />
   </ItemGroup>
 
 </Project>

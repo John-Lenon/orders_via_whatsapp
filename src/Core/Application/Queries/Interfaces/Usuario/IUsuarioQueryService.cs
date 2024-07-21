@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Queries.DTO;
+using Application.Queries.DTO.Usuario;
+using Application.Queries.Interfaces.Base;
+using Domain.Enumeradores.Pemissoes;
 
-namespace Application.Queries.Interfaces
+namespace Application.Queries.Interfaces.Usuario
 {
-    public interface IUsuarioQueryService
+    public interface IUsuarioQueryService : IQueryServiceBase<UsuarioFilterDTO, UsuarioQueryDTO>
     {
+        bool PossuiPermissao(params EnumPermissoes[] permissoesNecessarias);
     }
 }

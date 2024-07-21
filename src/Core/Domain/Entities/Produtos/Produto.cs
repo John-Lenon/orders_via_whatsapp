@@ -5,7 +5,6 @@ namespace Domain.Entities.Produtos
 {
     public class Produto : EntityBase
     {
-        public int Id { get; set; }
         public int CategoriaId { get; set; }
         public int Prioridade { get; set; }
         public EnumStatusProduto Status { get; set; }
@@ -15,5 +14,6 @@ namespace Domain.Entities.Produtos
         public string CaminhoImagem { get; set; }
 
         public CategoriaProduto CategoriaProduto { get; set; }
+        public ICollection<AdicionalProduto> AdicionaisProdutos { get; set; }
     }
 }

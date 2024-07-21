@@ -4,7 +4,6 @@ namespace Domain.Entities
 {
     public class Usuario : EntityBase
     {
-        public int Id { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }
         public string Telefone { get; set; }
@@ -12,6 +11,6 @@ namespace Domain.Entities
         public string SenhaHash { get; set; }
         public string CodigoUnicoSenha { get; set; }
 
-        public virtual ICollection<Permissao> Permissoes { get; set; } = [];
+        public ICollection<Permissao> Permissoes { get; set; } = [];
     }
 }

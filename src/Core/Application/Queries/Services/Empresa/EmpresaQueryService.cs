@@ -15,7 +15,7 @@ namespace Application.Queries.Services
     {
         protected override EmpresaQueryDTO MapToDTO(Empresa entity) => entity.MapToDTO();
 
-        public override async Task<IEnumerable<EmpresaQueryDTO>> GetAsync(EmpresaFilterDTO filter)
+        public override async Task<IEnumerable<EmpresaQueryDTO>> GetAsync(EmpresaFilterDTO filter = null)
         {
             var listResult = await _repository.Get(GetFilterExpression(filter))
                 .Include(empresa => empresa.HorariosDeFuncionamento).ToListAsync();
@@ -25,6 +25,7 @@ namespace Application.Queries.Services
 
         protected override Expression<Func<Empresa, bool>> GetFilterExpression(EmpresaFilterDTO filter)
         {
+            if (filter == null) return empresa => true;
             return empresa =>
                    (filter.Codigo == null || empresa.Codigo == filter.Codigo)
                 && (filter.Cnpj == null || empresa.Cnpj == filter.Cnpj)

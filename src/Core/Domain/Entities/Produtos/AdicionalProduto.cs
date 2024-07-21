@@ -11,5 +11,6 @@ namespace Domain.Entities.Produtos
         public decimal Preco { get; set; }
 
         public CategoriaAdicionalProduto CategoriaAdicionalProduto { get; set; }
+        public ICollection<Produto> Produtos { get; set; }
     }
 }

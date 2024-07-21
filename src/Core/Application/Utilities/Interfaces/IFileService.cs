@@ -1,4 +1,4 @@
-﻿namespace Application.Interfaces.Utilities
+﻿namespace Application.Utilities.Utilities
 {
     public interface IFileService
     {

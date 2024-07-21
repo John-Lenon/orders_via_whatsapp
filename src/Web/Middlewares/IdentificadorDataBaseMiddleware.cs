@@ -1,4 +1,5 @@
 ﻿using Application.Configurations;
+using Application.Utilities;
 using Domain.Enumeradores.Notificacao;
 using Domain.Utilities;
 using Infrastructure.Data.Context;
@@ -21,7 +22,7 @@ namespace Web.Middlewares
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var connectionString = await IdentificarStringConexaoAsync(context);
-            if(string.IsNullOrEmpty(connectionString)) return;
+            if (string.IsNullOrEmpty(connectionString)) return;
 
             _context.SetConnectionString(connectionString);
             await next(context);
@@ -30,16 +31,12 @@ namespace Web.Middlewares
 
         private async Task<string> IdentificarStringConexaoAsync(HttpContext httpContext)
         {
-            var origin = httpContext.Request.Headers["Origin"].ToString();
-            var hostName = string.IsNullOrEmpty(origin) ?
-                httpContext.Request.Host.Host :
-                origin.Split("//")[1].Split('/')[0].Split(':')[0];
-
+            var hostName = httpContext.ObterNomeDominioAcessado();
             var empresaLocalizada = _companyConnections.List.FirstOrDefault(empresa =>
                 empresa.NomeDominio == hostName
             );
 
-            if(empresaLocalizada == null)
+            if (empresaLocalizada == null)
             {
                 var response = new ResponseResultDTO<string>();
                 response.Mensagens =
@@ -55,6 +52,15 @@ namespace Web.Middlewares
                 return null;
             }
             return empresaLocalizada.ConnnectionString;
+        }
+
+        public string ObterNomeDominioAcessado(HttpContext httpContext)
+        {
+            var origin = httpContext.Request.Headers["Origin"].ToString();
+            var hostName = string.IsNullOrEmpty(origin) ?
+                httpContext.Request.Host.Host :
+                origin.Split("//")[1].Split('/')[0].Split(':')[0];
+            return hostName;
         }
     }
 }
