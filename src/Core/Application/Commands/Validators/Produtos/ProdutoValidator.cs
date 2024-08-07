@@ -1,4 +1,4 @@
-﻿using Application.Commands.DTO;
+﻿using Application.Commands.DTO.Produtos;
 using FluentValidation;
 
 namespace Application.Commands.Validators
@@ -18,6 +18,9 @@ namespace Application.Commands.Validators
             RuleFor(x => x.Descricao)
                 .NotEmpty().WithMessage("O {PropertyName} é obrigatório.")
                 .MaximumLength(100).WithMessage("O campo {PropertyName} deve possuir no máximo {MaxLength} caracteres.");
+
+            RuleFor(x => x.CodigoCategoria)
+                .NotEmpty().WithMessage("A categoria do produto deve ser informada.");
         }
 
     }

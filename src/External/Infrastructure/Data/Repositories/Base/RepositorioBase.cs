@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces.Repositories.Base;
+﻿using Domain.Entities.Base;
+using Domain.Interfaces.Repositories.Base;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,7 @@ using System.Text;
 namespace Infrastructure.Data.Repository.Base
 {
     public abstract class RepositorioBase<TEntity, TContext> : IRepositoryBase<TEntity>
-        where TEntity : class, new()
+        where TEntity : EntityBase
         where TContext : DbContext
     {
         private readonly TContext _context;
@@ -22,13 +23,16 @@ namespace Infrastructure.Data.Repository.Base
 
         public IQueryable<TEntity> Get(Expression<Func<TEntity, bool>> expression = null)
         {
-            if(expression != null)
+            if (expression != null)
                 return DbSet.Where(expression);
 
             return DbSet.AsQueryable();
         }
 
         public async Task<TEntity> GetByIdAsync(int id) => await DbSet.FindAsync(id);
+
+        public async Task<TEntity> GetByCodigoAsync(Guid? codigo) =>
+            await Get(x => x.Codigo == codigo.GetValueOrDefault()).FirstOrDefaultAsync();
 
         public virtual async Task InsertAsync(TEntity entity) => await DbSet.AddAsync(entity);
 
@@ -58,13 +62,13 @@ namespace Infrastructure.Data.Repository.Base
         {
             var sqlString = new StringBuilder($"SELECT * FROM {tableName} PRODUTO");
 
-            if(listParameters.Count > 0)
+            if (listParameters.Count > 0)
             {
                 var parameter = listParameters.First();
                 sqlString.Append($" WHERE {parameter.ParameterName.Substring(1)} = {parameter.ParameterName}");
             }
 
-            foreach(var parameter in listParameters)
+            foreach (var parameter in listParameters)
                 sqlString.Append($" AND {parameter.ParameterName[1..]} = {parameter.ParameterName}");
 
             return sqlString.ToString();

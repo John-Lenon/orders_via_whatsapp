@@ -123,7 +123,7 @@ namespace Application.Commands.Services.Base
 
                 foreach (var failure in groupedFailures)
                 {
-                    Notificar(EnumTipoNotificacao.Informacao, $"{failure.Errors}");
+                    Notificar(EnumTipoNotificacao.ErroCliente, $"{failure.Errors}");
                 }
 
                 return false;

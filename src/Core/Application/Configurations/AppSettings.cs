@@ -18,8 +18,8 @@ namespace Application.Configurations
             CompanyFilePaths = config["CompanyFilePaths"];
 
             CompanyConnectionStrings = config
-                .GetSection("CompanyConnectionStrings")
-                ?.Get<CompanyConnectionStrings>();
+                .GetSection("CompanyConnectionStrings")?
+                .Get<CompanyConnectionStrings>();
         }
     }
 
@@ -41,7 +41,7 @@ namespace Application.Configurations
                 x.NomeDominio == "default"
             )?.ConnnectionString;
 
-            if(string.IsNullOrEmpty(defaultConnectionString))
+            if (string.IsNullOrEmpty(defaultConnectionString))
                 throw new Exception(
                     "Não foi definido uma string de conexão padrão no arquivo appsettings"
                 );

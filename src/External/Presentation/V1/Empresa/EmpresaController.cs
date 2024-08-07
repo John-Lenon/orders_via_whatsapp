@@ -19,9 +19,9 @@ namespace Presentation.V1
         IEmpresaCommandService _empresaCommandService) : MainController(serviceProvider)
     {
         [HttpGet]
-        public async Task<IEnumerable<EmpresaQueryDTO>> GetAsync([FromQuery] EmpresaFilterDTO filter)
+        public async Task<EmpresaQueryDTO> GetAsync([FromQuery] EmpresaFilterDTO filter)
         {
-            return await _empresaQueryService.GetAsync(filter);
+            return (await _empresaQueryService.GetAsync(filter)).FirstOrDefault();
         }
 
         [HttpPost]

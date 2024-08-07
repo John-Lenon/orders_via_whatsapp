@@ -1,8 +1,12 @@
 ﻿using Application.Commands.Interfaces;
+using Application.Commands.Interfaces.Produtos;
 using Application.Commands.Services;
+using Application.Commands.Services.Produtos;
 using Application.Queries.Interfaces;
+using Application.Queries.Interfaces.Produtos;
 using Application.Queries.Interfaces.Usuario;
 using Application.Queries.Services;
+using Application.Queries.Services.Produtos;
 using Application.Utilities;
 using Application.Utilities.Utilities;
 using Domain.Interfaces.Utilities;
@@ -34,6 +38,7 @@ namespace Application.Configurations
             services.AddScoped<IHorarioFuncionamentoCommandService, HorarioFuncionamentoCommandService>();
             services.AddScoped<IEmpresaCommandService, EmpresaCommandService>();
             services.AddScoped<IProdutoCommandService, ProdutoCommandService>();
+            services.AddScoped<ICategoriaProdutoCommandService, CategoriaProdutoCommandService>();
         }
 
         public static void AddDependecyQueryServices(this IServiceCollection services)
@@ -42,6 +47,7 @@ namespace Application.Configurations
             services.AddScoped<IEmpresaQueryService, EmpresaQueryService>();
             services.AddScoped<IHorarioFuncionamentoQueryService, HorarioFuncionamentoQueryService>();
             services.AddScoped<IUsuarioQueryService, UsuarioQueryService>();
+            services.AddScoped<ICategoriaProdutoQueryService, CategoriaProdutoQueryService>();
         }
 
         public static void AddAssemblyConfigurations(this IServiceCollection services)

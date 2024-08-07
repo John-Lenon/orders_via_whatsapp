@@ -1,5 +1,5 @@
-﻿using Application.Commands.DTO;
-using Application.Commands.DTO.File;
+﻿using Application.Commands.DTO.File;
+using Application.Commands.DTO.Produtos;
 using Application.Commands.Interfaces;
 using Application.Queries.DTO;
 using Application.Queries.DTO.Produto;

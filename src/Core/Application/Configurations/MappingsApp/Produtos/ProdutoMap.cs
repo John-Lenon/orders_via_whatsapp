@@ -1,4 +1,4 @@
-﻿using Application.Commands.DTO;
+﻿using Application.Commands.DTO.Produtos;
 using Application.Queries.DTO;
 using Domain.Entities.Produtos;
 
@@ -26,7 +26,7 @@ namespace Application.Configurations.MappingsApp
             {
                 Descricao = produto.Descricao,
                 Prioridade = produto.Prioridade,
-                Status = produto.Status,
+                Status = produto.Status.GetValueOrDefault(),
                 CaminhoImagem = produto.CaminhoImagem,
                 Nome = produto.Nome,
                 Preco = produto.Preco

@@ -2,7 +2,7 @@
 using Domain.Interfaces.Repositories.Base;
 
 
-namespace Domain.Interfaces.Repositories
+namespace Domain.Interfaces.Repositories.Produtos
 {
     public interface IProdutoRepository : IRepositoryBase<Produto>
     {

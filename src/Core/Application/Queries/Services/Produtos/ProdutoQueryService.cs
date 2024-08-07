@@ -4,7 +4,7 @@ using Application.Queries.DTO.Produto;
 using Application.Queries.Interfaces;
 using Application.Queries.Services.Base;
 using Domain.Entities.Produtos;
-using Domain.Interfaces.Repositories;
+using Domain.Interfaces.Repositories.Produtos;
 using System.Linq.Expressions;
 
 namespace Application.Queries.Services
