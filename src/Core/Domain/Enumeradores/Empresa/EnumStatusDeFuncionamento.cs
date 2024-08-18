@@ -2,8 +2,8 @@
 {
     public enum EnumStatusDeFuncionamento
     {
-        AbertoAgora,
-        Pausado,
-        Fechado
+        Fechado = 0,
+        Pausado = 1,
+        AbertoAgora = 2,
     }
 }

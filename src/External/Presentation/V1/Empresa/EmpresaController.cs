@@ -6,6 +6,7 @@ using Application.Queries.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
+using Presentation.Atributos.Auth;
 using Presentation.Base;
 using Presentation.Configurations.Extensions;
 
@@ -14,6 +15,7 @@ namespace Presentation.V1
     [ApiController]
     [RouterController("empresa")]
     [ApiVersion(ApiConfig.V1)]
+    [AutorizationApi]
     public class EmpresaController(IServiceProvider serviceProvider,
         IEmpresaQueryService _empresaQueryService,
         IEmpresaCommandService _empresaCommandService) : MainController(serviceProvider)
@@ -22,12 +24,6 @@ namespace Presentation.V1
         public async Task<EmpresaQueryDTO> GetAsync([FromQuery] EmpresaFilterDTO filter)
         {
             return (await _empresaQueryService.GetAsync(filter)).FirstOrDefault();
-        }
-
-        [HttpPost]
-        public async Task AddAsync([FromBody] EmpresaCommandDTO empresa)
-        {
-            await _empresaCommandService.InsertAsync(empresa);
         }
 
         [HttpPut]

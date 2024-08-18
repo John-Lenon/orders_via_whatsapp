@@ -33,12 +33,6 @@ namespace Application.Commands.Validators
              .NotEmpty().WithMessage("Domínio é obrigatório.")
              .Matches("^[a-zA-Z]+$").WithMessage("Domínio deve conter apenas letras.");
 
-            RuleFor(x => x.EnderecoDoLogotipo)
-                .NotEmpty().WithMessage("Endereço do logotipo é obrigatório.");
-
-            RuleFor(x => x.EnderecoDaCapaDeFundo)
-                .NotEmpty().WithMessage("Endereço da capa de fundo é obrigatório.");
-
             RuleFor(x => x.StatusDeFuncionamento)
                 .IsInEnum().WithMessage("Status de funcionamento inválido.");
 
@@ -50,7 +44,7 @@ namespace Application.Commands.Validators
         {
             cnpj = Regex.Replace(cnpj, "[^0-9]", "");
 
-            if(cnpj.Length != 14)
+            if (cnpj.Length != 14)
                 return false;
 
             int[] multiplicador1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
@@ -59,11 +53,11 @@ namespace Application.Commands.Validators
             string tempCnpj = cnpj.Substring(0, 12);
             int soma = 0;
 
-            for(int i = 0; i < 12; i++)
+            for (int i = 0; i < 12; i++)
                 soma += int.Parse(tempCnpj[i].ToString()) * multiplicador1[i];
 
             int resto = (soma % 11);
-            if(resto < 2)
+            if (resto < 2)
                 resto = 0;
             else
                 resto = 11 - resto;
@@ -72,11 +66,11 @@ namespace Application.Commands.Validators
             tempCnpj += digito;
 
             soma = 0;
-            for(int i = 0; i < 13; i++)
+            for (int i = 0; i < 13; i++)
                 soma += int.Parse(tempCnpj[i].ToString()) * multiplicador2[i];
 
             resto = (soma % 11);
-            if(resto < 2)
+            if (resto < 2)
                 resto = 0;
             else
                 resto = 11 - resto;

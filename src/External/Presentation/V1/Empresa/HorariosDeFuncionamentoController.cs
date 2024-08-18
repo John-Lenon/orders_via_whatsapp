@@ -5,6 +5,7 @@ using Application.Queries.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
+using Presentation.Atributos.Auth;
 using Presentation.Configurations.Extensions;
 
 namespace Presentation.V1.Empresa
@@ -12,6 +13,7 @@ namespace Presentation.V1.Empresa
     [ApiController]
     [RouterController("horario-fucionamento")]
     [ApiVersion(ApiConfig.V1)]
+    [AutorizationApi]
     public class HorariosDeFuncionamentoController(IHorarioFuncionamentoCommandService _horarioFuncionamentoCommand,
         IHorarioFuncionamentoQueryService _horarioFuncionamentoQuery)
     {

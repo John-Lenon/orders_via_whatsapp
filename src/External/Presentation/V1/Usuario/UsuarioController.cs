@@ -29,10 +29,5 @@ namespace Presentation.V1
         [PermissoesApi(EnumPermissoes.USU_000002)]
         public async Task<UsuarioCommandDTO> AtualizarAsync(int usuarioId, UsuarioCommandDTO userDto) =>
             await _usuarioServiceApp.AtualizarAsync(usuarioId, userDto);
-
-        [HttpDelete("deletar")]
-        [PermissoesApi(EnumPermissoes.USU_000003)]
-        public async Task<bool> DeletarAsync(int usuarioId) =>
-            await _usuarioServiceApp.DeleteAsync(usuarioId);
     }
 }
