@@ -117,9 +117,9 @@ namespace Application.Resources.Messages {
         /// <summary>
         ///   Looks up a localized string similar to Empresa não encontrada..
         /// </summary>
-        public static string EmpresaNaoEncontrado {
+        public static string EmpresaNaoEncontrada {
             get {
-                return ResourceManager.GetString("EmpresaNaoEncontrado", resourceCulture);
+                return ResourceManager.GetString("EmpresaNaoEncontrada", resourceCulture);
             }
         }
         

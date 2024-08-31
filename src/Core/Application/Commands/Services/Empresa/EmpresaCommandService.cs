@@ -8,6 +8,7 @@ using Domain.Entities.Empresa;
 using Domain.Enumeradores.Empresa;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -30,7 +31,7 @@ namespace Application.Commands.Services
 
             if (empresa is null)
             {
-                Notificar(EnumTipoNotificacao.ErroCliente, Message.EmpresaNaoEncontrado);
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.EmpresaNaoEncontrada);
                 return;
             }
 
@@ -56,13 +57,27 @@ namespace Application.Commands.Services
             return new FileContentResult(imgBytes, "image/jpeg");
         }
 
-        public async Task<bool> UploadCapaEmpresaAsync(ImageUploadRequestDto imageUpload)
+        public async Task<bool> UploadCapaEmpresaAsync(string cnpj, IFormFile file)
         {
+            var imageUpload = new ImageUploadRequestDto
+            {
+                Cnpj = cnpj,
+                File = file,
+                TipoImagem = EnumTipoImagem.Capa
+            };
+
+            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
+
+            if (empresa == null)
+            {
+                Notificar(EnumTipoNotificacao.Informacao, Message.EmpresaNaoEncontrada);
+            }
+
             var (success, caminhoPasta) = await UploadImageAsync(imageUpload);
 
             if (success)
             {
-                await SalvarCaminhoDeCapaFundoAsync(imageUpload.Cnpj, caminhoPasta);
+                await SalvarCaminhoDeCapaFundoAsync(empresa, caminhoPasta);
 
             }
             return success;
@@ -83,15 +98,27 @@ namespace Application.Commands.Services
             return new FileContentResult(imgBytes, "image/jpeg");
         }
 
-        public async Task<bool> UploadLogoEmpresaAsync(ImageUploadRequestDto imageUpload)
+        public async Task<bool> UploadLogoEmpresaAsync(string cnpj, IFormFile file)
         {
-            imageUpload.TipoImagem = EnumTipoImagem.Logo;
+            var imageUpload = new ImageUploadRequestDto
+            {
+                Cnpj = cnpj,
+                File = file,
+                TipoImagem = EnumTipoImagem.Logo
+            };
+
+            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
+
+            if (empresa == null)
+            {
+                Notificar(EnumTipoNotificacao.Informacao, Message.EmpresaNaoEncontrada);
+            }
 
             var (success, caminhoPasta) = await UploadImageAsync(imageUpload);
 
             if (success)
             {
-                await SalvarCaminhoDeLogoAsync(imageUpload.Cnpj, caminhoPasta);
+                await SalvarCaminhoDeLogoAsync(empresa, caminhoPasta);
             }
 
             return success;
@@ -137,26 +164,22 @@ namespace Application.Commands.Services
 
             if (filePath.IsNullOrEmpty())
             {
-                Notificar(EnumTipoNotificacao.ErroCliente, Message.LogoNaoEncontrada);
+                Notificar(EnumTipoNotificacao.Informacao, Message.LogoNaoEncontrada);
             }
 
             return filePath;
         }
 
-        public async Task SalvarCaminhoDeCapaFundoAsync(string cnpj, string caminhoPasta)
+        public async Task SalvarCaminhoDeCapaFundoAsync(Empresa empresa, string caminhoPasta)
         {
-            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
-
             empresa.EnderecoDaCapaDeFundo = caminhoPasta;
 
             _repository.Update(empresa);
             await _repository.SaveChangesAsync();
         }
 
-        public async Task SalvarCaminhoDeLogoAsync(string cnpj, string caminhoPasta)
+        public async Task SalvarCaminhoDeLogoAsync(Empresa empresa, string caminhoPasta)
         {
-            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
-
             empresa.EnderecoDoLogotipo = caminhoPasta;
 
             _repository.Update(empresa);

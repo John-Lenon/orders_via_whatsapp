@@ -154,8 +154,8 @@ namespace Application.Commands.Services.Base
                 isValid = false;
             }
 
-            if (imageUpload.File.ContentType != "image/png" &&
-               imageUpload.File.ContentType != "image/jpeg")
+            if (imageUpload.File?.ContentType != "image/png" &&
+               imageUpload.File?.ContentType != "image/jpeg")
             {
                 Notificar(EnumTipoNotificacao.ErroCliente,
                     "A Imagem deve ser '.jpg' ou '.png'.");

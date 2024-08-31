@@ -138,7 +138,7 @@
   <data name="SenhaInvalida" xml:space="preserve">
     <value>Senha inválida.</value>
   </data>
-  <data name="EmpresaNaoEncontrado" xml:space="preserve">
+  <data name="EmpresaNaoEncontrada" xml:space="preserve">
     <value>Empresa não encontrada.</value>
   </data>
   <data name="CnpjInvalido" xml:space="preserve">

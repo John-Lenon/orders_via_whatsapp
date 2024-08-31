@@ -1,12 +1,11 @@
 ﻿using Application.Commands.DTO;
-using Application.Commands.DTO.File;
 using Application.Commands.Interfaces;
 using Application.Queries.DTO;
 using Application.Queries.Interfaces;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
-using Presentation.Atributos.Auth;
 using Presentation.Base;
 using Presentation.Configurations.Extensions;
 
@@ -15,7 +14,7 @@ namespace Presentation.V1
     [ApiController]
     [RouterController("empresa")]
     [ApiVersion(ApiConfig.V1)]
-    [AutorizationApi]
+    //  [AutorizationApi]
     public class EmpresaController(IServiceProvider serviceProvider,
         IEmpresaQueryService _empresaQueryService,
         IEmpresaCommandService _empresaCommandService) : MainController(serviceProvider)
@@ -46,9 +45,9 @@ namespace Presentation.V1
         }
 
         [HttpPost("upload-capa-empresa")]
-        public async Task<bool> UploadCapaEmpresaAsync([FromForm] ImageUploadRequestDto imageUpload)
+        public async Task<bool> UploadCapaEmpresaAsync(string cnpj, IFormFile file)
         {
-            return await _empresaCommandService.UploadCapaEmpresaAsync(imageUpload);
+            return await _empresaCommandService.UploadCapaEmpresaAsync(cnpj, file);
         }
 
 
@@ -59,9 +58,9 @@ namespace Presentation.V1
         }
 
         [HttpPost("upload-logo-empresa")]
-        public async Task<bool> UploadLogoEmpresaAsync([FromForm] ImageUploadRequestDto imageUpload)
+        public async Task<bool> UploadLogoEmpresaAsync(string cnpj, IFormFile file)
         {
-            return await _empresaCommandService.UploadLogoEmpresaAsync(imageUpload);
+            return await _empresaCommandService.UploadLogoEmpresaAsync(cnpj, file);
         }
         #endregion
     }

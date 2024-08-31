@@ -1,6 +1,6 @@
 ﻿using Application.Commands.DTO;
-using Application.Commands.DTO.File;
 using Application.Commands.Interfaces.Base;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Commands.Interfaces
@@ -10,9 +10,9 @@ namespace Application.Commands.Interfaces
         Task UpdateAsync(EmpresaCommandDTO entityDto, Guid codigo);
 
         Task<FileContentResult> GetCapaEmpresaAsync(string cnpj);
-        Task<bool> UploadCapaEmpresaAsync(ImageUploadRequestDto imageUpload);
+        Task<bool> UploadCapaEmpresaAsync(string cnpj, IFormFile file);
 
         Task<FileContentResult> GetLogoEmpresaAsync(string cnpj);
-        Task<bool> UploadLogoEmpresaAsync(ImageUploadRequestDto imageUpload);
+        Task<bool> UploadLogoEmpresaAsync(string cnpj, IFormFile file);
     }
 }
