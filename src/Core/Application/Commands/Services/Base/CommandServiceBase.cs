@@ -65,9 +65,9 @@ namespace Application.Commands.Services.Base
 
 
         #region Protected Methods 
-        protected async Task<bool> UploadImageAsync(ImageUploadRequestDto imageUpload)
+        protected async Task<(bool Success, string FilePath)> UploadImageAsync(ImageUploadRequestDto imageUpload)
         {
-            if (!ValidateImageToUpoload(imageUpload)) return false;
+            if (!ValidateImageToUpoload(imageUpload)) return (false, "");
 
             using var memoryStream = new MemoryStream();
             await imageUpload.File.CopyToAsync(memoryStream);
@@ -77,26 +77,16 @@ namespace Application.Commands.Services.Base
             var success = await _fileService.SaveFileAsync(caminhoPasta,
                 imageUpload.File.FileName, memoryStream.ToArray());
 
-            if (!success) return false;
+            if (!success) return (false, "");
 
-            return true;
+            var pathFile = Path.Combine(caminhoPasta, imageUpload.File.FileName);
+
+            return (true, pathFile);
         }
 
-        protected async Task<byte[]> GetImageAsync(ImageSearchRequestDto imageSearchRequest)
+        protected async Task<byte[]> GetImageAsync(string filePath)
         {
-            if (imageSearchRequest.Cnpj.IsNullOrEmpty() ||
-                imageSearchRequest.FileName.IsNullOrEmpty())
-            {
-                Notificar(EnumTipoNotificacao.ErroCliente,
-                    "Cnpj ou Nome do arquivo não podem ser nulos ou vazios.");
-
-                return [];
-            }
-
-            string caminhoPasta = Path.Combine(imageSearchRequest.Cnpj,
-                imageSearchRequest.TipoImagem.ToString());
-
-            var file = await _fileService.GetFileAsync(caminhoPasta, imageSearchRequest.FileName);
+            var file = await _fileService.GetFileAsync(filePath);
 
             if (file is null) return [];
 

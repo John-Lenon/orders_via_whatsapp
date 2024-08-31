@@ -6,7 +6,6 @@ using Application.Queries.Interfaces;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
-using Presentation.Atributos.Auth;
 using Presentation.Base;
 using Presentation.Configurations.Extensions;
 
@@ -15,7 +14,7 @@ namespace Presentation.V1
     [ApiController]
     [RouterController("empresa")]
     [ApiVersion(ApiConfig.V1)]
-    [AutorizationApi]
+    //[AutorizationApi]
     public class EmpresaController(IServiceProvider serviceProvider,
         IEmpresaQueryService _empresaQueryService,
         IEmpresaCommandService _empresaCommandService) : MainController(serviceProvider)
@@ -40,9 +39,9 @@ namespace Presentation.V1
 
         #region Image
         [HttpGet("get-capa-empresa")]
-        public async Task<FileContentResult> GetCapaEmpresaAsync([FromQuery] ImageSearchRequestDto imageSearch)
+        public async Task<FileContentResult> GetCapaEmpresaAsync(string cnpj)
         {
-            return await _empresaCommandService.GetCapaEmpresaAsync(imageSearch);
+            return await _empresaCommandService.GetCapaEmpresaAsync(cnpj);
         }
 
         [HttpPost("upload-capa-empresa")]
@@ -53,9 +52,9 @@ namespace Presentation.V1
 
 
         [HttpGet("get-logo-empresa")]
-        public async Task<FileContentResult> GetLogoEmpresaAsync([FromQuery] ImageSearchRequestDto imageSearch)
+        public async Task<FileContentResult> GetLogoEmpresaAsync(string cnpj)
         {
-            return await _empresaCommandService.GetLogoEmpresaAsync(imageSearch);
+            return await _empresaCommandService.GetLogoEmpresaAsync(cnpj);
         }
 
         [HttpPost("upload-logo-empresa")]

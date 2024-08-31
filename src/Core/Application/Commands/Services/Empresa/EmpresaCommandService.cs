@@ -9,6 +9,7 @@ using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Commands.Services
 {
@@ -20,13 +21,13 @@ namespace Application.Commands.Services
 
         public async Task UpdateAsync(EmpresaCommandDTO entityDto, Guid codigo)
         {
-            if(!Validator(entityDto)) return;
+            if (!Validator(entityDto)) return;
 
             var empresa = await _repository.Get()
                 .Include(e => e.HorariosDeFuncionamento)
                 .FirstOrDefaultAsync(e => e.Codigo == codigo);
 
-            if(empresa is null)
+            if (empresa is null)
             {
                 Notificar(EnumTipoNotificacao.ErroCliente, "Empresa não foi encontrada.");
                 return;
@@ -39,26 +40,45 @@ namespace Application.Commands.Services
         }
 
         #region Image
-        public async Task<FileContentResult> GetCapaEmpresaAsync(ImageSearchRequestDto imageSearch)
+        public async Task<FileContentResult> GetCapaEmpresaAsync(string cnpj)
         {
-            imageSearch.TipoImagem = EnumTipoImagem.Capa;
+            byte[] imgBytes = [];
 
-            var imgBytes = await GetImageAsync(imageSearch);
+            var filePath = await ObterCaminhoDeCapaFundoAsync(cnpj);
+
+            if (filePath.IsNullOrEmpty())
+            {
+                return new FileContentResult(imgBytes, "image/jpeg");
+            }
+
+            imgBytes = await GetImageAsync(filePath);
             return new FileContentResult(imgBytes, "image/jpeg");
         }
 
         public async Task<bool> UploadCapaEmpresaAsync(ImageUploadRequestDto imageUpload)
         {
-            imageUpload.TipoImagem = EnumTipoImagem.Capa;
+            var (success, caminhoPasta) = await UploadImageAsync(imageUpload);
 
-            return await UploadImageAsync(imageUpload);
+            if (success)
+            {
+                await SalvarCaminhoDeCapaFundoAsync(imageUpload.Cnpj, caminhoPasta);
+
+            }
+            return success;
         }
 
-        public async Task<FileContentResult> GetLogoEmpresaAsync(ImageSearchRequestDto imageSearch)
+        public async Task<FileContentResult> GetLogoEmpresaAsync(string cnpj)
         {
-            imageSearch.TipoImagem = EnumTipoImagem.Logo;
+            byte[] imgBytes = [];
 
-            var imgBytes = await GetImageAsync(imageSearch);
+            var filePath = await ObterCaminhoDeLogoAsync(cnpj);
+
+            if (filePath.IsNullOrEmpty())
+            {
+                return new FileContentResult(imgBytes, "image/jpeg");
+            }
+
+            imgBytes = await GetImageAsync(filePath);
             return new FileContentResult(imgBytes, "image/jpeg");
         }
 
@@ -66,8 +86,68 @@ namespace Application.Commands.Services
         {
             imageUpload.TipoImagem = EnumTipoImagem.Logo;
 
-            return await UploadImageAsync(imageUpload);
+            var (success, caminhoPasta) = await UploadImageAsync(imageUpload);
+
+            if (success)
+            {
+                await SalvarCaminhoDeLogoAsync(imageUpload.Cnpj, caminhoPasta);
+            }
+
+            return success;
         }
+        #endregion
+
+
+        #region Suppport Methods
+
+        public async Task<string> ObterCaminhoDeCapaFundoAsync(string cnpj)
+        {
+            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
+
+            var filePath = empresa?.EnderecoDaCapaDeFundo;
+
+            if (filePath.IsNullOrEmpty())
+            {
+                Notificar(EnumTipoNotificacao.ErroCliente, "Capa de fundo não encontrada.");
+            }
+
+            return filePath;
+        }
+
+        public async Task<string> ObterCaminhoDeLogoAsync(string cnpj)
+        {
+            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
+
+            var filePath = empresa?.EnderecoDoLogotipo;
+
+            if (filePath.IsNullOrEmpty())
+            {
+                Notificar(EnumTipoNotificacao.ErroCliente, "Logo não encontrada.");
+            }
+
+            return filePath;
+        }
+
+        public async Task SalvarCaminhoDeCapaFundoAsync(string cnpj, string caminhoPasta)
+        {
+            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
+
+            empresa.EnderecoDaCapaDeFundo = caminhoPasta;
+
+            _repository.Update(empresa);
+            await _repository.SaveChangesAsync();
+        }
+
+        public async Task SalvarCaminhoDeLogoAsync(string cnpj, string caminhoPasta)
+        {
+            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
+
+            empresa.EnderecoDoLogotipo = caminhoPasta;
+
+            _repository.Update(empresa);
+            await _repository.SaveChangesAsync();
+        }
+
         #endregion
     }
 }

@@ -17,7 +17,7 @@ namespace Presentation.Base
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if(!ValidarModelState(context))
+            if (!ValidarModelState(context))
                 return;
         }
 
@@ -35,12 +35,12 @@ namespace Presentation.Base
 
         private IActionResult CustomResponse<TResponse>(TResponse content)
         {
-            if(_notifier.HasNotifications(EnumTipoNotificacao.ErroCliente, out var clientErrors))
+            if (_notifier.HasNotifications(EnumTipoNotificacao.ErroCliente, out var clientErrors))
             {
                 return BadRequest(new ResponseResultDTO<TResponse>(content) { Mensagens = clientErrors });
             }
 
-            if(_notifier.HasNotifications(EnumTipoNotificacao.ErroInterno, out var serverErrors))
+            if (_notifier.HasNotifications(EnumTipoNotificacao.ErroInterno, out var serverErrors))
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     new ResponseResultDTO<TResponse>(content) { Mensagens = serverErrors });
@@ -57,15 +57,15 @@ namespace Presentation.Base
         private bool ValidarModelState(ActionExecutingContext context)
         {
             var modelState = context.ModelState;
-            if(!modelState.IsValid)
+            if (!modelState.IsValid)
             {
-                if(!ValidarContentTypeRequest(modelState, context))
+                if (!ValidarContentTypeRequest(modelState, context))
                     return false;
 
                 var valoresInvalidosModelState = modelState.Where(x =>
                     x.Value.ValidationState == ModelValidationState.Invalid
                 );
-                if(valoresInvalidosModelState.Count() == 0)
+                if (valoresInvalidosModelState.Count() == 0)
                     return true;
 
                 ExtrairMensagensDeErroDaModelState(valoresInvalidosModelState, context);
@@ -80,7 +80,7 @@ namespace Presentation.Base
         )
         {
             var listaErros = new List<Notificacao>();
-            foreach(var model in valoresInvalidosModelState)
+            foreach (var model in valoresInvalidosModelState)
             {
                 var nomeCampo = model.Key.StartsWith("$.") ? model.Key.Substring(2) : model.Key;
                 listaErros.Add(
@@ -104,19 +104,19 @@ namespace Presentation.Base
             var valoresInvalidosModelState = modelState.Where(x =>
                 x.Value.ValidationState == ModelValidationState.Invalid
             );
-            if(valoresInvalidosModelState.Count() == 1)
+            if (valoresInvalidosModelState.Count() == 1)
             {
                 var model = valoresInvalidosModelState.First();
                 var modelErro = model.Value.Errors.FirstOrDefault();
 
-                if(model.Key == string.Empty && modelErro.ErrorMessage == string.Empty)
+                if (model.Key == string.Empty && modelErro.ErrorMessage == string.Empty)
                 {
                     var result = new ResponseResultDTO<object>();
                     result.ContentTypeInvalido();
                     context.Result = new BadRequestObjectResult(result);
                     return false;
                 }
-                else if(model.Key == string.Empty)
+                else if (model.Key == string.Empty)
                 {
                     model.Value.ValidationState = ModelValidationState.Valid;
                     return true;

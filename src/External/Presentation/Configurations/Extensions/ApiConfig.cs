@@ -60,7 +60,7 @@ namespace Presentation.Configurations.Extensions
         {
             var version = controller.Attributes.OfType<ApiVersionAttribute>().FirstOrDefault();
 
-            if(version != null)
+            if (version != null)
             {
                 controller.ApiExplorer.GroupName = $"v{version.Versions.FirstOrDefault()}";
             }

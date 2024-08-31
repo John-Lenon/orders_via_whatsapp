@@ -48,11 +48,9 @@ namespace Application.Commands.Services.Produtos
         }
 
         #region Image
-        public async Task<FileContentResult> GetProdutoImageAsync(ImageSearchRequestDto imageSearch)
+        public async Task<FileContentResult> GetProdutoImageAsync(string cnpj)
         {
-            imageSearch.TipoImagem = EnumTipoImagem.Produto;
-
-            var imgBytes = await GetImageAsync(imageSearch);
+            var imgBytes = await GetImageAsync(cnpj);
             return new FileContentResult(imgBytes, "image/jpeg");
         }
 
@@ -60,7 +58,9 @@ namespace Application.Commands.Services.Produtos
         {
             imageUpload.TipoImagem = EnumTipoImagem.Produto;
 
-            return await UploadImageAsync(imageUpload);
+            var upload = await UploadImageAsync(imageUpload);
+
+            return upload.Success;
         }
         #endregion
     }

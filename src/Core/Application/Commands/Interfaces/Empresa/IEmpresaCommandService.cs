@@ -9,10 +9,10 @@ namespace Application.Commands.Interfaces
     {
         Task UpdateAsync(EmpresaCommandDTO entityDto, Guid codigo);
 
-        Task<FileContentResult> GetCapaEmpresaAsync(ImageSearchRequestDto imageSearch);
+        Task<FileContentResult> GetCapaEmpresaAsync(string cnpj);
         Task<bool> UploadCapaEmpresaAsync(ImageUploadRequestDto imageUpload);
 
-        Task<FileContentResult> GetLogoEmpresaAsync(ImageSearchRequestDto imageSearch);
+        Task<FileContentResult> GetLogoEmpresaAsync(string cnpj);
         Task<bool> UploadLogoEmpresaAsync(ImageUploadRequestDto imageUpload);
     }
 }
