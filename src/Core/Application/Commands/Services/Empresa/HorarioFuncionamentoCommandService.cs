@@ -2,6 +2,7 @@
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
 using Application.Configurations.MappingsApp;
+using Application.Resources.Messages;
 using Domain.Entities.Empresa;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories;
@@ -18,15 +19,14 @@ namespace Application.Commands.Services
 
         public async Task UpdateAsync(HorarioFuncionamentoCommandDTO entityDto, Guid codigo)
         {
-            if(!Validator(entityDto)) return;
+            if (!Validator(entityDto)) return;
 
             var horarioFuncionamento = await _repository.Get()
                 .FirstOrDefaultAsync(e => e.Codigo == codigo);
 
-            if(horarioFuncionamento is null)
+            if (horarioFuncionamento is null)
             {
-                Notificar(EnumTipoNotificacao.ErroCliente,
-                    "Horário de funcionamento não foi encontrada.");
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.HorarioFuncionamentoNaoEncontrado);
 
                 return;
             }

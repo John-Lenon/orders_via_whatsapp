@@ -3,6 +3,7 @@ using Application.Commands.DTO.Produtos;
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
 using Application.Configurations.MappingsApp;
+using Application.Resources.Messages;
 using Domain.Entities.Produtos;
 using Domain.Enumeradores.Empresa;
 using Domain.Enumeradores.Notificacao;
@@ -16,7 +17,7 @@ namespace Application.Commands.Services.Produtos
         ICategoriaProdutoRepository _categoriaRepository)
         : CommandServiceBase<Produto, ProdutoCommandDTO, IProdutoRepository>(serviceProvider), IProdutoCommandService
     {
-        private readonly ICategoriaProdutoRepository _produtoRepository;
+        // private readonly ICategoriaProdutoRepository _produtoRepository;
 
         protected override Produto MapToEntity(ProdutoCommandDTO entityDTO) =>
             entityDTO.MapToEntity();
@@ -41,7 +42,7 @@ namespace Application.Commands.Services.Produtos
             var categoria = await _categoriaRepository.GetByCodigoAsync(codigo);
             if (categoria == null)
             {
-                Notificar(EnumTipoNotificacao.ErroCliente, "A categoria informada não foi localizada.");
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.CategoriaNaoEncontrada);
                 return null;
             }
             return categoria;

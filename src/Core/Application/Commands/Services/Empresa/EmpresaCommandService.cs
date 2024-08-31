@@ -3,6 +3,7 @@ using Application.Commands.DTO.File;
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
 using Application.Configurations.MappingsApp;
+using Application.Resources.Messages;
 using Domain.Entities.Empresa;
 using Domain.Enumeradores.Empresa;
 using Domain.Enumeradores.Notificacao;
@@ -29,7 +30,7 @@ namespace Application.Commands.Services
 
             if (empresa is null)
             {
-                Notificar(EnumTipoNotificacao.ErroCliente, "Empresa não foi encontrada.");
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.EmpresaNaoEncontrado);
                 return;
             }
 
@@ -102,13 +103,20 @@ namespace Application.Commands.Services
 
         public async Task<string> ObterCaminhoDeCapaFundoAsync(string cnpj)
         {
+            if (cnpj.IsNullOrEmpty())
+            {
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.CnpjInvalido);
+
+                return "";
+            }
+
             var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
 
             var filePath = empresa?.EnderecoDaCapaDeFundo;
 
             if (filePath.IsNullOrEmpty())
             {
-                Notificar(EnumTipoNotificacao.ErroCliente, "Capa de fundo não encontrada.");
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.CapaFundoNaoEncontrada);
             }
 
             return filePath;
@@ -116,13 +124,20 @@ namespace Application.Commands.Services
 
         public async Task<string> ObterCaminhoDeLogoAsync(string cnpj)
         {
+            if (cnpj.IsNullOrEmpty())
+            {
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.CnpjInvalido);
+
+                return "";
+            }
+
             var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
 
             var filePath = empresa?.EnderecoDoLogotipo;
 
             if (filePath.IsNullOrEmpty())
             {
-                Notificar(EnumTipoNotificacao.ErroCliente, "Logo não encontrada.");
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.LogoNaoEncontrada);
             }
 
             return filePath;
