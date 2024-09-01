@@ -3,8 +3,8 @@ using Application.Commands.DTO.File;
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
 using Application.Configurations.MappingsApp;
-using Domain.Entities.Empresa;
-using Domain.Enumeradores.Empresa;
+using Domain.Entities.Empresas;
+using Domain.Enumeradores.Empresas;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.Mvc;
@@ -18,15 +18,15 @@ namespace Application.Commands.Services
         protected override Empresa MapToEntity(EmpresaCommandDTO entityDTO) =>
             entityDTO.MapToEntity();
 
-        public async Task UpdateAsync(EmpresaCommandDTO entityDto, Guid codigo)
+        public override async Task UpdateAsync(EmpresaCommandDTO entityDto, Guid? codigo = null, bool saveChange = true)
         {
-            if(!Validator(entityDto)) return;
+            if (!Validator(entityDto)) return;
 
             var empresa = await _repository.Get()
                 .Include(e => e.HorariosDeFuncionamento)
-                .FirstOrDefaultAsync(e => e.Codigo == codigo);
+                .FirstOrDefaultAsync();
 
-            if(empresa is null)
+            if (empresa is null)
             {
                 Notificar(EnumTipoNotificacao.ErroCliente, "Empresa não foi encontrada.");
                 return;

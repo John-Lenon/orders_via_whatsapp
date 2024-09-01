@@ -2,7 +2,7 @@
 using Application.Queries.DTO;
 using Application.Queries.Interfaces;
 using Application.Queries.Services.Base;
-using Domain.Entities.Empresa;
+using Domain.Entities.Empresas;
 using Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -18,7 +18,9 @@ namespace Application.Queries.Services
         public override async Task<IEnumerable<EmpresaQueryDTO>> GetAsync(EmpresaFilterDTO filter = null)
         {
             var listResult = await _repository.Get(GetFilterExpression(filter))
-                .Include(empresa => empresa.HorariosDeFuncionamento).ToListAsync();
+                .Include(empresa => empresa.HorariosDeFuncionamento)
+                .Include(empresa => empresa.Endereco)
+                .ToListAsync();
 
             return listResult.Select(MapToDTO);
         }

@@ -1,4 +1,4 @@
-﻿using Domain.Enumeradores.Empresa;
+﻿using Domain.Enumeradores.Empresas;
 using System.Text.Json.Serialization;
 
 namespace Application.Commands.DTO.File

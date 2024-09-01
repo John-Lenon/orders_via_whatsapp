@@ -1,5 +1,5 @@
-﻿using Domain.Entities.Empresa;
-using Domain.Enumeradores.Empresa;
+﻿using Domain.Entities.Empresas;
+using Domain.Enumeradores.Empresas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -52,6 +52,10 @@ namespace Infrastructure.Data.Mappings
                 .Property(e => e.EnderecoDaCapaDeFundo)
                 .HasColumnName("ENDERECO_DA_CAPA_DE_FUNDO")
                 .HasMaxLength(250);
+
+            builder.Property(x => x.IdDoEndereco)
+                .HasColumnName("ID_ENDERECO")
+                .HasColumnType("int");
 
             builder
                 .HasMany(e => e.HorariosDeFuncionamento)

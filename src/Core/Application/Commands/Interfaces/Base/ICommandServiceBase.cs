@@ -6,8 +6,6 @@
 
         Task InsertAsync(TEntityDTO entity, bool saveChanges = true);
 
-        Task UpdateAsync(TEntityDTO entity, bool saveChanges = true);
-
-        Task PatchAsync(TEntityDTO entity, bool saveChanges = true);
+        Task UpdateAsync(TEntityDTO entityDto, Guid? codigo = null, bool saveChanges = true);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Application.Configurations.MappingsApp.Produtos;
-using Application.Queries.DTO.Produtos;
+﻿using Application.Queries.DTO.Produtos;
 using Application.Queries.Interfaces.Produtos;
 using Application.Queries.Services.Base;
 using Domain.Entities.Produtos;
@@ -12,8 +11,6 @@ namespace Application.Queries.Services.Produtos
         QueryServiceBase<ICategoriaProdutoRepository, CategoriaProdutoFilterDTO, CategoriaProdutoQueryDTO, CategoriaProduto>(service),
         ICategoriaProdutoQueryService
     {
-        protected override CategoriaProdutoQueryDTO MapToDTO(CategoriaProduto entity) => entity.MapToDTO();
-
         protected override Expression<Func<CategoriaProduto, bool>> GetFilterExpression(CategoriaProdutoFilterDTO filter)
         {
             return produto =>

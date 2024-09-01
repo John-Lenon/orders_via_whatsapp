@@ -1,5 +1,5 @@
-﻿using Domain.Entities.Empresa;
-using Domain.Enumeradores.Empresa;
+﻿using Domain.Entities.Empresas;
+using Domain.Enumeradores.Empresas;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

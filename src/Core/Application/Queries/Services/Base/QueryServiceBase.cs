@@ -1,5 +1,6 @@
 ﻿using Application.Queries.DTO.Base;
 using Application.Queries.Interfaces.Base;
+using Application.Utilities;
 using Domain.Entities.Base;
 using Domain.Interfaces.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,10 @@ namespace Application.Queries.Services.Base
 {
     public abstract class QueryServiceBase<TRepository, TFilterDTO, TQueryDTO, TEntity>(IServiceProvider serviceProvider) :
         IQueryServiceBase<TFilterDTO, TQueryDTO>
-        where TEntity : EntityBase
+        where TEntity : EntityBase, new()
         where TFilterDTO : FilterBaseDTO
         where TRepository : IRepositoryBase<TEntity>
-        where TQueryDTO : QueryBaseDTO
+        where TQueryDTO : QueryBaseDTO, new()
     {
         protected readonly TRepository _repository = serviceProvider.GetRequiredService<TRepository>();
 
@@ -31,6 +32,6 @@ namespace Application.Queries.Services.Base
 
         protected abstract Expression<Func<TEntity, bool>> GetFilterExpression(TFilterDTO filter);
 
-        protected abstract TQueryDTO MapToDTO(TEntity entity);
+        protected virtual TQueryDTO MapToDTO(TEntity entity) => entity.MapToDTO<TEntity, TQueryDTO>();
     }
 }

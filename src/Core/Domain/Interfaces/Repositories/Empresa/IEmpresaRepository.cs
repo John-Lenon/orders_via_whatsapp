@@ -1,4 +1,4 @@
-﻿using Domain.Entities.Empresa;
+﻿using Domain.Entities.Empresas;
 using Domain.Interfaces.Repositories.Base;
 
 

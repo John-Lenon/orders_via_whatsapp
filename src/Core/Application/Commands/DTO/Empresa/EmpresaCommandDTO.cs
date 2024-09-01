@@ -1,4 +1,5 @@
-﻿using Domain.Enumeradores.Empresa;
+﻿using Application.Commands.DTO.Enderecos;
+using Domain.Enumeradores.Empresas;
 
 namespace Application.Commands.DTO
 {
@@ -16,5 +17,7 @@ namespace Application.Commands.DTO
         public EnumStatusDeFuncionamento StatusDeFuncionamento { get; set; }
 
         public List<HorarioFuncionamentoCommandDTO> HorariosDeFuncionamento { get; set; } = [];
+
+        public EnderecoCommandDTO Endereco { get; set; }
     }
 }

@@ -1,6 +1,10 @@
 ﻿using Application.Commands.DTO;
+using Application.Commands.DTO.Enderecos;
 using Application.Queries.DTO;
-using Domain.Entities.Empresa;
+using Application.Queries.DTO.Enderecos;
+using Application.Utilities;
+using Domain.Entities.Empresas;
+using Domain.Entities.Enderecos;
 using System.Text.RegularExpressions;
 
 namespace Application.Configurations.MappingsApp
@@ -9,58 +13,26 @@ namespace Application.Configurations.MappingsApp
     {
         public static EmpresaQueryDTO MapToDTO(this Empresa empresa)
         {
-            return new EmpresaQueryDTO
-            {
-                Codigo = empresa.Codigo,
-                NomeFantasia = empresa.NomeFantasia,
-                RazaoSocial = empresa.RazaoSocial,
-                Cnpj = empresa.Cnpj,
-                NumeroDoWhatsapp = empresa.NumeroDoWhatsapp,
-                Email = empresa.Email,
-                Dominio = empresa.Dominio,
-                EnderecoDoLogotipo = empresa.EnderecoDoLogotipo,
-                EnderecoDaCapaDeFundo = empresa.EnderecoDaCapaDeFundo,
-                StatusDeFuncionamento = empresa.StatusDeFuncionamento,
-                HorariosDeFuncionamento = empresa.HorariosDeFuncionamento.Select(h => new HorarioFuncionamentoQueryDTO
-                {
-                    Codigo = h.Codigo,
-                    Hora = h.Hora,
-                    Minutos = h.Minutos,
-                    DiaDaSemana = h.DiaDaSemana
-
-                }).ToList()
-            };
+            var dto = empresa.MapToDTO<Empresa, EmpresaQueryDTO>();
+            dto.HorariosDeFuncionamento = empresa.HorariosDeFuncionamento.Select(h => h.MapToDTO<HorarioFuncionamento, HorarioFuncionamentoQueryDTO>());
+            dto.Endereco = empresa.Endereco?.MapToDTO<Endereco, EnderecoQueryDTO>();
+            return dto;
         }
 
         public static Empresa MapToEntity(this EmpresaCommandDTO empresaDTO)
         {
-            return new Empresa
-            {
-                NomeFantasia = empresaDTO.NomeFantasia,
-                RazaoSocial = empresaDTO.RazaoSocial,
-                Cnpj = Regex.Replace(empresaDTO.Cnpj, "[^0-9]", ""),
-                NumeroDoWhatsapp = empresaDTO.NumeroDoWhatsapp,
-                Email = empresaDTO.Email,
-                Dominio = empresaDTO.Dominio,
-                EnderecoDoLogotipo = empresaDTO.EnderecoDoLogotipo,
-                EnderecoDaCapaDeFundo = empresaDTO.EnderecoDaCapaDeFundo,
-                StatusDeFuncionamento = empresaDTO.StatusDeFuncionamento,
-                HorariosDeFuncionamento = empresaDTO.HorariosDeFuncionamento.Select(h => h.MapToEntity()).ToList()
-            };
+            var entidade = empresaDTO.MapToEntity<EmpresaCommandDTO, Empresa>();
+            entidade.Cnpj = Regex.Replace(entidade.Cnpj, "[^0-9]", "");
+            entidade.HorariosDeFuncionamento = empresaDTO.HorariosDeFuncionamento.Select(h => h.MapToEntity<HorarioFuncionamentoCommandDTO, HorarioFuncionamento>()).ToList();
+            return entidade;
         }
 
         public static void MapUpdateEntity(this Empresa empresa, EmpresaCommandDTO empresaDTO)
         {
-            empresa.NomeFantasia = empresaDTO.NomeFantasia;
-            empresa.RazaoSocial = empresaDTO.RazaoSocial;
+            empresa.GetValuesFrom(empresaDTO);
             empresa.Cnpj = Regex.Replace(empresaDTO.Cnpj, "[^0-9]", "");
-            empresa.NumeroDoWhatsapp = empresaDTO.NumeroDoWhatsapp;
-            empresa.Email = empresaDTO.Email;
-            empresa.Dominio = empresaDTO.Dominio;
-            empresa.EnderecoDoLogotipo = empresaDTO.EnderecoDoLogotipo;
-            empresa.EnderecoDaCapaDeFundo = empresaDTO.EnderecoDaCapaDeFundo;
-            empresa.StatusDeFuncionamento = empresaDTO.StatusDeFuncionamento;
-            empresa.HorariosDeFuncionamento = empresaDTO.HorariosDeFuncionamento.Select(h => h.MapToEntity()).ToList();
+            empresa.HorariosDeFuncionamento = empresaDTO.HorariosDeFuncionamento?.Select(h => h.MapToEntity<HorarioFuncionamentoCommandDTO, HorarioFuncionamento>()).ToList();
+            empresa.Endereco = empresaDTO.Endereco?.MapToDTO<EnderecoCommandDTO, Endereco>();
         }
     }
 }

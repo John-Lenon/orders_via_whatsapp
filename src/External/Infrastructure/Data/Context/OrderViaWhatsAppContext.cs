@@ -1,6 +1,7 @@
 ﻿using Domain.Entities;
+using Domain.Entities.Empresas;
+using Domain.Entities.Enderecos;
 using Domain.Entities.Produtos;
-using Domain.Entities.Empresa;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Context
@@ -13,6 +14,7 @@ namespace Infrastructure.Data.Context
         public DbSet<Permissao> Permissao { get; set; }
         public DbSet<Empresa> Empresa { get; set; }
         public DbSet<HorarioFuncionamento> HorarioFuncionamento { get; set; }
+        public DbSet<Endereco> Endereco { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

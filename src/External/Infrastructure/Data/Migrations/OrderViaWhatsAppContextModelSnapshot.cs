@@ -22,7 +22,7 @@ namespace Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entities.Empresa.Empresa", b =>
+            modelBuilder.Entity("Domain.Entities.Empresas.Empresa", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -63,6 +63,10 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(250)")
                         .HasColumnName("ENDERECO_DO_LOGOTIPO");
 
+                    b.Property<int?>("IdDoEndereco")
+                        .HasColumnType("int")
+                        .HasColumnName("ID_ENDERECO");
+
                     b.Property<string>("NomeFantasia")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -88,10 +92,14 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdDoEndereco")
+                        .IsUnique()
+                        .HasFilter("[ID_ENDERECO] IS NOT NULL");
+
                     b.ToTable("EMPRESA", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Empresa.HorarioFuncionamento", b =>
+            modelBuilder.Entity("Domain.Entities.Empresas.HorarioFuncionamento", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,6 +136,58 @@ namespace Data.Migrations
                     b.HasIndex("EmpresaId");
 
                     b.ToTable("HORARIO_FUNCIONAMENTO", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Enderecos.Endereco", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("BAIRRO");
+
+                    b.Property<string>("Cep")
+                        .HasColumnType("varchar(8)")
+                        .HasColumnName("CEP");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("CIDADE");
+
+                    b.Property<Guid>("Codigo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CODIGO")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Complemento")
+                        .HasColumnType("varchar(30)")
+                        .HasColumnName("COMPLEMENTO");
+
+                    b.Property<string>("Logradouro")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)")
+                        .HasColumnName("LOGRADOURO");
+
+                    b.Property<int>("NumeroLogradouro")
+                        .HasColumnType("int")
+                        .HasColumnName("NUMERO_LOGRADOURO");
+
+                    b.Property<string>("Uf")
+                        .IsRequired()
+                        .HasColumnType("char(2)")
+                        .HasColumnName("UF");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ENDERECO", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Permissao", b =>
@@ -401,9 +461,18 @@ namespace Data.Migrations
                     b.ToTable("USUARIO_PERMISSAO", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Empresa.HorarioFuncionamento", b =>
+            modelBuilder.Entity("Domain.Entities.Empresas.Empresa", b =>
                 {
-                    b.HasOne("Domain.Entities.Empresa.Empresa", "Empresa")
+                    b.HasOne("Domain.Entities.Enderecos.Endereco", "Endereco")
+                        .WithOne("Empresa")
+                        .HasForeignKey("Domain.Entities.Empresas.Empresa", "IdDoEndereco");
+
+                    b.Navigation("Endereco");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Empresas.HorarioFuncionamento", b =>
+                {
+                    b.HasOne("Domain.Entities.Empresas.Empresa", "Empresa")
                         .WithMany("HorariosDeFuncionamento")
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -464,9 +533,14 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Entities.Empresa.Empresa", b =>
+            modelBuilder.Entity("Domain.Entities.Empresas.Empresa", b =>
                 {
                     b.Navigation("HorariosDeFuncionamento");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Enderecos.Endereco", b =>
+                {
+                    b.Navigation("Empresa");
                 });
 
             modelBuilder.Entity("Domain.Entities.Produtos.CategoriaAdicionalProduto", b =>

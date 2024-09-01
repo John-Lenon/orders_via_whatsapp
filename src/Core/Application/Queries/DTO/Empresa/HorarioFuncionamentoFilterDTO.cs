@@ -1,6 +1,6 @@
 ﻿
 using Application.Queries.DTO.Base;
-using Domain.Enumeradores.Empresa;
+using Domain.Enumeradores.Empresas;
 
 namespace Application.Queries.DTO
 {

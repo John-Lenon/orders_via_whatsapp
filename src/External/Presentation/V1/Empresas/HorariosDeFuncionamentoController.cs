@@ -6,6 +6,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
 using Presentation.Atributos.Auth;
+using Presentation.Base;
 using Presentation.Configurations.Extensions;
 
 namespace Presentation.V1.Empresa
@@ -14,8 +15,10 @@ namespace Presentation.V1.Empresa
     [RouterController("horario-fucionamento")]
     [ApiVersion(ApiConfig.V1)]
     [AutorizationApi]
-    public class HorariosDeFuncionamentoController(IHorarioFuncionamentoCommandService _horarioFuncionamentoCommand,
-        IHorarioFuncionamentoQueryService _horarioFuncionamentoQuery)
+    public class HorariosDeFuncionamentoController(
+        IServiceProvider _serviceProvider,
+        IHorarioFuncionamentoCommandService _horarioFuncionamentoCommand,
+        IHorarioFuncionamentoQueryService _horarioFuncionamentoQuery) : MainController(_serviceProvider)
     {
 
         [HttpGet]
@@ -30,14 +33,14 @@ namespace Presentation.V1.Empresa
             await _horarioFuncionamentoCommand.InsertAsync(empresa);
         }
 
-        [HttpPut]
-        public async Task UpdateAsync([FromBody] HorarioFuncionamentoCommandDTO empresa, Guid codigo)
+        [HttpPut("{codigo}")]
+        public async Task UpdateAsync([FromBody] HorarioFuncionamentoCommandDTO empresa, [FromRoute] Guid codigo)
         {
             await _horarioFuncionamentoCommand.UpdateAsync(empresa, codigo);
         }
 
-        [HttpDelete]
-        public async Task DeleteAsync(Guid codeEmpresa)
+        [HttpDelete("{codigo}")]
+        public async Task DeleteAsync([FromRoute] Guid codeEmpresa)
         {
             await _horarioFuncionamentoCommand.DeleteAsync(codeEmpresa);
         }

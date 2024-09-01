@@ -8,5 +8,6 @@
         public const string CATEGORIAPRODUTO = "CATEGORIA_PRODUTO";
 
         public const string PERMISSAO = "PERMISSAO";
+        public const string ENDERECO = "ENDERECO";
     }
 }

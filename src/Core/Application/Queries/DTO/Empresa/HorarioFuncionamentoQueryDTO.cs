@@ -1,5 +1,5 @@
 ﻿using Application.Queries.DTO.Base;
-using Domain.Enumeradores.Empresa;
+using Domain.Enumeradores.Empresas;
 using System.Text.Json.Serialization;
 
 namespace Application.Queries.DTO

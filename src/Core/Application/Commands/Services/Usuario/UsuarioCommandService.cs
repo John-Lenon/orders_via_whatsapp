@@ -1,6 +1,5 @@
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
-using Application.Configurations.MappingsApp;
 using Application.Queries.Interfaces.Usuario;
 using Application.Resources.Messages;
 using Application.Utilities;
@@ -34,7 +33,7 @@ namespace Application.Commands.Services
 
             var (codigoUnicoSenha, SenhaHash) = new PasswordHasher().GerarSenhaHash(usuarioDto.Senha);
 
-            var usuario = usuarioDto.MapToNewUsuario();
+            var usuario = usuarioDto.MapToEntity<UsuarioCommandDTO, Usuario>();
 
             usuario.SenhaHash = SenhaHash;
             usuario.CodigoUnicoSenha = codigoUnicoSenha;
@@ -60,7 +59,7 @@ namespace Application.Commands.Services
                 usuarioDto.Senha
             );
 
-            usuarioDto.MapToUsuario(usuario);
+            usuario.GetValuesFrom(usuarioDto);
 
             usuario.SenhaHash = SenhaHash;
             usuario.CodigoUnicoSenha = codigoUnicoSenha;

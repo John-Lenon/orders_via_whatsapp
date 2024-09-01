@@ -2,9 +2,8 @@
 using Application.Commands.DTO.Produtos;
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
-using Application.Configurations.MappingsApp;
 using Domain.Entities.Produtos;
-using Domain.Enumeradores.Empresa;
+using Domain.Enumeradores.Empresas;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories.Produtos;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +16,6 @@ namespace Application.Commands.Services.Produtos
         : CommandServiceBase<Produto, ProdutoCommandDTO, IProdutoRepository>(serviceProvider), IProdutoCommandService
     {
         private readonly ICategoriaProdutoRepository _produtoRepository;
-
-        protected override Produto MapToEntity(ProdutoCommandDTO entityDTO) =>
-            entityDTO.MapToEntity();
-
 
         public override async Task InsertAsync(ProdutoCommandDTO entityDTO, bool saveChanges = true)
         {

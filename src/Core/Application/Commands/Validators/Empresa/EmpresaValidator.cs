@@ -1,5 +1,5 @@
 ﻿using Application.Commands.DTO;
-using Application.Commands.Validators.Empresa;
+using Application.Commands.Validators.Empresas;
 using FluentValidation;
 using System.Text.RegularExpressions;
 

@@ -1,5 +1,6 @@
 ﻿using Application.Commands.DTO.File;
 using Application.Commands.Interfaces.Base;
+using Application.Utilities;
 using Application.Utilities.Utilities;
 using Domain.Entities.Base;
 using Domain.Enumeradores.Notificacao;
@@ -15,8 +16,9 @@ namespace Application.Commands.Services.Base
 {
     public abstract class CommandServiceBase<TEntity, TEntityDTO, TIRepository>(IServiceProvider service) :
         ICommandServiceBase<TEntityDTO>
-        where TEntity : EntityBase
+        where TEntity : EntityBase, new()
         where TIRepository : class, IRepositoryBase<TEntity>
+        where TEntityDTO : class, new()
     {
         private readonly INotificador _notificador = service.GetService<INotificador>();
         private readonly IFileService _fileService = service.GetService<IFileService>();
@@ -48,21 +50,18 @@ namespace Application.Commands.Services.Base
             if (saveChanges) await CommitAsync();
         }
 
-        public virtual async Task UpdateAsync(TEntityDTO entityDTO, bool saveChanges = true)
+        public virtual async Task UpdateAsync(TEntityDTO entityDto, Guid? codigo = null, bool saveChanges = true)
         {
-            if (!Validator(entityDTO)) return;
+            if (!Validator(entityDto)) return;
 
-            var entity = MapToEntity(entityDTO);
+            var storedEntity = await _repository.GetByCodigoAsync(codigo.GetValueOrDefault());
+            var entity = MapToEntity(entityDto);
+
+            storedEntity.GetValuesFrom(entity);
+
             _repository.Update(entity);
             if (saveChanges) await CommitAsync();
         }
-
-        public virtual Task PatchAsync(TEntityDTO entity, bool saveChanges = true)
-        {
-            throw new NotImplementedException();
-        }
-
-
 
         #region Protected Methods 
         protected async Task<bool> UploadImageAsync(ImageUploadRequestDto imageUpload)
@@ -103,7 +102,8 @@ namespace Application.Commands.Services.Base
             return file;
         }
 
-        protected abstract TEntity MapToEntity(TEntityDTO entityDTO);
+        protected virtual TEntity MapToEntity(TEntityDTO entityDTO) =>
+            entityDTO.MapToEntity<TEntityDTO, TEntity>();
 
         protected void Notificar(EnumTipoNotificacao tipo, string message) =>
             _notificador.Notify(tipo, message);

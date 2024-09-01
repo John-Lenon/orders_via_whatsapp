@@ -1,7 +1,7 @@
 ﻿using Application.Commands.DTO;
 using FluentValidation;
 
-namespace Application.Commands.Validators.Empresa
+namespace Application.Commands.Validators.Empresas
 {
     public class HorarioFuncionamentoValidator : AbstractValidator<HorarioFuncionamentoCommandDTO>
     {

@@ -1,4 +1,4 @@
-﻿namespace Domain.Enumeradores.Empresa
+﻿namespace Domain.Enumeradores.Empresas
 {
     public enum EnumTipoImagem
     {

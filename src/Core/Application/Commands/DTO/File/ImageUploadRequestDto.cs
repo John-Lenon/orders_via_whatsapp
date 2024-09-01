@@ -1,4 +1,4 @@
-﻿using Domain.Enumeradores.Empresa;
+﻿using Domain.Enumeradores.Empresas;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json.Serialization;
 

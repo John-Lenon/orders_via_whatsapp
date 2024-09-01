@@ -1,8 +1,8 @@
 ﻿using Application.Commands.DTO;
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
-using Application.Configurations.MappingsApp;
-using Domain.Entities.Empresa;
+using Application.Utilities;
+using Domain.Entities.Empresas;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -13,17 +13,14 @@ namespace Application.Commands.Services
         : CommandServiceBase<HorarioFuncionamento, HorarioFuncionamentoCommandDTO,
             IHorarioFuncionamentoRepository>(serviceProvider), IHorarioFuncionamentoCommandService
     {
-        protected override HorarioFuncionamento MapToEntity(HorarioFuncionamentoCommandDTO entityDTO) =>
-            entityDTO.MapToEntity();
-
-        public async Task UpdateAsync(HorarioFuncionamentoCommandDTO entityDto, Guid codigo)
+        public override async Task UpdateAsync(HorarioFuncionamentoCommandDTO entityDto, Guid? codigo, bool saveChanges = true)
         {
-            if(!Validator(entityDto)) return;
+            if (!Validator(entityDto)) return;
 
             var horarioFuncionamento = await _repository.Get()
                 .FirstOrDefaultAsync(e => e.Codigo == codigo);
 
-            if(horarioFuncionamento is null)
+            if (horarioFuncionamento is null)
             {
                 Notificar(EnumTipoNotificacao.ErroCliente,
                     "Horário de funcionamento não foi encontrada.");
@@ -31,8 +28,7 @@ namespace Application.Commands.Services
                 return;
             }
 
-            horarioFuncionamento.MapUpdateEntity(entityDto);
-
+            horarioFuncionamento.GetValuesFrom(entityDto);
             _repository.Update(horarioFuncionamento);
             await _repository.SaveChangesAsync();
         }

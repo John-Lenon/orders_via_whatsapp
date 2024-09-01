@@ -1,19 +1,16 @@
-﻿using Application.Configurations.MappingsApp;
-using Application.Queries.DTO;
+﻿using Application.Queries.DTO;
 using Application.Queries.Interfaces;
 using Application.Queries.Services.Base;
-using Domain.Entities.Empresa;
+using Domain.Entities.Empresas;
 using Domain.Interfaces.Repositories;
 using System.Linq.Expressions;
 
-namespace Application.Queries.Services
+namespace Application.Queries.Services.Empresas
 {
     public class HorarioFuncionamentoQueryService(IServiceProvider service) :
         QueryServiceBase<IHorarioFuncionamentoRepository, HorarioFuncionamentoFilterDTO,
             HorarioFuncionamentoQueryDTO, HorarioFuncionamento>(service), IHorarioFuncionamentoQueryService
     {
-        protected override HorarioFuncionamentoQueryDTO MapToDTO(HorarioFuncionamento entity) => entity.MapToDTO();
-
         protected override Expression<Func<HorarioFuncionamento, bool>> GetFilterExpression(HorarioFuncionamentoFilterDTO filter)
         {
             return empresa =>

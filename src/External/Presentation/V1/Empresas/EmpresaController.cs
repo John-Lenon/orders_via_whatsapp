@@ -27,9 +27,9 @@ namespace Presentation.V1
         }
 
         [HttpPut]
-        public async Task UpdateAsync([FromBody] EmpresaCommandDTO empresa, Guid codigo)
+        public async Task UpdateAsync([FromBody] EmpresaCommandDTO empresa)
         {
-            await _empresaCommandService.UpdateAsync(empresa, codigo);
+            await _empresaCommandService.UpdateAsync(empresa);
         }
 
         [HttpDelete]

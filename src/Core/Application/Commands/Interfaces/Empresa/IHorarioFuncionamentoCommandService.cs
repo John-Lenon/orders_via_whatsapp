@@ -5,6 +5,5 @@ namespace Application.Commands.Interfaces
 {
     public interface IHorarioFuncionamentoCommandService : ICommandServiceBase<HorarioFuncionamentoCommandDTO>
     {
-        Task UpdateAsync(HorarioFuncionamentoCommandDTO entityDto, Guid codigo);
     }
 }
