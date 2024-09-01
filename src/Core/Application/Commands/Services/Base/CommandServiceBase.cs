@@ -53,13 +53,10 @@ namespace Application.Commands.Services.Base
         public virtual async Task UpdateAsync(TEntityDTO entityDto, Guid? codigo = null, bool saveChanges = true)
         {
             if (!Validator(entityDto)) return;
+            var codigoEntidade = codigo.GetValueOrDefault();
+            var storedEntity = await _repository.GetByCodigoAsync(codigoEntidade);
 
-            var storedEntity = await _repository.GetByCodigoAsync(codigo.GetValueOrDefault());
-            var entity = MapToEntity(entityDto);
-
-            storedEntity.GetValuesFrom(entity);
-
-            _repository.Update(entity);
+            storedEntity.GetValuesFrom(entityDto);
             if (saveChanges) await CommitAsync();
         }
 
