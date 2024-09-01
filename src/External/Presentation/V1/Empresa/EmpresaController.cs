@@ -14,7 +14,7 @@ namespace Presentation.V1
     [ApiController]
     [RouterController("empresa")]
     [ApiVersion(ApiConfig.V1)]
-    //  [AutorizationApi]
+    [AutorizationApi]
     public class EmpresaController(IServiceProvider serviceProvider,
         IEmpresaQueryService _empresaQueryService,
         IEmpresaCommandService _empresaCommandService) : MainController(serviceProvider)
@@ -39,28 +39,27 @@ namespace Presentation.V1
 
         #region Image
         [HttpGet("get-capa-empresa")]
-        public async Task<FileContentResult> GetCapaEmpresaAsync(string cnpj)
+        public async Task<FileContentResult> GetCapaEmpresaAsync()
         {
-            return await _empresaCommandService.GetCapaEmpresaAsync(cnpj);
+            return await _empresaCommandService.GetCapaEmpresaAsync();
+        }
+
+        [HttpGet("get-logo-empresa")]
+        public async Task<FileContentResult> GetLogoEmpresaAsync()
+        {
+            return await _empresaCommandService.GetLogoEmpresaAsync();
         }
 
         [HttpPost("upload-capa-empresa")]
-        public async Task<bool> UploadCapaEmpresaAsync(string cnpj, IFormFile file)
+        public async Task<bool> UploadCapaEmpresaAsync(IFormFile file)
         {
-            return await _empresaCommandService.UploadCapaEmpresaAsync(cnpj, file);
-        }
-
-
-        [HttpGet("get-logo-empresa")]
-        public async Task<FileContentResult> GetLogoEmpresaAsync(string cnpj)
-        {
-            return await _empresaCommandService.GetLogoEmpresaAsync(cnpj);
+            return await _empresaCommandService.UploadCapaEmpresaAsync(file);
         }
 
         [HttpPost("upload-logo-empresa")]
-        public async Task<bool> UploadLogoEmpresaAsync(string cnpj, IFormFile file)
+        public async Task<bool> UploadLogoEmpresaAsync(IFormFile file)
         {
-            return await _empresaCommandService.UploadLogoEmpresaAsync(cnpj, file);
+            return await _empresaCommandService.UploadLogoEmpresaAsync(file);
         }
         #endregion
     }

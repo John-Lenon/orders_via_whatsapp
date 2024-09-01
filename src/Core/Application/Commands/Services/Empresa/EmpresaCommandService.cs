@@ -42,11 +42,11 @@ namespace Application.Commands.Services
         }
 
         #region Image
-        public async Task<FileContentResult> GetCapaEmpresaAsync(string cnpj)
+        public async Task<FileContentResult> GetCapaEmpresaAsync()
         {
             byte[] imgBytes = [];
 
-            var filePath = await ObterCaminhoDeCapaFundoAsync(cnpj);
+            var filePath = await ObterCaminhoDeCapaFundoAsync();
 
             if (filePath.IsNullOrEmpty())
             {
@@ -57,21 +57,37 @@ namespace Application.Commands.Services
             return new FileContentResult(imgBytes, "image/jpeg");
         }
 
-        public async Task<bool> UploadCapaEmpresaAsync(string cnpj, IFormFile file)
+        public async Task<FileContentResult> GetLogoEmpresaAsync()
         {
-            var imageUpload = new ImageUploadRequestDto
-            {
-                Cnpj = cnpj,
-                File = file,
-                TipoImagem = EnumTipoImagem.Capa
-            };
+            byte[] imgBytes = [];
 
-            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
+            var filePath = await ObterCaminhoDeLogoAsync();
+
+            if (filePath.IsNullOrEmpty())
+            {
+                return new FileContentResult(imgBytes, "image/jpeg");
+            }
+
+            imgBytes = await GetImageAsync(filePath);
+            return new FileContentResult(imgBytes, "image/jpeg");
+        }
+
+        public async Task<bool> UploadCapaEmpresaAsync(IFormFile file)
+        {
+            var empresa = await _repository.Get().FirstOrDefaultAsync();
 
             if (empresa == null)
             {
-                Notificar(EnumTipoNotificacao.Informacao, Message.EmpresaNaoEncontrada);
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.EmpresaNaoEncontrada);
+                return false;
             }
+
+            var imageUpload = new ImageUploadRequestDto
+            {
+                Cnpj = empresa.Cnpj,
+                File = file,
+                TipoImagem = EnumTipoImagem.Logo
+            };
 
             var (success, caminhoPasta) = await UploadImageAsync(imageUpload);
 
@@ -80,39 +96,26 @@ namespace Application.Commands.Services
                 await SalvarCaminhoDeCapaFundoAsync(empresa, caminhoPasta);
 
             }
+
             return success;
         }
 
-        public async Task<FileContentResult> GetLogoEmpresaAsync(string cnpj)
+        public async Task<bool> UploadLogoEmpresaAsync(IFormFile file)
         {
-            byte[] imgBytes = [];
-
-            var filePath = await ObterCaminhoDeLogoAsync(cnpj);
-
-            if (filePath.IsNullOrEmpty())
-            {
-                return new FileContentResult(imgBytes, "image/jpeg");
-            }
-
-            imgBytes = await GetImageAsync(filePath);
-            return new FileContentResult(imgBytes, "image/jpeg");
-        }
-
-        public async Task<bool> UploadLogoEmpresaAsync(string cnpj, IFormFile file)
-        {
-            var imageUpload = new ImageUploadRequestDto
-            {
-                Cnpj = cnpj,
-                File = file,
-                TipoImagem = EnumTipoImagem.Logo
-            };
-
-            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
+            var empresa = await _repository.Get().FirstOrDefaultAsync();
 
             if (empresa == null)
             {
-                Notificar(EnumTipoNotificacao.Informacao, Message.EmpresaNaoEncontrada);
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.EmpresaNaoEncontrada);
+                return false;
             }
+
+            var imageUpload = new ImageUploadRequestDto
+            {
+                Cnpj = empresa.Cnpj,
+                File = file,
+                TipoImagem = EnumTipoImagem.Logo
+            };
 
             var (success, caminhoPasta) = await UploadImageAsync(imageUpload);
 
@@ -128,39 +131,38 @@ namespace Application.Commands.Services
 
         #region Suppport Methods
 
-        public async Task<string> ObterCaminhoDeCapaFundoAsync(string cnpj)
+        public async Task<string> ObterCaminhoDeCapaFundoAsync()
         {
-            if (cnpj.IsNullOrEmpty())
-            {
-                Notificar(EnumTipoNotificacao.ErroCliente, Message.CnpjInvalido);
+            var empresa = await _repository.Get().FirstOrDefaultAsync();
 
+            if (empresa == null)
+            {
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.EmpresaNaoEncontrada);
                 return "";
             }
 
-            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
-
-            var filePath = empresa?.EnderecoDaCapaDeFundo;
+            var filePath = empresa.EnderecoDaCapaDeFundo;
 
             if (filePath.IsNullOrEmpty())
             {
-                Notificar(EnumTipoNotificacao.ErroCliente, Message.CapaFundoNaoEncontrada);
+                Notificar(EnumTipoNotificacao.Informacao, Message.CapaFundoNaoEncontrada);
+                return "";
             }
 
             return filePath;
         }
 
-        public async Task<string> ObterCaminhoDeLogoAsync(string cnpj)
+        public async Task<string> ObterCaminhoDeLogoAsync()
         {
-            if (cnpj.IsNullOrEmpty())
-            {
-                Notificar(EnumTipoNotificacao.ErroCliente, Message.CnpjInvalido);
+            var empresa = await _repository.Get().FirstOrDefaultAsync();
 
+            if (empresa == null)
+            {
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.EmpresaNaoEncontrada);
                 return "";
             }
 
-            var empresa = await _repository.Get(empresa => empresa.Cnpj == cnpj).FirstOrDefaultAsync();
-
-            var filePath = empresa?.EnderecoDoLogotipo;
+            var filePath = empresa.EnderecoDoLogotipo;
 
             if (filePath.IsNullOrEmpty())
             {
