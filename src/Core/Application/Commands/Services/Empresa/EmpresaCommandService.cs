@@ -129,7 +129,7 @@ namespace Application.Commands.Services
         #endregion
 
 
-        #region Suppport Methods
+        #region Support Methods
 
         public async Task<string> ObterCaminhoDeCapaFundoAsync()
         {

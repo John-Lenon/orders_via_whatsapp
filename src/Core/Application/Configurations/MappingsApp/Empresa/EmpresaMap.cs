@@ -56,7 +56,31 @@ namespace Application.Configurations.MappingsApp
             empresa.Email = empresaDTO.Email;
             empresa.Dominio = empresaDTO.Dominio;
             empresa.StatusDeFuncionamento = empresaDTO.StatusDeFuncionamento;
+            empresa.EnderecoDaCapaDeFundo = UpdateCnpjInPath(empresa.EnderecoDaCapaDeFundo, empresa.Cnpj);
+            empresa.EnderecoDoLogotipo = UpdateCnpjInPath(empresa.EnderecoDoLogotipo, empresa.Cnpj);
             empresa.HorariosDeFuncionamento = empresaDTO.HorariosDeFuncionamento.Select(h => h.MapToEntity()).ToList();
+        }
+
+        private static string UpdateCnpjInPath(string path, string newCnpj)
+        {
+            var pathSegments = path.Split('\\');
+            if (pathSegments.Length > 1)
+            {
+                var cnpjAntigo = pathSegments[0];
+                pathSegments[0] = newCnpj;
+
+                var directoryAntigo = Path.Combine(AppSettings.CompanyFilePaths, cnpjAntigo);
+                var newDirectory = Path.Combine(AppSettings.CompanyFilePaths, newCnpj);
+
+                if (Directory.Exists(directoryAntigo) && !Directory.Exists(newDirectory))
+                {
+                    Directory.Move(directoryAntigo, newDirectory);
+                }
+
+                return string.Join("\\", pathSegments);
+            }
+
+            return path;
         }
     }
 }
