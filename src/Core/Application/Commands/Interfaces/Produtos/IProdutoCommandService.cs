@@ -7,7 +7,7 @@ namespace Application.Commands.Interfaces
 {
     public interface IProdutoCommandService : ICommandServiceBase<ProdutoCommandDTO>
     {
-        Task<FileContentResult> GetProdutoImageAsync(ImageSearchRequestDto imageSearch);
+        Task<FileContentResult> GetProdutoImageAsync(string cnpj);
         Task<bool> UploadProdutoImageAsync(ImageUploadRequestDto imageUpload);
     }
 }

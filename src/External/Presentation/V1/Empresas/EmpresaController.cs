@@ -1,9 +1,9 @@
 ﻿using Application.Commands.DTO;
-using Application.Commands.DTO.File;
 using Application.Commands.Interfaces;
 using Application.Queries.DTO;
 using Application.Queries.Interfaces;
 using Asp.Versioning;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
 using Presentation.Atributos.Auth;
@@ -40,28 +40,27 @@ namespace Presentation.V1
 
         #region Image
         [HttpGet("get-capa-empresa")]
-        public async Task<FileContentResult> GetCapaEmpresaAsync([FromQuery] ImageSearchRequestDto imageSearch)
+        public async Task<FileContentResult> GetCapaEmpresaAsync()
         {
-            return await _empresaCommandService.GetCapaEmpresaAsync(imageSearch);
+            return await _empresaCommandService.GetCapaEmpresaAsync();
+        }
+
+        [HttpGet("get-logo-empresa")]
+        public async Task<FileContentResult> GetLogoEmpresaAsync()
+        {
+            return await _empresaCommandService.GetLogoEmpresaAsync();
         }
 
         [HttpPost("upload-capa-empresa")]
-        public async Task<bool> UploadCapaEmpresaAsync([FromForm] ImageUploadRequestDto imageUpload)
+        public async Task<bool> UploadCapaEmpresaAsync(IFormFile file)
         {
-            return await _empresaCommandService.UploadCapaEmpresaAsync(imageUpload);
-        }
-
-
-        [HttpGet("get-logo-empresa")]
-        public async Task<FileContentResult> GetLogoEmpresaAsync([FromQuery] ImageSearchRequestDto imageSearch)
-        {
-            return await _empresaCommandService.GetLogoEmpresaAsync(imageSearch);
+            return await _empresaCommandService.UploadCapaEmpresaAsync(file);
         }
 
         [HttpPost("upload-logo-empresa")]
-        public async Task<bool> UploadLogoEmpresaAsync([FromForm] ImageUploadRequestDto imageUpload)
+        public async Task<bool> UploadLogoEmpresaAsync(IFormFile file)
         {
-            return await _empresaCommandService.UploadLogoEmpresaAsync(imageUpload);
+            return await _empresaCommandService.UploadLogoEmpresaAsync(file);
         }
         #endregion
     }

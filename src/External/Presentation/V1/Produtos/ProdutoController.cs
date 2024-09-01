@@ -39,9 +39,9 @@ namespace Presentation.V1
 
         #region Image
         [HttpGet("get-image-produto")]
-        public async Task<FileContentResult> GetProdutoImageAsync([FromQuery] ImageSearchRequestDto imageSearch)
+        public async Task<FileContentResult> GetProdutoImageAsync(string cnpj)
         {
-            return await _produtoCommandService.GetProdutoImageAsync(imageSearch);
+            return await _produtoCommandService.GetProdutoImageAsync(cnpj);
         }
 
         [HttpPost("upload-image-produto")]

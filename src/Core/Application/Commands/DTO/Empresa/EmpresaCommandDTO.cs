@@ -11,8 +11,6 @@ namespace Application.Commands.DTO
         public string NumeroDoWhatsapp { get; set; }
         public string Email { get; set; }
         public string Dominio { get; set; }
-        public string EnderecoDoLogotipo { get; set; }
-        public string EnderecoDaCapaDeFundo { get; set; }
 
         public EnumStatusDeFuncionamento StatusDeFuncionamento { get; set; }
 

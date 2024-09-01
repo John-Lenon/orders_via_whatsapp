@@ -9,13 +9,13 @@ namespace Application.Utilities
     {
         private readonly string _baseDirectory = AppSettings.CompanyFilePaths;
 
-        public async Task<byte[]> GetFileAsync(string folder, string fileName)
+        public async Task<byte[]> GetFileAsync(string filePath)
         {
             try
             {
-                string filePath = Path.Combine(_baseDirectory, folder, fileName);
+                filePath = Path.Combine(_baseDirectory, filePath);
 
-                if(!File.Exists(filePath))
+                if (!File.Exists(filePath))
                 {
                     _notificador.Notify(EnumTipoNotificacao.ErroCliente,
                         $"O arquivo não foi encontrado no caminho {filePath}.");
@@ -25,7 +25,7 @@ namespace Application.Utilities
 
                 return await File.ReadAllBytesAsync(filePath);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 _notificador.Notify(EnumTipoNotificacao.ErroInterno,
                     "Ocorreu um erro ao buscar arquivo.");
@@ -40,14 +40,14 @@ namespace Application.Utilities
             {
                 string directoryPath = Path.Combine(_baseDirectory, folder);
 
-                if(!Directory.Exists(directoryPath))
+                if (!Directory.Exists(directoryPath))
                 {
                     Directory.CreateDirectory(directoryPath);
                 }
 
                 string filePath = Path.Combine(directoryPath, fileName);
 
-                if(File.Exists(filePath))
+                if (File.Exists(filePath))
                 {
                     _notificador.Notify(EnumTipoNotificacao.Informacao,
                         "O aquivo já existe.");
@@ -59,7 +59,7 @@ namespace Application.Utilities
 
                 return true;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 _notificador.Notify(EnumTipoNotificacao.ErroInterno,
                     "Ocorreu um erro ao salvar arquivo.");
@@ -74,7 +74,7 @@ namespace Application.Utilities
             {
                 string filePath = Path.Combine(_baseDirectory, folder, fileName);
 
-                if(!File.Exists(filePath))
+                if (!File.Exists(filePath))
                 {
                     _notificador.Notify(EnumTipoNotificacao.ErroCliente, $"O arquivo não foi encontrado no caminho {filePath}.");
                     return false;
@@ -84,7 +84,7 @@ namespace Application.Utilities
 
                 return true;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 _notificador.Notify(EnumTipoNotificacao.ErroInterno, "Ocorreu um erro ao deletar arquivo.");
                 return false;

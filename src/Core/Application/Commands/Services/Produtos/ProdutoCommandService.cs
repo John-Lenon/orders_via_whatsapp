@@ -2,6 +2,7 @@
 using Application.Commands.DTO.Produtos;
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
+using Application.Resources.Messages;
 using Domain.Entities.Produtos;
 using Domain.Enumeradores.Empresas;
 using Domain.Enumeradores.Notificacao;
@@ -15,8 +16,6 @@ namespace Application.Commands.Services.Produtos
         ICategoriaProdutoRepository _categoriaRepository)
         : CommandServiceBase<Produto, ProdutoCommandDTO, IProdutoRepository>(serviceProvider), IProdutoCommandService
     {
-        private readonly ICategoriaProdutoRepository _produtoRepository;
-
         public override async Task InsertAsync(ProdutoCommandDTO entityDTO, bool saveChanges = true)
         {
             if (!Validator(entityDTO)) return;
@@ -36,18 +35,16 @@ namespace Application.Commands.Services.Produtos
             var categoria = await _categoriaRepository.GetByCodigoAsync(codigo);
             if (categoria == null)
             {
-                Notificar(EnumTipoNotificacao.ErroCliente, "A categoria informada não foi localizada.");
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.CategoriaNaoEncontrada);
                 return null;
             }
             return categoria;
         }
 
         #region Image
-        public async Task<FileContentResult> GetProdutoImageAsync(ImageSearchRequestDto imageSearch)
+        public async Task<FileContentResult> GetProdutoImageAsync(string cnpj)
         {
-            imageSearch.TipoImagem = EnumTipoImagem.Produto;
-
-            var imgBytes = await GetImageAsync(imageSearch);
+            var imgBytes = await GetImageAsync(cnpj);
             return new FileContentResult(imgBytes, "image/jpeg");
         }
 
@@ -55,7 +52,9 @@ namespace Application.Commands.Services.Produtos
         {
             imageUpload.TipoImagem = EnumTipoImagem.Produto;
 
-            return await UploadImageAsync(imageUpload);
+            var upload = await UploadImageAsync(imageUpload);
+
+            return upload.Success;
         }
         #endregion
     }

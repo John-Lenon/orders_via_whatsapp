@@ -138,4 +138,22 @@
   <data name="SenhaInvalida" xml:space="preserve">
     <value>Senha inválida.</value>
   </data>
+  <data name="EmpresaNaoEncontrada" xml:space="preserve">
+    <value>Empresa não encontrada.</value>
+  </data>
+  <data name="CnpjInvalido" xml:space="preserve">
+    <value>Cnpj inválido.</value>
+  </data>
+  <data name="CapaFundoNaoEncontrada" xml:space="preserve">
+    <value>Capa de fundo não encontrada</value>
+  </data>
+  <data name="LogoNaoEncontrada" xml:space="preserve">
+    <value>Logo não encontrada.</value>
+  </data>
+  <data name="HorarioFuncionamentoNaoEncontrado" xml:space="preserve">
+    <value>Horário de funcionamento não foi encontrado.</value>
+  </data>
+  <data name="CategoriaNaoEncontrada" xml:space="preserve">
+    <value>A categoria informada não foi localizada.</value>
+  </data>
 </root>

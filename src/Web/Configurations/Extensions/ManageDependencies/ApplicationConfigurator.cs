@@ -68,7 +68,7 @@ namespace Api.Configurations.Extensions.ManageDependencies
         {
             app.UseCors(configurePolicy =>
             {
-                if(webAppBuilder.Environment.IsDevelopment())
+                if (webAppBuilder.Environment.IsDevelopment())
                     configurePolicy.AllowAnyOrigin();
                 else
                     configurePolicy.WithOrigins(AppSettings.AllowedOrigins);

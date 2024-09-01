@@ -2,6 +2,7 @@
 using Application.Commands.Interfaces;
 using Application.Commands.Services.Base;
 using Application.Utilities;
+using Application.Resources.Messages;
 using Domain.Entities.Empresas;
 using Domain.Enumeradores.Notificacao;
 using Domain.Interfaces.Repositories;
@@ -22,8 +23,7 @@ namespace Application.Commands.Services
 
             if (horarioFuncionamento is null)
             {
-                Notificar(EnumTipoNotificacao.ErroCliente,
-                    "Horário de funcionamento não foi encontrada.");
+                Notificar(EnumTipoNotificacao.ErroCliente, Message.HorarioFuncionamentoNaoEncontrado);
 
                 return;
             }
