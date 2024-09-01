@@ -1,6 +1,7 @@
 ﻿using Application.Commands.DTO;
 using Application.Commands.Validators.Empresa;
 using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
 using System.Text.RegularExpressions;
 
 namespace Application.Commands.Validators
@@ -31,7 +32,7 @@ namespace Application.Commands.Validators
 
             RuleFor(x => x.Dominio)
              .NotEmpty().WithMessage("Domínio é obrigatório.")
-             .Matches("^[a-zA-Z]+$").WithMessage("Domínio deve conter apenas letras.");
+             .Matches("^[a-zA-Z.]+$").WithMessage("Domínio deve conter apenas letras.");
 
             RuleFor(x => x.StatusDeFuncionamento)
                 .IsInEnum().WithMessage("Status de funcionamento inválido.");
@@ -42,6 +43,11 @@ namespace Application.Commands.Validators
 
         private bool IsValidCnpj(string cnpj)
         {
+            if (cnpj.IsNullOrEmpty())
+            {
+                return false;
+            }
+
             cnpj = Regex.Replace(cnpj, "[^0-9]", "");
 
             if (cnpj.Length != 14)

@@ -42,8 +42,6 @@ namespace Application.Configurations.MappingsApp
                 NumeroDoWhatsapp = empresaDTO.NumeroDoWhatsapp,
                 Email = empresaDTO.Email,
                 Dominio = empresaDTO.Dominio,
-                EnderecoDoLogotipo = empresaDTO.EnderecoDoLogotipo,
-                EnderecoDaCapaDeFundo = empresaDTO.EnderecoDaCapaDeFundo,
                 StatusDeFuncionamento = empresaDTO.StatusDeFuncionamento,
                 HorariosDeFuncionamento = empresaDTO.HorariosDeFuncionamento.Select(h => h.MapToEntity()).ToList()
             };
@@ -57,8 +55,6 @@ namespace Application.Configurations.MappingsApp
             empresa.NumeroDoWhatsapp = empresaDTO.NumeroDoWhatsapp;
             empresa.Email = empresaDTO.Email;
             empresa.Dominio = empresaDTO.Dominio;
-            empresa.EnderecoDoLogotipo = empresaDTO.EnderecoDoLogotipo;
-            empresa.EnderecoDaCapaDeFundo = empresaDTO.EnderecoDaCapaDeFundo;
             empresa.StatusDeFuncionamento = empresaDTO.StatusDeFuncionamento;
             empresa.HorariosDeFuncionamento = empresaDTO.HorariosDeFuncionamento.Select(h => h.MapToEntity()).ToList();
         }

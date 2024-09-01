@@ -86,7 +86,7 @@ namespace Application.Commands.Services
             {
                 Cnpj = empresa.Cnpj,
                 File = file,
-                TipoImagem = EnumTipoImagem.Logo
+                TipoImagem = EnumTipoImagem.Capa
             };
 
             var (success, caminhoPasta) = await UploadImageAsync(imageUpload);

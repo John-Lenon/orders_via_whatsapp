@@ -6,6 +6,7 @@ using Asp.Versioning;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Atributos;
+using Presentation.Atributos.Auth;
 using Presentation.Base;
 using Presentation.Configurations.Extensions;
 
