@@ -25,7 +25,7 @@ namespace Application.Commands.Services
         {
             if (!Validator(entityDto)) return;
 
-            var empresa = await _repository.Get()
+            var empresa = await _repository.Get(empresa => empresa.Codigo == codigo)
                 .Include(e => e.HorariosDeFuncionamento)
                 .FirstOrDefaultAsync();
 

@@ -26,10 +26,10 @@ namespace Presentation.V1
             return (await _empresaQueryService.GetAsync(filter)).FirstOrDefault();
         }
 
-        [HttpPut]
-        public async Task UpdateAsync([FromBody] EmpresaCommandDTO empresa)
+        [HttpPut("{codigo}")]
+        public async Task UpdateAsync([FromBody] EmpresaCommandDTO empresa, [FromRoute] Guid codigo)
         {
-            await _empresaCommandService.UpdateAsync(empresa);
+            await _empresaCommandService.UpdateAsync(empresa, codigo);
         }
 
         [HttpDelete]
