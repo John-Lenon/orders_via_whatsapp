@@ -21,9 +21,11 @@ namespace Presentation.V1.Enderecos
         IEnderecoQueryService _enderecoQuery) : MainController(serviceProvider)
     {
         [HttpGet]
-        public async Task<IEnumerable<EnderecoQueryDTO>> GetAsync([FromQuery] EnderecoFilterDTO filter)
+        public async Task<EnderecoQueryDTO> GetAsync([FromQuery] EnderecoFilterDTO filter)
         {
-            return await _enderecoQuery.GetAsync(filter);
+            var endereco = await _enderecoQuery.GetAsync(filter);
+
+            return endereco.FirstOrDefault();
         }
 
         [HttpPut("{codigo}")]
