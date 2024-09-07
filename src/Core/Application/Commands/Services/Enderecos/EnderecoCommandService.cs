@@ -14,5 +14,8 @@ namespace Application.Commands.Services.Enderecos
         {
             var entidade = endereco.MapToEntity<EnderecoCommandDTO, Endereco>();
         }
+
+        protected override Endereco MapToEntity(EnderecoCommandDTO entityDTO) => entityDTO.MapToEntity<EnderecoCommandDTO, Endereco>();
+
     }
 }
